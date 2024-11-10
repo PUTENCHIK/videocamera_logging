@@ -1,0 +1,91 @@
+@import url("fonts.css");
+
+
+body,
+input {
+    font-family: 'Roboto';
+    font-size: 16px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 600;           /* Semi bold */
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 500;           /* Medium */
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 400;           /* Regular */
+}
+
+input[type="button"] {
+    display: flex;
+    height: 40px;
+
+    padding: 0 20px;
+    outline: 0;
+    border: 0;
+    border-radius: 10px;
+}
+
+input[type="button"] > span {
+    display: block;
+    margin: auto;
+}
+
+/* Primary button                     */
+input[type="button"].primary {
+    background-color: #0714FF;
+    color: white;
+}
+
+input[type="button"].primary:hover {
+    background-color: #464FFF;
+}
+/* ================================== */
+
+/* Secondary button                   */
+input[type="button"].secondary {
+    background-color: #8086FF;
+    color: white;
+}
+
+input[type="button"].secondary:hover {
+    background-color: #676FFF;
+}
+/* ================================== */
+
+/* Basic button                       */
+input[type="button"].basic {
+    outline: 1px solid black;
+    color: black;
+}
+
+input[type="button"].basic:hover {
+    outline: 1px solid #3A3A3A;
+    color: #3A3A3A;
+}
+/* ================================== */
+
+
+
+
+input[type="text"],
+input[type="number"] {
+    height: 40px;
+    padding: 3px 10px;
+
+    border-radius: 10px;
+    background-color: #3A3A3A;
+    color: #3A3A3A;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover {
+    background-color: black;
+    color: black;
+}

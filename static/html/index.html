@@ -4,11 +4,44 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Index</title>
-        <link href="{{ url_for('styles', path='/index-style.css') }}" rel="stylesheet">
+        <link href="{{ url_for('styles', path='/index.css') }}" rel="stylesheet">
+        <link href="{{ url_for('styles', path='/header.css') }}" rel="stylesheet">
     </head>
     <body>
-        <div class="container">
-            <h1>Index page</h1>
+        <header>
+            <div class="header__content">
+                <a class="header__logo" href="/">
+                    <span>
+                        videocameras
+                        <br>
+                        logging
+                    </span>
+                </a>
+                <nav>
+                    <a class="header__link" href="/images">
+                        <span>Снимки</span>
+                    </a>
+                    <a class="header__link" href="/cameras">
+                        <span>Видеокамеры</span>
+                    </a>
+                    <a class="header__link" href="/statistic">
+                        <span>Статистика</span>
+                    </a>
+                    <a class="header__link" href="/about">
+                        <span>О проекте</span>
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <div class="main">
+            <h1>Приложение для логирования людей и животных</h1>
+            <p>
+                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание 
+                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание 
+                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание 
+                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание
+            </p>
         </div>
     </body>
 </html>

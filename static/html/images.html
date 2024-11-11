@@ -35,7 +35,58 @@
         </header>
 
         <div class="main">
-            <h1>Images</h1>
+            <div class="filters-container">
+                <form name="filters" action="filters" method="post">
+                    <div class="form-group">
+                        <label class="filled">
+                            <span>id изображения:</span>
+                            <input type="number" name="id" min="1" placeholder="123">
+                        </label>
+                        <label class="fixed">
+                            <span>От:</span>
+                            <input type="date" name="from">
+                        </label>
+                        <label class="fixed">
+                            <span>До:</span>
+                            <input type="date" name="until">
+                        </label>
+                        <label class="filled">
+                            <span>Кол-во объектов:</span>
+                            <input type="number" name="amount" min="1" value="1">
+                        </label>
+                    </div>
+
+                    <button class="basic" type="submit">
+                        <span>Применить</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="images-container">
+                <div class="image-box">
+                    <div class="image__info">
+                        <div class="info__row">
+                            <div>id</div>
+                            <div>123</div>
+                        </div>
+                        <div class="info__row">
+                            <div>Дата время</div>
+                            <div>2020-07-07 18:45:34</div>
+                        </div>
+                        <div class="info__row">
+                            <div>Объекты</div>
+                            <div class="list">
+                                <div>Медведь</div>
+                                <div>Человек 1</div>
+                                <div>Человек 2</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image__image">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

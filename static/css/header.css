@@ -3,10 +3,14 @@
 
 header {
     display: flex;
+    position: fixed;
+    width: calc(100% + 8px);
     height: 80px;
-    /* position: fixed; */
+    left: -8px;
+    top: 0px;
 
     border-bottom: 1px solid #808080;
+    background-color: white;
 }
 
 header a {
@@ -52,6 +56,10 @@ header nav {
 
 .header__link:hover {
     border-bottom: 3px solid #8086FF;
+}
+
+.header__link.current {
+    border-bottom: 3px solid #0714FF;
 }
 
 .header__link > span {

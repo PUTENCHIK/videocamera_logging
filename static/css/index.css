@@ -1,9 +1,2 @@
 @import url('common.css');
 
-
-.main {
-    display: flex;
-    flex-direction: column;
-    width: 1240px;
-    margin: 0 auto;
-}

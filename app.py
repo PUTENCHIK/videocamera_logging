@@ -1,19 +1,32 @@
+from pathlib import Path
+
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+
+from src import (
+    images_router,
+    cameras_router,
+    statistic_router,
+    about_router
+)
+
+from src import Config
 
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/static/css", StaticFiles(directory="static/css"), name="styles")
+app.mount("/static", StaticFiles(directory=Path("static")), name="static")
+app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles")
 
-templates = Jinja2Templates(directory="static/html")
+app.include_router(images_router)
+app.include_router(cameras_router)
+app.include_router(statistic_router)
+app.include_router(about_router)
 
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
-    return templates.TemplateResponse(
+    return Config.templates.TemplateResponse(
         request=request, name="index.html"
     )
 

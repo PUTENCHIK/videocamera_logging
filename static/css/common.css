@@ -7,6 +7,13 @@ input {
     font-size: 16px;
 }
 
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 1240px;
+    margin: 100px auto 0 auto;
+}
+
 h1 {
     font-size: 24px;
     font-weight: 600;           /* Semi bold */

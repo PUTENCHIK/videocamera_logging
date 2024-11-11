@@ -4,13 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Index</title>
-        <link href="{{ url_for('styles', path='/index.css') }}" rel="stylesheet">
+        <link href="{{ url_for('styles', path='/images.css') }}" rel="stylesheet">
         <link href="{{ url_for('styles', path='/header.css') }}" rel="stylesheet">
     </head>
     <body>
         <header>
             <div class="header__content">
-                <a class="header__logo">
+                <a class="header__logo" href="/">
                     <span>
                         videocameras
                         <br>
@@ -18,7 +18,7 @@
                     </span>
                 </a>
                 <nav>
-                    <a class="header__link" href="/images">
+                    <a class="header__link current">
                         <span>Снимки</span>
                     </a>
                     <a class="header__link" href="/cameras">
@@ -35,13 +35,7 @@
         </header>
 
         <div class="main">
-            <h1>Приложение для логирования людей и животных</h1>
-            <p>
-                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание 
-                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание 
-                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание 
-                Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание
-            </p>
+            <h1>Images</h1>
         </div>
     </body>
 </html>

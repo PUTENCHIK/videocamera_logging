@@ -1,5 +1,6 @@
 import uvicorn
 from src import Config
+from app import app
 
 
 if __name__ == "__main__":
@@ -8,6 +9,7 @@ if __name__ == "__main__":
                     host=Config.app_host,
                     port=Config.app_port,
                     reload_includes=["*.html", "*.css", "*.js"],
+                    reload_dirs=["/static"],
                     reload=True)
     except KeyboardInterrupt:
         print("Shutdown by keyboard interrupt")

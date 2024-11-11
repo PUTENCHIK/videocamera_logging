@@ -15,13 +15,15 @@ from src import Config
 
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory=Path("static")), name="static")
-app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles")
 
 app.include_router(images_router)
 app.include_router(cameras_router)
 app.include_router(statistic_router)
 app.include_router(about_router)
+
+app.mount("/static", StaticFiles(directory=Path("static")), name="static")
+app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles")
+app.mount("/storage", StaticFiles(directory=Path("storage")), name="storage")
 
 
 @app.get("/", response_class=HTMLResponse)

@@ -1,1 +1,41 @@
 @import url('common.css');
+
+
+.add-camera-container {
+    display: flex;
+    width: 100%;
+}
+
+.add-camera-container > form {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.cameras-container {
+    display: table;
+    border-collapse: collapse;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-row.head {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.table-row > div {
+    display: table-cell;
+    border: 0px solid transparent;
+    background-clip: padding-box;
+}
+
+.table-row > div + div {
+    border-left-width: 20px;
+}
+
+.table-row + .table-row > div {
+    border-top-width: 20px;
+}

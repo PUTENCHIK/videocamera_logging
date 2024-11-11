@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Index</title>
+        <title>Видеокамеры</title>
         <link href="{{ url_for('styles', path='/cameras.css') }}" rel="stylesheet">
         <link href="{{ url_for('styles', path='/header.css') }}" rel="stylesheet">
     </head>
@@ -35,7 +35,45 @@
         </header>
 
         <div class="main">
-            <h1>Videocameras</h1>
+            <div class="add-camera-container">
+                <form name="add-camera-form" action="/add_camera" method="post">
+                    <button class="primary">
+                        <span>Добавить видеокамеру</span>
+                    </button>
+                </form>
+            </div>
+
+            <h1>Отслеживаемые камеры</h1>
+
+            <div class="cameras-container">
+                <div class="table-row head">
+                    <div>id</div>
+                    <div>login</div>
+                    <div>password</div>
+                    <div>ip</div>
+                    <div>port</div>
+                    <div>Добавлена</div>
+                    <div>Просмотр</div>
+                </div>
+                <div class="table-row">
+                    <div>1</div>
+                    <div>camera123</div>
+                    <div>pwerkowetni</div>
+                    <div>190.190.0.0</div>
+                    <div>6789</div>
+                    <div>2023-12-12 15:00:00</div>
+                    <div></div>
+                </div>
+                <div class="table-row">
+                    <div>1</div>
+                    <div>camera123</div>
+                    <div>pwerkowetni</div>
+                    <div>190.190.0.0</div>
+                    <div>6789</div>
+                    <div>2023-12-12 15:00:00</div>
+                    <div></div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

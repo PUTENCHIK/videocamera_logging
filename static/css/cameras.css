@@ -32,6 +32,10 @@
     background-clip: padding-box;
 }
 
+.table-row > div.icons-box {
+    column-gap: 20px;
+}
+
 .table-row > div + div {
     border-left-width: 20px;
 }

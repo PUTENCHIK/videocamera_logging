@@ -9,8 +9,8 @@
     </head>
     <body>
         <header>
-            <div class="header__content" href="/">
-                <a class="header__logo">
+            <div class="header__content">
+                <a class="header__logo" href="/">
                     <span>
                         videocameras
                         <br>
@@ -53,7 +53,6 @@
                     <div>ip</div>
                     <div>port</div>
                     <div>Добавлена</div>
-                    <div>Просмотр</div>
                 </div>
                 <div class="table-row">
                     <div>1</div>
@@ -62,7 +61,11 @@
                     <div>190.190.0.0</div>
                     <div>6789</div>
                     <div>2023-12-12 15:00:00</div>
-                    <div></div>
+                    <div class="icons-box">
+                        <img class="icon-button" src="{{ url_for('images', path='/look-camera.png') }}" alt="look">
+                        <img class="icon-button" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                        <img class="icon-button" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                    </div>
                 </div>
                 <div class="table-row">
                     <div>1</div>
@@ -71,7 +74,24 @@
                     <div>190.190.0.0</div>
                     <div>6789</div>
                     <div>2023-12-12 15:00:00</div>
-                    <div></div>
+                    <div class="icons-box">
+                        <img class="icon-button" src="{{ url_for('images', path='/look-camera.png') }}" alt="look">
+                        <img class="icon-button" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                        <img class="icon-button" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div>1</div>
+                    <div>camera123</div>
+                    <div>pwerkowetni</div>
+                    <div>190.190.0.0</div>
+                    <div>6789</div>
+                    <div>2023-12-12 15:00:00</div>
+                    <div class="icons-box">
+                        <img class="icon-button" src="{{ url_for('images', path='/look-camera.png') }}" alt="look">
+                        <img class="icon-button" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                        <img class="icon-button" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                    </div>
                 </div>
             </div>
         </div>

@@ -23,6 +23,7 @@ app.include_router(about_router)
 
 app.mount("/static", StaticFiles(directory=Path("static")), name="static")
 app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles")
+app.mount("/static/images", StaticFiles(directory=Path("static/images")), name="images")
 app.mount("/storage", StaticFiles(directory=Path("storage")), name="storage")
 
 

@@ -126,3 +126,16 @@ label.fixed > input {
 label.filled {
     display: inline-flex;
 }
+
+
+img.icon-button {
+    width: 24px;
+    height: 24px;
+    user-select: none;
+}
+
+img.icon-button:hover {
+    border-radius: 4px;
+    background-color: #c9c9c9;
+    cursor: pointer;
+}

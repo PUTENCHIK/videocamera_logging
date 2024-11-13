@@ -5,16 +5,19 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from src import (
+    Config,
     images_router,
     cameras_router,
     statistic_router,
     about_router
 )
 
-from src import Config
+from src.database import BaseDBModel, engine
 
 
 app = FastAPI()
+
+BaseDBModel.metadata.create_all(bind=engine)
 
 app.include_router(images_router)
 app.include_router(cameras_router)

@@ -1,17 +1,6 @@
 @import url('common.css');
 
 
-.add-camera-container {
-    display: flex;
-    width: 100%;
-}
-
-.add-camera-container > form {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-}
-
 .cameras-container {
     display: table;
     border-collapse: collapse;
@@ -19,11 +8,6 @@
 
 .table-row {
     display: table-row;
-}
-
-.table-row.head {
-    font-weight: 600;
-    text-transform: uppercase;
 }
 
 .table-row > div {
@@ -43,3 +27,59 @@
 .table-row + .table-row > div {
     border-top-width: 20px;
 }
+
+
+
+
+.forms-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+    background-color: rgba(69, 69, 69, 0.4);
+    z-index: 99;
+}
+
+.forms-container > div {
+    display: inline-flex;
+    flex-direction: column;
+    margin: auto;
+
+    box-shadow: 5px 5px 7px #808080;
+    border-radius: 20px;
+    background-color: white;
+}
+
+.camera-window {
+    row-gap: 20px;
+    padding: 20px 20px 40px 20px;
+}
+
+.container__content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    padding: 0 60px;
+}
+
+.container__content > form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+}
+
+.container__content > form > .form-inputs {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.delete-window {
+    row-gap: 30px;
+    padding: 20px 30px;
+}
+

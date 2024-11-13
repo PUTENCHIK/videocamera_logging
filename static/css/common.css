@@ -8,6 +8,13 @@ button {
     font-size: 16px;
 }
 
+.hidden {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    z-index: 0;
+}
+
 .main {
     display: flex;
     flex-direction: column;
@@ -23,13 +30,34 @@ h1 {
 
 h2 {
     font-size: 20px;
-    font-weight: 500;           /* Medium */
+    font-weight: 600;           /* Medium */
 }
 
 h3 {
     font-size: 18px;
     font-weight: 400;           /* Regular */
 }
+
+.label-bold {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+
+
+img.icon-button {
+    width: 24px;
+    height: 24px;
+    user-select: none;
+}
+
+img.icon-button:hover {
+    border-radius: 4px;
+    background-color: #c9c9c9;
+    cursor: pointer;
+}
+
+
 
 button {
     display: flex;
@@ -39,6 +67,10 @@ button {
     outline: 0;
     border: 0;
     border-radius: 10px;
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 button > span {
@@ -82,12 +114,22 @@ button.basic:hover {
 }
 /* ================================== */
 
+/* Danger button                      */
+button.danger {
+    background-color: #FF070C;
+    color: white;
+}
+
+button.danger:hover {
+    background-color: #FF4649;
+}
+/* ================================== */
 
 
 
-input[type="text"],
-input[type="number"],
-input[type="date"] {
+
+input:not([type="checkbox"]),
+input:not([type="radio"]) {
     height: 40px;
     padding: 3px 10px;
 
@@ -99,9 +141,8 @@ input[type="date"] {
     color: #3A3A3A;
 }
 
-input[type="text"]:hover,
-input[type="number"]:hover,
-input[type="date"]:hover {
+input:not([type="checkbox"]),
+input:not([type="radio"]) {
     outline: 1px solid black;
     color: black;
 }
@@ -119,7 +160,7 @@ label > span {
     font-size: 14px;
 }
 
-label.fixed > input {
+label.fixed input {
     width: 200px;
 }
 
@@ -127,15 +168,51 @@ label.filled {
     display: inline-flex;
 }
 
+label.password > .input-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
 
-img.icon-button {
-    width: 24px;
-    height: 24px;
-    user-select: none;
+    column-gap: 10px;
 }
 
-img.icon-button:hover {
-    border-radius: 4px;
-    background-color: #c9c9c9;
+label.password img.icon-button {
+    width: 32px;
+    height: 32px;
+}
+
+label.password input {
+    width: 100%;
+}
+
+
+
+.button-cross {
+    display: flex;
+    width: 40px;
+    height: 40px;
+
+    border-radius: 20px;
+    background-color: white;
+}
+
+.button-cross::before {
+    display: block;
+    margin: auto;
+    
+    content: "\00d7";
+    font-size: 30px;
+    color: black;
+}
+
+.button-cross:hover {
+    background-color: #E1E1E1;
     cursor: pointer;
+}
+
+
+.row-right-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }

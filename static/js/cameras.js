@@ -20,6 +20,13 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function setFormValues(form, values) {
+        form.login.value = values['login'];
+        form.password.value = values['password'];
+        form.ip.value = values['ip'];
+        form.port.value = values['port'];
+    }
+
     function showWindow(formWindow, extraParams) {
         if (formWindow.classList.contains("hidden")) {
             formWindow.classList.remove("hidden");
@@ -39,9 +46,15 @@ window.addEventListener("DOMContentLoaded", () => {
             let btnText = btnSubmit.getElementsByTagName("span")[0];
             btnText.textContent = extraParams.buttonSubmit;
 
-            if (extraParams.values != null) {
-
-            }
+            setFormValues(form, extraParams.values == null ?
+                {"login": "", "password": "", "ip": "", "port": ""} :
+                {
+                    "login": extraParams.values["login"],
+                    "password": extraParams.values["password"],
+                    "ip": extraParams.values["ip"],
+                    "port": extraParams.values["port"]
+                }
+            )
         }
     }
 
@@ -49,6 +62,16 @@ window.addEventListener("DOMContentLoaded", () => {
         if (formsContainer.classList.contains("hidden")) {
             formsContainer.classList.remove("hidden");
         }
+    }
+
+    async function getCameraData(cameraId) {
+        const url = window.location.href + `/${cameraId}`;
+        let result = await fetch(url)
+            .then((response) => {
+                return response.json();
+            });
+
+        return result;
     }
 
     const btnAddCamera = document.getElementsByClassName("btn-add-camera")[0];
@@ -74,14 +97,18 @@ window.addEventListener("DOMContentLoaded", () => {
             showFormsContainer();
     
             let cameraWindow = formsContainer.getElementsByClassName("camera-window")[0];
-    
-            showWindow(cameraWindow, {
-                "title": "Изменение видеокамеры #123",
-                "formName": "edit-camera",
-                "formAction": "/cameras/edit",
-                "buttonSubmit": "Сохранить",
-                "values": null
-            });
+            let cameraId = event.target.dataset.id;
+            
+            let result = getCameraData(cameraId)
+                .then((data) => {
+                    showWindow(cameraWindow, {
+                        "title": `Изменение видеокамеры #${cameraId}`,
+                        "formName": "edit-camera",
+                        "formAction": `/cameras/${cameraId}/edit`,
+                        "buttonSubmit": "Сохранить",
+                        "values": data
+                    });
+                });
         });
     }
 

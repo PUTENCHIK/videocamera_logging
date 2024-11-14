@@ -9,6 +9,9 @@ button {
 }
 
 .hidden {
+    position: absolute;
+    /* top: -100;
+    left: -100%; */
     visibility: hidden;
     width: 0;
     height: 0;

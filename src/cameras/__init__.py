@@ -1,4 +1,4 @@
-from .schemas.CameraAdd import CameraAdd
+from .schemas.CameraAddOrEdit import CameraAddOrEdit
 from .schemas.Camera import Camera
 from .models.Camera import Camera as CameraModel
 

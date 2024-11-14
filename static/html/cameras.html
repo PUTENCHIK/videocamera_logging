@@ -65,9 +65,9 @@
                             <div>{{ camera.port }}</div>
                             <div>{{ camera.created_at }}</div>
                             <div class="icons-box">
-                                <img class="icon-button btn-look-camera" src="{{ url_for('images', path='/look.png') }}" alt="look">
-                                <img class="icon-button btn-edit-camera" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
-                                <img class="icon-button btn-delete-camera" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                                <img class="icon-button btn-look-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/look.png') }}" alt="look">
+                                <img class="icon-button btn-edit-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                                <img class="icon-button btn-delete-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
                             </div>
                             <!-- <div class="icons-box">
                                 <img class="icon-button btn-look-camera" src="../images/look.png" alt="look">

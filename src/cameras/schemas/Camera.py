@@ -9,4 +9,4 @@ class Camera(BaseModel):
     password: str
     port: int
     created_at: datetime
-    deleted_at: datetime
+    deleted_at: datetime | None

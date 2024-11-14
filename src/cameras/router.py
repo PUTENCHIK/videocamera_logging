@@ -8,8 +8,8 @@ from fastapi.encoders import jsonable_encoder
 
 from src import Config
 from src.database import DBSession, get_db_session
-from src.cameras import CameraAdd
-from src.cameras.logic import _add_camera, _get_cameras
+from src.cameras import CameraAddOrEdit, Camera
+from src.cameras.logic import _add_camera, _get_cameras, _get_camera, _edit_camera
 
 
 cameras_router = APIRouter()
@@ -33,7 +33,24 @@ async def index(request: Request, db: DBSession = Depends(get_db_session)):
 
 
 @cameras_router.post(f"{router_path}/add", response_class=RedirectResponse)
-async def add_camera(camera: Annotated[CameraAdd, Form()], db: DBSession = Depends(get_db_session)):
+async def add_camera(camera: Annotated[CameraAddOrEdit, Form()], db: DBSession = Depends(get_db_session)):
     new_camera = _add_camera(camera, db)
 
+    return RedirectResponse(f"{router_path}", status_code=302)
+
+
+@cameras_router.get(router_path + "/{camera_id}", response_model=Camera)
+async def get_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
+    camera = _get_camera(camera_id, db)
+
+    return camera
+
+
+@cameras_router.post(router_path + "/{camera_id}/edit", response_class=RedirectResponse)
+async def edit_camera(camera_id: int, camera: Annotated[CameraAddOrEdit, Form()], db: DBSession = Depends(get_db_session)):
+    db_camera = _get_camera(camera_id, db)
+
+    if db_camera is not None:
+        _edit_camera(db_camera, camera, db)
+    
     return RedirectResponse(f"{router_path}", status_code=302)

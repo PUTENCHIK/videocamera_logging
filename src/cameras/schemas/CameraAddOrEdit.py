@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class CameraAdd(BaseModel):
+class CameraAddOrEdit(BaseModel):
     login: str
     ip: str | None
     password: str

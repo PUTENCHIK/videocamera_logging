@@ -82,62 +82,7 @@
             {% endif %}
         </div>
 
-        <div class="forms-container hidden">
-            <div class="camera-window hidden">
-                <div class="row-right-container">
-                    <div class="button-cross"></div>
-                </div>
-                
-                <div class="container__content">
-                    <h2></h2>
-
-                    <form method="post">
-                        <div class="form-inputs">
-                            <label class="filled">
-                                <span class="label-bold">login:</span>
-                                <input type="text" name="login" maxlength="100" placeholder="camera123">
-                            </label>
-    
-                            <label class="filled password">
-                                <span class="label-bold">password:</span>
-                                <div class="input-box">
-                                    <input type="password" name="password" maxlength="100" placeholder="verydifficultpassword">
-                                    <img class="icon-button show-password" src="{{ url_for('images', path='/look.png') }}">
-                                </div>
-                            </label>
-    
-                            <label class="filled">
-                                <span class="label-bold">ip:</span>
-                                <input type="text" name="ip" maxlength="20" placeholder="220.110.120.13">
-                            </label>
-    
-                            <label class="filled">
-                                <span class="label-bold">port:</span>
-                                <input type="number" name="port" max="99999" placeholder="4567">
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="primary submit-form">
-                            <span></span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="delete-window hidden">
-                <p>Вы точно хотите удалить камеру #?345345345?? ?</p>
-                <div class="buttons-box">
-                    <button class="basic close-window">
-                        <span>Закрыть</span>
-                    </button>
-                    <form method="post">
-                        <button type="submit" class="danger delete-camera">
-                            <span>Удалить камеру</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <div class="forms-container hidden"></div>
 
 
         <script src="{{ url_for('scripts', path='/cameras.js') }}"></script>

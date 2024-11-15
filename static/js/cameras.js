@@ -121,6 +121,46 @@ window.addEventListener("DOMContentLoaded", () => {
         return cameraWindow;
     }
 
+    function createDeleteWindow(cameraId) {
+        let deleteWindow = document.createElement("div");
+        deleteWindow.className = "delete-window";
+
+        let title = document.createElement("p");
+        title.textContent = `Вы точно хотите удалить камеру #${cameraId} ?`;
+
+        let buttonsBox = document.createElement("div");
+        buttonsBox.className = "buttons-box";
+
+        let btnClose = document.createElement("button");
+        btnClose.className = "basic close-window";
+        let btnCloseText = document.createElement("span");
+        btnCloseText.textContent = "Закрыть";
+        btnClose.append(btnCloseText);
+        btnClose.addEventListener("click", () => {
+            formsContainer.classList.add("hidden");
+            deleteWindow.remove();
+        });
+
+        let form = document.createElement("form");
+        form.setAttribute("action", `/cameras/${cameraId}/delete`);
+        form.setAttribute("method", "post");
+
+        let btnDelete = document.createElement("button");
+        btnDelete.className = "danger delete-camera";
+        btnDelete.type = "submit";
+        let btnDeleteText = document.createElement("span");
+        btnDeleteText.textContent = "Удалить камеру";
+        btnDelete.append(btnDeleteText);
+
+        form.append(btnDelete);
+        buttonsBox.append(btnClose);
+        buttonsBox.append(form);
+
+        deleteWindow.append(title);
+        deleteWindow.append(buttonsBox);
+        return deleteWindow;
+    }
+
     function addEventListeners(formWindow) {
         let btnCross = formWindow.getElementsByClassName("button-cross");
         if (btnCross.length) {
@@ -244,8 +284,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
             let cameraId = event.target.dataset.id;
 
-            let deleteWindow = formsContainer.getElementsByClassName("delete-window")[0];
-            showWindow(deleteWindow);
+            let deleteWindow = createDeleteWindow(cameraId);
+            formsContainer.append(deleteWindow);
         });
     }
 });

@@ -40,3 +40,10 @@ def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: Session) -> C
     db.commit()
 
     return camera
+
+
+def _delete_camera(camera: CameraModel, db: Session) -> CameraModel:
+    camera.deleted_at = datetime.now()
+    db.commit()
+
+    return camera

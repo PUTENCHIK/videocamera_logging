@@ -1,5 +1,126 @@
 window.addEventListener("DOMContentLoaded", () => {
 
+    function createLabelInput(params) {
+        let label = document.createElement("label");
+        label.className = params.labelClasses;
+
+        let span = document.createElement("span");
+        span.className = "label-bold";
+        span.textContent = params.spanText;
+        label.append(span);
+
+        let input = document.createElement("input");
+        for (key in params.inputAttrs) {
+            input.setAttribute(key, params.inputAttrs[key]);
+        }
+        if (params.labelClasses.includes("password")) {
+            let inputBox = document.createElement("div");
+            inputBox.className = "input-box";
+            let img = document.createElement("img");
+            img.className = "icon-button show-password";
+            img.src = img_look;
+            img.alt = "show";
+            img.addEventListener("click", () => {                
+                let oldType = input.getAttribute("type");
+                input.setAttribute("type", oldType === "password" ? "text": "password");
+            });
+
+            inputBox.append(input);
+            inputBox.append(img);
+            label.append(inputBox);
+        } else {
+            label.append(input);
+        }
+        
+        return label
+    }
+
+    function createCameraWindow(values) {
+        let cameraWindow = document.createElement("div");
+        cameraWindow.className = "camera-window";
+        
+        let btnCrossContainer = document.createElement("div");
+        btnCrossContainer.className = "row-right-container";
+        let btnCross = document.createElement("div");
+        btnCross.className = "button-cross";
+        btnCross.addEventListener("click", () => {
+            formsContainer.classList.add("hidden");
+            cameraWindow.remove();
+        });
+        btnCrossContainer.append(btnCross);
+
+        let content = document.createElement("div");
+        content.className = "container__content";
+        let title = document.createElement("h2");
+        title.textContent = values["title"];
+        let form = document.createElement("form");
+        form.setAttribute("name", values.formName);
+        form.setAttribute("action", values.formAction);
+        form.setAttribute("method", "post");
+        let formInputs = document.createElement("div");
+        formInputs.className = "form-inputs";
+
+        formInputs.append(createLabelInput({
+            "labelClasses": "filled",
+            "spanText": "login:",
+            "inputAttrs": {
+                type: "text",
+                name: "login",
+                value: values.values != null ? values.values.login : "",
+                maxlength: "100",
+                placeholder: "camera123",
+            }
+        }));
+        formInputs.append(createLabelInput({
+            "labelClasses": "filled password",
+            "spanText": "password:",
+            "inputAttrs": {
+                type: "password",
+                name: "password",
+                value: values.values != null ? values.values.password : "",
+                maxlength: "100",
+                placeholder: "verydifficultpassword",
+            }
+        }));
+        formInputs.append(createLabelInput({
+            "labelClasses": "filled",
+            "spanText": "ip:",
+            "inputAttrs": {
+                type: "text",
+                name: "ip",
+                value: values.values != null ? values.values.ip : "",
+                maxlength: "20",
+                placeholder: "220.110.120.13",
+            }
+        }));
+        formInputs.append(createLabelInput({
+            "labelClasses": "filled",
+            "spanText": "port:",
+            "inputAttrs": {
+                type: "number",
+                name: "port",
+                value: values.values != null ? values.values.port : "",
+                maxlength: "99999",
+                placeholder: "4567",
+            }
+        }));
+        let button = document.createElement("button");
+        button.type = "submit";
+        button.className = "primary submit-form";
+        let buttonText = document.createElement("span");
+        buttonText.textContent = values.btnText;
+        button.append(buttonText);
+
+        form.append(formInputs);
+        form.append(button);
+        content.append(title);
+        content.append(form);
+
+        cameraWindow.append(btnCrossContainer);
+        cameraWindow.append(content);
+        return cameraWindow;
+    }
+
     function addEventListeners(formWindow) {
         let btnCross = formWindow.getElementsByClassName("button-cross");
         if (btnCross.length) {
@@ -74,21 +195,25 @@ window.addEventListener("DOMContentLoaded", () => {
         return result;
     }
 
+
+
+
+    const img_look = `http://${window.location.host}/static/images/look.png`;  
+
     const btnAddCamera = document.getElementsByClassName("btn-add-camera")[0];
     const formsContainer = document.getElementsByClassName("forms-container")[0];
 
     btnAddCamera.addEventListener("click", () => {
         showFormsContainer();
-
-        let cameraWindow = formsContainer.getElementsByClassName("camera-window")[0];
-
-        showWindow(cameraWindow, {
+        let cameraWindow = createCameraWindow({
             "title": "Добавление новой видеокамеры в БД",
             "formName": "add-camera",
             "formAction": "/cameras/add",
-            "buttonSubmit": "Добавить видеокамеру",
-            "values": null
+            "btnText": "Добавить видеокамеру",
+            "values": null,
         });
+
+        formsContainer.append(cameraWindow);
     });
 
     const btnsEditCamera = document.getElementsByClassName("btn-edit-camera");
@@ -96,29 +221,31 @@ window.addEventListener("DOMContentLoaded", () => {
         btnsEditCamera[i].addEventListener("click", (event) => {
             showFormsContainer();
     
-            let cameraWindow = formsContainer.getElementsByClassName("camera-window")[0];
             let cameraId = event.target.dataset.id;
             
             let result = getCameraData(cameraId)
                 .then((data) => {
-                    showWindow(cameraWindow, {
+                    let cameraWindow = createCameraWindow({
                         "title": `Изменение видеокамеры #${cameraId}`,
                         "formName": "edit-camera",
                         "formAction": `/cameras/${cameraId}/edit`,
-                        "buttonSubmit": "Сохранить",
-                        "values": data
+                        "btnText": "Сохранить",
+                        "values": data,
                     });
+                    formsContainer.append(cameraWindow);
                 });
         });
     }
 
-    // const btnsDeleteCamera = document.getElementsByClassName("btn-delete-camera");
-    // for (let i = 0; i < btnsDeleteCamera.length; i++) {
-    //     btnsDeleteCamera[i].addEventListener("click", (event) => {
-    //         showFormsContainer();
+    const btnsDeleteCamera = document.getElementsByClassName("btn-delete-camera");
+    for (let i = 0; i < btnsDeleteCamera.length; i++) {
+        btnsDeleteCamera[i].addEventListener("click", (event) => {
+            showFormsContainer();
 
-    //         let deleteWindow = formsContainer.getElementsByClassName("delete-window")[0];
-    //         showWindow(deleteWindow);
-    //     });
-    // }
+            let cameraId = event.target.dataset.id;
+
+            let deleteWindow = formsContainer.getElementsByClassName("delete-window")[0];
+            showWindow(deleteWindow);
+        });
+    }
 });

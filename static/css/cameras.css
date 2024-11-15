@@ -83,3 +83,21 @@
     padding: 20px 30px;
 }
 
+.delete-window .buttons-box {
+    display: flex;
+    column-gap: 30px;
+}
+
+.delete-window p {
+    margin: 0;
+}
+
+.delete-window button.close-window {
+    display: inline-flex;
+}
+
+.delete-window form,
+.delete-window button.delete-camera {
+    display: flex;
+    width: 100%;
+}

@@ -1,5 +1,72 @@
 window.addEventListener("DOMContentLoaded", () => {
 
+    function getLabelOfInput(input) {
+        let label = input.parentElement;
+        if (input.getAttribute("name") === "password") {
+            label = label.parentElement;
+        }
+        return label;
+    }
+
+    function setFormError(name, value) {
+        let input = document.getElementsByName(name)[0];
+        let label = getLabelOfInput(input);
+        label.classList.add("error");
+
+        let errorText = label.getElementsByClassName("error-text");
+        if (!errorText.length) {
+            errorText = document.createElement("span");
+        } else {
+            errorText = errorText[0];
+        }
+
+        errorText.className = "error-text";
+        errorText.textContent = value;
+
+        label.append(errorText);
+    }
+
+    function validateForm(event) {
+        event.preventDefault();
+
+        const noValueError = "Поле не заполнено";
+        let form = event.target;
+        let errors = {};
+        if (!form.login.value) {
+            errors["login"] = noValueError;
+        }
+        if (!form.password.value) {
+            errors["password"] = noValueError;
+        }
+        if (!form.ip.value) {
+            errors["ip"] = noValueError;
+        } else {
+            const re = /^(?<first>[1-9]?[1-9]?[0-9])\.(?<second>[1-9]?[1-9]?[0-9])\.(?<third>[1-9]?[1-9]?[0-9])\.(?<fourth>[1-9]?[1-9]?[0-9])$/
+            result = re.exec(form.ip.value);
+            if (result != null) {
+                for (key in result.groups) {
+                    let value = Number(result.groups[key]);                    
+                    if (value < 0 || value > 255) {
+                        errors["ip"] = "Невалидное значение ip адреса";
+                    }
+                };
+            } else {
+                errors["ip"] = "Невалидная форма ip адреса";
+            }
+        }
+        if (!form.port.value) {
+            errors["port"] = noValueError;
+        }
+
+        if (!Object.keys(errors).length) {
+            form.submit();
+        } else {
+            for (key in errors) {
+                setFormError(key, errors[key]);
+            }
+        }   
+    }
+
     function createLabelInput(params) {
         let label = document.createElement("label");
         label.className = params.labelClasses;
@@ -13,6 +80,13 @@ window.addEventListener("DOMContentLoaded", () => {
         for (key in params.inputAttrs) {
             input.setAttribute(key, params.inputAttrs[key]);
         }
+        input.addEventListener("focus", () => {
+            label.classList.remove("error");
+            let errorText = label.getElementsByClassName("error-text");
+            if (errorText.length) {
+                errorText[0].remove();
+            }
+        });
         if (params.labelClasses.includes("password")) {
             let inputBox = document.createElement("div");
             inputBox.className = "input-box";
@@ -57,6 +131,8 @@ window.addEventListener("DOMContentLoaded", () => {
         form.setAttribute("name", values.formName);
         form.setAttribute("action", values.formAction);
         form.setAttribute("method", "post");
+        form.addEventListener("submit", validateForm);
+
         let formInputs = document.createElement("div");
         formInputs.className = "form-inputs";
 
@@ -161,64 +237,6 @@ window.addEventListener("DOMContentLoaded", () => {
         return deleteWindow;
     }
 
-    function addEventListeners(formWindow) {
-        let btnCross = formWindow.getElementsByClassName("button-cross");
-        if (btnCross.length) {
-            btnCross[0].addEventListener("click", () => {
-                formWindow.classList.add("hidden");
-                formsContainer.classList.add("hidden");
-            });
-        }
-
-        let btnShowPassword = formWindow.getElementsByClassName("show-password");
-        if (btnShowPassword.length) {
-            btnShowPassword[0].addEventListener("click", (event) => {
-                let btnContainer = event.target.parentElement;
-                let inputPassword = btnContainer.getElementsByTagName("input")[0];
-                let oldType = inputPassword.getAttribute("type");
-                inputPassword.setAttribute("type", oldType === "password" ? "text": "password");
-            });
-        }
-    }
-
-    function setFormValues(form, values) {
-        form.login.value = values['login'];
-        form.password.value = values['password'];
-        form.ip.value = values['ip'];
-        form.port.value = values['port'];
-    }
-
-    function showWindow(formWindow, extraParams) {
-        if (formWindow.classList.contains("hidden")) {
-            formWindow.classList.remove("hidden");
-        }
-
-        addEventListeners(formWindow);
-
-        if (extraParams != null) {
-            let title = formWindow.getElementsByTagName("h2")[0];
-            title.textContent = extraParams.title;
-
-            let form = formWindow.getElementsByTagName("form")[0];
-            form.setAttribute("name", extraParams.formName);
-            form.setAttribute("action", extraParams.formAction);
-
-            let btnSubmit = formWindow.getElementsByClassName("submit-form")[0];
-            let btnText = btnSubmit.getElementsByTagName("span")[0];
-            btnText.textContent = extraParams.buttonSubmit;
-
-            setFormValues(form, extraParams.values == null ?
-                {"login": "", "password": "", "ip": "", "port": ""} :
-                {
-                    "login": extraParams.values["login"],
-                    "password": extraParams.values["password"],
-                    "ip": extraParams.values["ip"],
-                    "port": extraParams.values["port"]
-                }
-            )
-        }
-    }
-
     function showFormsContainer() {
         if (formsContainer.classList.contains("hidden")) {
             formsContainer.classList.remove("hidden");
@@ -259,12 +277,12 @@ window.addEventListener("DOMContentLoaded", () => {
     const btnsEditCamera = document.getElementsByClassName("btn-edit-camera");
     for (let i = 0; i < btnsEditCamera.length; i++) {
         btnsEditCamera[i].addEventListener("click", (event) => {
-            showFormsContainer();
-    
+            
             let cameraId = event.target.dataset.id;
             
             let result = getCameraData(cameraId)
                 .then((data) => {
+                    showFormsContainer();
                     let cameraWindow = createCameraWindow({
                         "title": `Изменение видеокамеры #${cameraId}`,
                         "formName": "edit-camera",
@@ -273,6 +291,9 @@ window.addEventListener("DOMContentLoaded", () => {
                         "values": data,
                     });
                     formsContainer.append(cameraWindow);
+                })
+                .catch((error) => {
+                    console.log("No access to server");                    
                 });
         });
     }

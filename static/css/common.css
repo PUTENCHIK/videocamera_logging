@@ -144,8 +144,8 @@ input:not([type="radio"]) {
     color: #3A3A3A;
 }
 
-input:not([type="checkbox"]),
-input:not([type="radio"]) {
+input:not([type="checkbox"]):hover,
+input:not([type="radio"]):hover {
     outline: 1px solid black;
     color: black;
 }
@@ -156,10 +156,10 @@ input:not([type="radio"]) {
 label {
     display: flex;
     flex-direction: column;
+    row-gap: 10px;
 }
 
 label > span {
-    margin-bottom: 10px;
     font-size: 14px;
 }
 
@@ -186,6 +186,16 @@ label.password img.icon-button {
 
 label.password input {
     width: 100%;
+}
+
+label.error input,
+label.error:hover input {
+    outline: 1px solid #FF070C;
+}
+
+label.error span.error-text {
+    color: #FF070C;
+    font-size: 12px;
 }
 
 

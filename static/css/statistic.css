@@ -1,1 +1,40 @@
 @import url('common.css');
+
+
+
+
+.statictics_button {
+    background-color: #F4D5B2;
+    width: 141px;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.statictics_button:hover {
+    background-color: #e0c3a1;
+}
+
+.statictics_buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 21px;
+}
+
+.choosen {
+    border: 2px solid #676FFF;   
+}
+
+.chart_img {
+    width: 1000px;
+    border-radius: 8px;
+}
+
+.no {
+    opacity: 0;
+}
+

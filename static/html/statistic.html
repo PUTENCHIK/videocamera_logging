@@ -35,7 +35,61 @@
         </header>
 
         <div class="main">
-            <h1>Statistic</h1>
+            <h1 class="header1">Статистика</h1>
+            <div class="statictics_buttons">
+                <div class="statictics_button_wrapper">
+                    <div class="header2 statictics_button people">Люди</div>
+                    <hr class="choosen">
+                </div>
+                <div class="statictics_button_wrapper">
+                    <div class="header2 statictics_button bears">Медведи</div>
+                    <hr class="choosen no">
+                </div>
+                <div class="statictics_button_wrapper">
+                    <div class="header2 statictics_button mooses">Лоси</div>
+                    <hr class="choosen no">
+                </div>
+            </div>
+
+            <div class="chart">
+                <img id="chart_img" class="chart_img" src="{{ url_for('images', path='/people_chart.png') }}" alt="">
+            </div>
         </div>
+
+    <script>
+        const buttons_elem = document.querySelector(".statictics_buttons");
+        let current_button = document.querySelector(".people").parentElement;
+        const chart_img = document.getElementById("chart_img");
+
+        buttons_elem.addEventListener("click", e => {
+            const target = e.target;
+
+            if (target.classList.contains("statictics_button")) {
+                const parentTarget = target.parentElement;
+
+                if (current_button) {
+                    const hr = current_button.querySelector(".choosen");
+                    hr.classList.add("no");
+                }
+
+                const curhr = parentTarget.querySelector(".choosen");
+                curhr.classList.remove("no");
+                current_button = parentTarget;
+
+                if (target.classList.contains("people")) {
+                    chart_img.src = "/static/images/people_chart.png";
+                }
+                else if (target.classList.contains("bears")) {
+                    chart_img.src = "/static/images/bear_chart.png";
+                }
+                else if (target.classList.contains("mooses")) {
+                    chart_img.src = "/static/images/moose_chart.png";
+                }
+
+            }
+        });
+
+
+    </script>
     </body>
 </html>

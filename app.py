@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from src import (
@@ -29,6 +29,11 @@ app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles
 app.mount("/static/images", StaticFiles(directory=Path("static/images")), name="images")
 app.mount("/static/js", StaticFiles(directory=Path("static/js")), name="scripts")
 app.mount("/storage", StaticFiles(directory=Path("storage")), name="storage")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("favicon.ico")
 
 
 @app.get("/", response_class=HTMLResponse)

@@ -1,6 +1,5 @@
 @import url('common.css');
 
-
 .filters-container {
     display: flex;
     width: 100%;
@@ -40,7 +39,6 @@ form > .form-group {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width: 985px;
 }
 
 .image_description_wrapper {

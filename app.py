@@ -9,13 +9,22 @@ from src import (
     images_router,
     cameras_router,
     statistic_router,
-    about_router
+    about_router,
+    DetectingModel
 )
 
 from src.database import BaseDBModel, engine
 
 
 app = FastAPI()
+model = DetectingModel()
+
+# from pathlib import Path
+# import cv2
+# import random
+# storage_path = Path("storage")
+# pathes = [path for path in storage_path.glob("*.*") if path.suffix in ['.png', '.jpg', '.jpeg']]
+# images = [cv2.imread(path) for path in pathes]
 
 BaseDBModel.metadata.create_all(bind=engine)
 
@@ -41,6 +50,12 @@ async def root(request: Request):
     return Config.templates.TemplateResponse(
         request=request, name="index.html"
     )
+
+# @app.get("/predict")
+# async def predict():
+#     image = random.choice(images)
+#     result = model.predict(image)
+#     return {"response": result.to_json()}
 
 
 @app.get("/{any}")

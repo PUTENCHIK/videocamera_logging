@@ -8,8 +8,14 @@
 
 {% block content %}
 
-<div class="main">
-    <h1>Об этом сайтике</h1>
-</div>
+    {% set page_name = "about" %}
+
+    {% with page_name=page_name %}
+        {% include "header.html" %}
+    {% endwith %}
+
+    <div class="main">
+        <h1>Об этом сайтике</h1>
+    </div>
 
 {% endblock %}

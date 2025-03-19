@@ -8,52 +8,55 @@
 
 {% block content %}
 
-{% include "header.html" %}
+    {% set page_name = "cameras" %}
 
-<div class="main">
-    <div class="row-right-container">
-        <button class="primary btn-add-camera">
-            <span>Добавить видеокамеру</span>
-        </button>
-    </div>
-    
-    {% if cameras %}
-        <h1>Отслеживаемые камеры</h1>
+    {% with page_name=page_name %}
+        {% include "header.html" %}
+    {% endwith %}
 
-        <div class="cameras-container">
-            <div class="table-row">
-                <div class="label-bold">id</div>
-                <div class="label-bold">login</div>
-                <div class="label-bold">password</div>
-                <div class="label-bold">ip</div>
-                <div class="label-bold">port</div>
-                <div class="label-bold">Добавлена</div>
-            </div>
-            
-            {% for camera in cameras %}
-                <div class="table-row">
-                    <div>{{ camera.id }}</div>
-                    <div>{{ camera.login }}</div>
-                    <div>{{ camera.password }}</div>
-                    <div>{{ camera.ip }}</div>
-                    <div>{{ camera.port }}</div>
-                    <div>{{ camera.created_at }}</div>
-                    <div class="icons-box">
-                        <img class="icon-button btn-look-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/look.png') }}" alt="look">
-                        <img class="icon-button btn-edit-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
-                        <img class="icon-button btn-delete-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
-                    </div>
-                </div>
-            {% endfor %}
+    <div class="main">
+        <div class="row-right-container">
+            <button class="primary btn-add-camera">
+                <span>Добавить видеокамеру</span>
+            </button>
         </div>
-    {% else %}
-        <p>В базе нет ещё ни одной камеры.</p>
-    {% endif %}
-</div>
+        
+        {% if cameras %}
+            <h1>Отслеживаемые камеры</h1>
 
-<div class="forms-container hidden"></div>
+            <div class="cameras-container">
+                <div class="table-row">
+                    <div class="label-bold">id</div>
+                    <div class="label-bold">login</div>
+                    <div class="label-bold">password</div>
+                    <div class="label-bold">ip</div>
+                    <div class="label-bold">port</div>
+                    <div class="label-bold">Добавлена</div>
+                </div>
+                
+                {% for camera in cameras %}
+                    <div class="table-row">
+                        <div>{{ camera.id }}</div>
+                        <div>{{ camera.login }}</div>
+                        <div>{{ camera.password }}</div>
+                        <div>{{ camera.ip }}</div>
+                        <div>{{ camera.port }}</div>
+                        <div>{{ camera.created_at }}</div>
+                        <div class="icons-box">
+                            <img class="icon-button btn-look-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/look.png') }}" alt="look">
+                            <img class="icon-button btn-edit-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                            <img class="icon-button btn-delete-camera" data-id="{{ camera.id }}" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>В базе нет ещё ни одной камеры.</p>
+        {% endif %}
+    </div>
 
+    <div class="forms-container hidden"></div>
 
-<script src="{{ url_for('scripts', path='/cameras.js') }}"></script>
+    <script src="{{ url_for('scripts', path='/cameras.js') }}"></script>
 
 {% endblock %}

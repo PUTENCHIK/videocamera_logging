@@ -8,81 +8,85 @@
 
 {% block content %}
 
-{% include "header.html" %}
+    {% set page_name = "images" %}
 
-<div class="main">
-    <div class="filters-container">
-        <form name="filters" action="filters" method="post">
-            <div class="form-group">
-                <label class="filled">
-                    <span>id изображения:</span>
-                    <input type="number" name="id" min="1" placeholder="123">
-                </label>
-                <label class="fixed">
-                    <span>От:</span>
-                    <input type="date" name="from">
-                </label>
-                <label class="fixed">
-                    <span>До:</span>
-                    <input type="date" name="until">
-                </label>
-                <label class="filled">
-                    <span>Кол-во объектов:</span>
-                    <input type="number" name="amount" min="1" value="1">
-                </label>
-            </div>
+    {% with page_name=page_name %}
+        {% include "header.html" %}
+    {% endwith %}
 
-            <button class="basic" type="submit">
-                <span>Применить</span>
-            </button>
-        </form>
-    </div>
-
-    <div class="images-container">
-        <div class="image-box">
-            <img src="{{ url_for('images', path='/forest.png') }}" alt="">
-            <div class="image_description_wrapper">
-                <div class="information_wrapper">
-                    <div class="information_block">
-                        <h3 class="header3 information_title">Общая информация:</h3>
-                        <span class="regular information_image_id">ID снимка: 123</span>
-                        <span class="regular information_time">Время: 2020-07-07 18:45:34</span>
-                        <span class="regular information_camera_id">ID камеры: 43</span>
-                    </div>
-                    <img src="{{ url_for('images', path='/info.svg') }}" alt="">
+    <div class="main">
+        <div class="filters-container">
+            <form name="filters" action="filters" method="post">
+                <div class="form-group">
+                    <label class="filled">
+                        <span>id изображения:</span>
+                        <input type="number" name="id" min="1" placeholder="123">
+                    </label>
+                    <label class="fixed">
+                        <span>От:</span>
+                        <input type="date" name="from">
+                    </label>
+                    <label class="fixed">
+                        <span>До:</span>
+                        <input type="date" name="until">
+                    </label>
+                    <label class="filled">
+                        <span>Кол-во объектов:</span>
+                        <input type="number" name="amount" min="1" value="1">
+                    </label>
                 </div>
-                <div class="objects_wrapper">
-                    <h3 class="header3 objects_title">Замеченные объекты:</h3>
-                    <div class="objects">
-                        <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                        <img src="{{ url_for('images', path='/moose.svg') }}" alt="">
+
+                <button class="basic" type="submit">
+                    <span>Применить</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="images-container">
+            <div class="image-box">
+                <img src="{{ url_for('images', path='/forest.png') }}" alt="">
+                <div class="image_description_wrapper">
+                    <div class="information_wrapper">
+                        <div class="information_block">
+                            <h3 class="header3 information_title">Общая информация:</h3>
+                            <span class="regular information_image_id">ID снимка: 123</span>
+                            <span class="regular information_time">Время: 2020-07-07 18:45:34</span>
+                            <span class="regular information_camera_id">ID камеры: 43</span>
+                        </div>
+                        <img src="{{ url_for('images', path='/info.svg') }}" alt="">
+                    </div>
+                    <div class="objects_wrapper">
+                        <h3 class="header3 objects_title">Замеченные объекты:</h3>
+                        <div class="objects">
+                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
+                            <img src="{{ url_for('images', path='/moose.svg') }}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="image-box">
+                <img src="{{ url_for('images', path='/forest2.png') }}" alt="">
+                <div class="image_description_wrapper">
+                    <div class="information_wrapper">
+                        <div class="information_block">
+                            <h3 class="header3 information_title">Общая информация:</h3>
+                            <span class="regular information_image_id">ID снимка: 421</span>
+                            <span class="regular information_time">Время: 2022-07-07 18:45:34</span>
+                            <span class="regular information_camera_id">ID камеры: 12</span>
+                        </div>
+                        <img src="{{ url_for('images', path='/info.svg') }}" alt="">
+                    </div>
+                    <div class="objects_wrapper">
+                        <h3 class="header3 objects_title">Замеченные объекты:</h3>
+                        <div class="objects">
+                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
+                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
+                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="image-box">
-            <img src="{{ url_for('images', path='/forest2.png') }}" alt="">
-            <div class="image_description_wrapper">
-                <div class="information_wrapper">
-                    <div class="information_block">
-                        <h3 class="header3 information_title">Общая информация:</h3>
-                        <span class="regular information_image_id">ID снимка: 421</span>
-                        <span class="regular information_time">Время: 2022-07-07 18:45:34</span>
-                        <span class="regular information_camera_id">ID камеры: 12</span>
-                    </div>
-                    <img src="{{ url_for('images', path='/info.svg') }}" alt="">
-                </div>
-                <div class="objects_wrapper">
-                    <h3 class="header3 objects_title">Замеченные объекты:</h3>
-                    <div class="objects">
-                        <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                        <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                        <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-</div>
 
 {% endblock %}

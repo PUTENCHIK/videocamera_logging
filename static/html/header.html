@@ -1,6 +1,6 @@
 <header>
     <div class="header__content">
-        <a class="header__logo" {% if not is_index %}href="/"{% endif %}>
+        <a class="header__logo" {% if page_name != "index" %}href="/"{% endif %}>
             <span>
                 videocameras
                 <br>
@@ -8,16 +8,16 @@
             </span>
         </a>
         <nav>
-            <a class="header__link" href="/images">
+            <a class="header__link {% if page_name == 'images' %}current{% endif %}" href="/images">
                 <span>Снимки</span>
             </a>
-            <a class="header__link" href="/cameras">
+            <a class="header__link {% if page_name == 'cameras' %}current{% endif %}" href="/cameras">
                 <span>Видеокамеры</span>
             </a>
-            <a class="header__link" href="/statistic">
+            <a class="header__link {% if page_name == 'statistic' %}current{% endif %}" href="/statistic">
                 <span>Статистика</span>
             </a>
-            <a class="header__link{% if current_page == 'about' %}current{% endif %}" href="/about">
+            <a class="header__link {% if page_name == 'about' %}current{% endif %}" href="/about">
                 <span>О проекте</span>
             </a>
         </nav>

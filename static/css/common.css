@@ -229,3 +229,27 @@ label.error span.error-text {
     justify-content: flex-end;
     width: 100%;
 }
+
+.header3 {
+    color: #808080;
+    font-size: 18px;
+    font-family: "Roboto";
+}
+
+.regular {
+    font-size: 16px;
+    font-family: "Roboto";
+    font-weight: 600;
+}
+
+.header1 {
+    font-family: "Roboto";
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.header2 {
+    font-family: "Roboto";
+    font-weight: 600;
+    font-size: 20px;
+}

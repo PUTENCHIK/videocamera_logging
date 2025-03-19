@@ -1,2 +1,132 @@
 @import url('common.css');
 
+body {
+    margin: 0px;
+}
+
+.first_block {
+    display: flex;
+    flex-direction: row;
+    margin-top: 91px;
+}
+
+.first_block_text {
+    border: 5px dashed #8592A5;
+    padding: 40px;
+    width: 836px;
+    margin-right: 82px;
+}
+
+
+
+
+.first_block_wrapper {
+    width: 100%;
+    height: 436px;
+    background-color: #B8CAE4;
+}
+
+.content {
+    width: 1240px;
+    margin: 0 auto;
+}
+
+.second_block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 28px;
+    margin-bottom: 66px;
+}
+
+
+
+.advantages_title {
+    margin-bottom: 39px;
+}
+
+.advantages {
+    display: flex;
+    flex-direction: row;
+    gap: 21px;
+}
+
+.advantage {
+    background-color: #F4D5B2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 27px 0px;
+    border-radius: 16px;
+    width: 303px;
+}
+
+.advantage img {
+    margin-bottom: 22px;
+}
+
+.third_block_wrapper {
+    background-color: #E4D2B8; 
+    padding-top: 30px;
+    padding-bottom: 36px;  
+}
+
+.history_title, .statistic_title {
+    margin-bottom: 30px;
+}
+
+.history_wrapper, .statictic_wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 93px;
+}
+
+.history_description, .statictic_description {
+    border: 5px dashed #A59885;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.statictic_description {
+    border: 5px dashed #8592A5;
+}
+
+.history_description span, .statictic_description span {
+    width: 325px;
+    margin-bottom: 88px;
+}
+
+.history_description img, .statictic_description img {
+    width: 152px;
+}
+
+.settings_description {
+    padding: 40px;
+    border: #B8B8B8 5px dashed;
+    width: 405px;
+}
+
+.top_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.fourth_block_wrapper {
+    padding-bottom: 81px;
+    padding-top: 48px;
+}
+
+.fifth_block_wrapper {
+    padding-top: 33px;
+    padding-bottom: 38px;
+    background-color: #B8CAE4;
+}
+
+.statisctics {
+    width: 761px;
+    border-radius: 11px;
+} 

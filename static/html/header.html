@@ -1,0 +1,25 @@
+<header>
+    <div class="header__content">
+        <a class="header__logo" {% if not is_index %}href="/"{% endif %}>
+            <span>
+                videocameras
+                <br>
+                logging
+            </span>
+        </a>
+        <nav>
+            <a class="header__link" href="/images">
+                <span>Снимки</span>
+            </a>
+            <a class="header__link" href="/cameras">
+                <span>Видеокамеры</span>
+            </a>
+            <a class="header__link" href="/statistic">
+                <span>Статистика</span>
+            </a>
+            <a class="header__link{% if current_page == 'about' %}current{% endif %}" href="/about">
+                <span>О проекте</span>
+            </a>
+        </nav>
+    </div>
+</header>

@@ -1,41 +1,15 @@
-<!DOCTYPE html>
-<html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>О проекте</title>
-        <link href="{{ url_for('styles', path='/about.css') }}" rel="stylesheet">
-        <link href="{{ url_for('styles', path='/header.css') }}" rel="stylesheet">
-    </head>
-    <body>
-        <header>
-            <div class="header__content">
-                <a class="header__logo" href="/">
-                    <span>
-                        videocameras
-                        <br>
-                        logging
-                    </span>
-                </a>
-                <nav>
-                    <a class="header__link" href="/images">
-                        <span>Снимки</span>
-                    </a>
-                    <a class="header__link" href="/cameras">
-                        <span>Видеокамеры</span>
-                    </a>
-                    <a class="header__link" href="/statistic">
-                        <span>Статистика</span>
-                    </a>
-                    <a class="header__link current">
-                        <span>О проекте</span>
-                    </a>
-                </nav>
-            </div>
-        </header>
+{% extends "base.html" %}
 
-        <div class="main">
-            <h1>About</h1>
-        </div>
-    </body>
-</html>
+{% block title %}О сайте{% endblock %}
+
+{% block styles %}
+    <link href="{{ url_for('styles', path='/about.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="main">
+    <h1>Об этом сайтике</h1>
+</div>
+
+{% endblock %}

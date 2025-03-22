@@ -31,11 +31,6 @@ async def add_camera(camera: CameraAddOrEdit, db: DBSession = Depends(get_db_ses
     return JSONResponse(content=json_new_camera)
 
 
-@cameras_router.post("/cameras/test", response_class=JSONResponse)
-async def test(camera: CameraAddOrEdit):
-    return camera
-
-
 @cameras_router.get(router_path + "/{camera_id}", response_model=Camera)
 async def get_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
     camera = _get_camera(camera_id, db)
@@ -43,21 +38,26 @@ async def get_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
     return camera
 
 
-@cameras_router.post(router_path + "/{camera_id}/edit", response_class=RedirectResponse)
-async def edit_camera(camera_id: int, camera: Annotated[CameraAddOrEdit, Form()], db: DBSession = Depends(get_db_session)):
+@cameras_router.patch(router_path + "/{camera_id}/edit", response_class=JSONResponse)
+async def edit_camera(camera_id: int, camera: CameraAddOrEdit, db: DBSession = Depends(get_db_session)):
     db_camera = _get_camera(camera_id, db)
 
+    result = {"success": False}
     if db_camera is not None:
         _edit_camera(db_camera, camera, db)
+        result["success"] = True
+        result["camera"] = jsonable_encoder(_get_camera(camera_id, db))
     
-    return RedirectResponse(f"{router_path}", status_code=302)
+    return JSONResponse(content=result)
 
 
-@cameras_router.post(router_path + "/{camera_id}/delete", response_class=RedirectResponse)
+@cameras_router.delete(router_path + "/{camera_id}/delete", response_class=JSONResponse)
 async def delete_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
     db_camera = _get_camera(camera_id, db)
 
+    result = {"success": False}
     if db_camera is not None:
         _delete_camera(db_camera, db)
+        result["success"] = True
     
-    return RedirectResponse(f"{router_path}", status_code=302)
+    return JSONResponse(content=result)

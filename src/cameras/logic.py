@@ -7,14 +7,6 @@ from src.cameras import CameraModel, CameraAddOrEdit, Camera
 
 
 def _add_camera(camera: CameraAddOrEdit, db: Session) -> Optional[CameraModel]:
-    # new_camera = CameraModel(
-    #     login=camera.login,
-    #     ip=camera.ip,
-    #     password=camera.password,
-    #     port=camera.port,
-    #     created_at=datetime.now(),
-    #     deleted_at=None
-    # )
     new_camera = CameraModel(
         address=camera.address,
         created_at=datetime.now(),
@@ -32,16 +24,12 @@ def _get_cameras(db: Session):
     return db.query(CameraModel).filter_by(deleted_at=None).all()
 
 
-def _get_camera(id: int, db: Session):
+def _get_camera(id: int, db: Session) -> CameraModel:
     return db.query(CameraModel).filter_by(id=id, deleted_at=None).first()
 
 
 def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: Session) -> CameraModel:
-    camera.login = fields.login
-    camera.password = fields.password
-    camera.ip = fields.ip
-    camera.port = fields.port
-
+    camera.address = fields.address
     db.commit()
 
     return camera

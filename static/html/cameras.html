@@ -37,8 +37,10 @@
                 <div>[[ camera.is_monitoring ]]</div>
                 <div>[[ camera.created_at ]]</div>
                 <div class="icons-box">
-                    <img class="icon-button btn-edit-camera" data-id="[[ camera.id ]]" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
-                    <img class="icon-button btn-delete-camera" data-id="[[ camera.id ]]" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                    <img @click="showEditCameraForm(camera.id)" class="icon-button btn-edit-camera"
+                        :data-id="[[ camera.id ]]" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                    <img @click="showDeleteCameraForm(camera.id)" class="icon-button btn-delete-camera"
+                        :data-id="[[ camera.id ]]" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
                 </div>
             </div>
         </div>
@@ -46,24 +48,40 @@
     </div>
 
     <div class="forms-container" :class="{ 'hidden' : current_form == null }">
-        <div v-if="current_form === 'add'" class="camera-window">
+        <div v-if="current_form === 'add' || current_form === 'edit'" class="camera-window">
             <div class="row-right-container">
                 <div @click="closeForm" class="button-cross"></div>
             </div>
             <div class="container__content">
-                <h2>Добавление новой видеокамеры в БД</h2>
-                <form @submit="(event) => addCamera(event)" name="add-camera">
+                <h2 v-if="current_form === 'add'">Добавление новой видеокамеры в БД</h2>
+                <h2 v-else>Изменение видеокамеры #[[ form_data.id ]]</h2>
+                <form @submit="(event) => current_form === 'add' ? addCamera(event) : editCamera(event)" name="add-camera">
                     <div class="form-inputs">
                         <label class="filled" :class="{ 'error' : errors.address }">
                             <span class="label-bold">address:</span>
-                            <input type="text" name="address" maxlength="100" placeholder="rtsp://{ip}:{port}/{thread}">
+                            <input
+                                :value="form_data.address"
+                                type="text" name="address" maxlength="100"
+                                placeholder="rtsp://{ip}:{port}/{thread}">
                             <span v-if="errors.address" class="error-text">[[ errors.address ]]</span>
                         </label>
                     </div>
                     <button type="submit" class="primary submit-form" :disable="sending">
-                        <span>Добавить видеокамеру</span>
+                        <span v-if="current_form === 'add'">Добавить видеокамеру</span>
+                        <span v-else>Сохранить</span>
                     </button>
                 </form>
+            </div>
+        </div>
+        <div v-else class="delete-window">
+            <p>Вы точно хотите удалить камеру #[[ form_data.id ]]?</p>
+            <div class="buttons-box">
+                <button @click="closeForm" class="basic close-window">
+                    <span>Закрыть</span>
+                </button>
+                <button @click="deleteCamera" class="danger delete-camera">
+                    <span>Удалить камеру</span>
+                </button>
             </div>
         </div>
     </div>

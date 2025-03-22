@@ -10,6 +10,7 @@ from src import (
     cameras_router,
     statistic_router,
     about_router,
+    api_router,
     DetectingModel
 )
 
@@ -32,6 +33,7 @@ app.include_router(images_router)
 app.include_router(cameras_router)
 app.include_router(statistic_router)
 app.include_router(about_router)
+app.include_router(api_router)
 
 app.mount("/static", StaticFiles(directory=Path("static")), name="static")
 app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles")

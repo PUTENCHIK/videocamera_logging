@@ -17,26 +17,23 @@ router_path = "/cameras"
 
 
 @cameras_router.get(f"{router_path}", response_class=HTMLResponse)
-async def index(request: Request, db: DBSession = Depends(get_db_session)):
-    cameras = _get_cameras(db)
-    json_cameras = jsonable_encoder(cameras)
-    for i, camera in enumerate(json_cameras):
-        d = datetime.strptime(camera['created_at'], "%Y-%m-%dT%H:%M:%S.%f")
-        camera['created_at'] = d.strftime("%d.%m.%Y %H:%M:%S")
-        json_cameras[i] = camera
-
+async def index(request: Request):
     return Config.templates.TemplateResponse(
         request=request,
-        name="cameras.html",
-        context={"cameras": json_cameras}
+        name="cameras.html"
     )
 
 
-@cameras_router.post(f"{router_path}/add", response_class=RedirectResponse)
-async def add_camera(camera: Annotated[CameraAddOrEdit, Form()], db: DBSession = Depends(get_db_session)):
+@cameras_router.post(f"{router_path}/add", response_class=JSONResponse)
+async def add_camera(camera: CameraAddOrEdit, db: DBSession = Depends(get_db_session)):
     new_camera = _add_camera(camera, db)
+    json_new_camera = jsonable_encoder(new_camera)
+    return JSONResponse(content=json_new_camera)
 
-    return RedirectResponse(f"{router_path}", status_code=302)
+
+@cameras_router.post("/cameras/test", response_class=JSONResponse)
+async def test(camera: CameraAddOrEdit):
+    return camera
 
 
 @cameras_router.get(router_path + "/{camera_id}", response_model=Camera)

@@ -8,16 +8,16 @@
             </span>
         </a>
         <nav>
-            <a class="header__link {% if page_name == 'images' %}current{% endif %}" href="/images">
+            <a class="header__link {% if page_name == 'images' %}current{% endif %}" {% if page_name != "images" %}href="/images"{% endif %}>
                 <span>Снимки</span>
             </a>
-            <a class="header__link {% if page_name == 'cameras' %}current{% endif %}" href="/cameras">
+            <a class="header__link {% if page_name == 'cameras' %}current{% endif %}" {% if page_name != "cameras" %}href="/cameras"{% endif %}>
                 <span>Видеокамеры</span>
             </a>
-            <a class="header__link {% if page_name == 'statistic' %}current{% endif %}" href="/statistic">
+            <a class="header__link {% if page_name == 'statistic' %}current{% endif %}" {% if page_name != "statistic" %}href="/statistic"{% endif %}>
                 <span>Статистика</span>
             </a>
-            <a class="header__link {% if page_name == 'about' %}current{% endif %}" href="/about">
+            <a class="header__link {% if page_name == 'about' %}current{% endif %}" {% if page_name != "about" %}href="/about"{% endif %}>
                 <span>О проекте</span>
             </a>
         </nav>

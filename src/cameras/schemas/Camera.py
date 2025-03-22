@@ -4,9 +4,7 @@ from pydantic import BaseModel
 
 class Camera(BaseModel):
     id: int
-    login: str
-    ip: str | None
-    password: str
-    port: int
+    address: str
+    is_monitoring: bool
     created_at: datetime
     deleted_at: datetime | None

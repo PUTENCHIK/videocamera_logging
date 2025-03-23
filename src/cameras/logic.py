@@ -1,16 +1,14 @@
-from datetime import datetime
 from typing import Optional
-
+from datetime import datetime
 from sqlalchemy.orm import Session
 
-from src.cameras import CameraModel, CameraAddOrEdit, Camera
+from src.cameras import CameraModel, CameraAddOrEdit
 
 
 def _add_camera(camera: CameraAddOrEdit, db: Session) -> Optional[CameraModel]:
     new_camera = CameraModel(
         address=camera.address,
-        created_at=datetime.now(),
-        deleted_at=None
+        created_at=datetime.now()
     )
 
     db.add(new_camera)
@@ -22,6 +20,11 @@ def _add_camera(camera: CameraAddOrEdit, db: Session) -> Optional[CameraModel]:
 
 def _get_cameras(db: Session):
     return db.query(CameraModel).filter_by(deleted_at=None).all()
+
+
+def _get_monitoring_cameras(db: Session):
+    return db.query(CameraModel).filter_by(is_monitoring=True,
+                                           deleted_at=None).all()
 
 
 def _get_camera(id: int, db: Session) -> CameraModel:

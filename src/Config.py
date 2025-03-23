@@ -1,6 +1,10 @@
 from pathlib import Path
 from fastapi.templating import Jinja2Templates
 
+from src.database import DBSession
+from src.snapshots import (
+    TrackableClassAdd, _get_trackable_class, _add_trackable_class)
+
 
 class Config:
     app_name = "src.app:app"
@@ -26,3 +30,16 @@ class Config:
         2: (252, 50, 192),
         3: (235, 212, 38),
     }
+    detecting_delay = 1 #sec
+
+    @staticmethod
+    async def add_trackable_classes():
+        db = DBSession()
+        try:
+            for label, name in Config.detecting_classes_names.items():
+                class_ = _get_trackable_class(name, db)
+                if class_ is None:
+                    scheme = TrackableClassAdd(name=name)
+                    _add_trackable_class(scheme, db)
+        finally:
+            db.close()

@@ -9,4 +9,4 @@ class Camera(BaseDBModel):
     address = Column(String, nullable=False, unique=False)
     is_monitoring = Column(Boolean, nullable=False, default=False, unique=False)
     created_at = Column(DateTime, nullable=False, unique=False)
-    deleted_at = Column(DateTime, nullable=True, unique=False)
+    deleted_at = Column(DateTime, nullable=True, unique=False, default=None)

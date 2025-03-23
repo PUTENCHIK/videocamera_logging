@@ -5,3 +5,5 @@ sqlalchemy
 python-multipart
 opencv-python
 ultralytics
+asyncio
+futures

@@ -1,8 +1,10 @@
+import asyncio
 from pathlib import Path
 
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
 
 from src import (
     Config,
@@ -10,15 +12,23 @@ from src import (
     cameras_router,
     statistic_router,
     about_router,
-    api_router,
-    DetectingModel
+    api_router
 )
-
+from src.detecting import start_camera_monitoring
 from src.database import BaseDBModel, engine
 
 
-app = FastAPI()
-model = DetectingModel()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("App starting")
+    await Config.add_trackable_classes()
+    await start_camera_monitoring()
+    print("Cameras' tasks added")
+    yield
+    print("App terminating")
+
+
+app = FastAPI(lifespan=lifespan)
 
 BaseDBModel.metadata.create_all(bind=engine)
 

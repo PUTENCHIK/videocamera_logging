@@ -6,7 +6,7 @@ from pathlib import Path
 from ultralytics import YOLO
 
 from src import Config
-from src import DetectingResults
+from src.detecting.results import DetectingResults
 
 
 class DetectingModel:
@@ -22,7 +22,10 @@ class DetectingModel:
             conf: float = Config.model_confidence
         ) -> DetectingResults:
         start = time.time()
-        results = self.__model.predict(source=source, conf=conf)
+        results = self.__model.predict(source=source, conf=conf, verbose=False)
         detecting_time = time.time() - start
 
         return DetectingResults(results, detecting_time)
+
+
+detecting_model = DetectingModel()

@@ -40,9 +40,9 @@
                 <div>[[ camera.created_at ]]</div>
                 <div class="icons-box">
                     <img @click="showEditCameraForm(camera.id)" class="icon-button btn-edit-camera"
-                        src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                        src="{{ url_for('icons', path='/pencil.png') }}" alt="edit">
                     <img @click="showDeleteCameraForm(camera.id)" class="icon-button btn-delete-camera"
-                        src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                        src="{{ url_for('icons', path='/delete.png') }}" alt="delete">
                 </div>
             </div>
         </div>

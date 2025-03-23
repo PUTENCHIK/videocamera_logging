@@ -4,12 +4,12 @@ from fastapi.responses import HTMLResponse
 from src import Config
 
 
-images_router = APIRouter()
-router_path = "/images"
+snapshots_router = APIRouter()
+router_path = "/snapshots"
 
 
-@images_router.get(f"{router_path}", response_class=HTMLResponse)
+@snapshots_router.get(f"{router_path}", response_class=HTMLResponse)
 async def index(request: Request):
     return Config.templates.TemplateResponse(
-        request=request, name="images.html"
+        request=request, name="snapshots.html"
     )

@@ -3,12 +3,12 @@
 {% block title %}Снимки{% endblock %}
 
 {% block styles %}
-    <link href="{{ url_for('styles', path='/images.css') }}" rel="stylesheet">
+    <link href="{{ url_for('styles', path='/snapshots.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 
-    {% set page_name = "images" %}
+    {% set page_name = "snapshots" %}
 
     {% with page_name=page_name %}
         {% include "header.html" %}
@@ -16,8 +16,8 @@
 
     <div class="main">
         <div class="filters-container">
-            <form name="filters" action="filters" method="post">
-                <div class="form-group">
+            <form name="filters">
+                <div class="form-group">    
                     <label class="filled">
                         <span>id изображения:</span>
                         <input type="number" name="id" min="1" placeholder="123">
@@ -36,7 +36,7 @@
                     </label>
                 </div>
 
-                <button class="basic" type="submit">
+                <button class="primary" type="submit">
                     <span>Применить</span>
                 </button>
             </form>
@@ -58,8 +58,8 @@
                     <div class="objects_wrapper">
                         <h3 class="header3 objects_title">Замеченные объекты:</h3>
                         <div class="objects">
-                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                            <img src="{{ url_for('images', path='/moose.svg') }}" alt="">
+                            <img src="{{ url_for('icons', path='/bear.png') }}" alt="">
+                            <img src="{{ url_for('icons', path='/elk.png') }}" alt="">
                         </div>
                     </div>
                 </div>
@@ -79,9 +79,9 @@
                     <div class="objects_wrapper">
                         <h3 class="header3 objects_title">Замеченные объекты:</h3>
                         <div class="objects">
-                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
-                            <img src="{{ url_for('images', path='/bear.svg') }}" alt="">
+                            <img src="{{ url_for('icons', path='/bear.png') }}" alt="">
+                            <img src="{{ url_for('icons', path='/fox.png') }}" alt="">
+                            <img src="{{ url_for('icons', path='/human.png') }}" alt="">
                         </div>
                     </div>
                 </div>

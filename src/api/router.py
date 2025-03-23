@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -19,8 +21,8 @@ async def get_cameras(request: Request, db: DBSession = Depends(get_db_session))
     return JSONResponse(content=json_cameras)
 
 
-@api_router.get(router_path + "/cameras/{camera_id}", response_model=Camera)
+@api_router.get(router_path + "/cameras/{camera_id}", response_model=Optional[Camera])
 async def get_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
     camera = _get_camera(camera_id, db)
 
-    return camera
+    return camera if camera is not None else None

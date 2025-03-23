@@ -28,7 +28,9 @@ form > .form-group {
     align-items: flex-start;
     column-gap: 30px;
     width: 100%;
+    box-sizing: border-box;
     padding: 10px;
+
     border-radius: 20px;
 }
 
@@ -86,4 +88,9 @@ h3 {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 26px;
+}
+
+.objects > img {
+    width: 40px;
+    height: 40px;
 }

@@ -6,6 +6,7 @@ class Config:
     app_name = "src.app:app"
     app_host = "localhost"
     app_port = 5050
+    app_icon = Path("favicon.ico")
 
     templates = Jinja2Templates(directory="static/html")
 

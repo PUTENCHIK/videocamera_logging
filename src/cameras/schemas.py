@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -7,4 +8,8 @@ class Camera(BaseModel):
     address: str
     is_monitoring: bool
     created_at: datetime
-    deleted_at: datetime | None
+    deleted_at: Optional[datetime] = None
+
+
+class CameraAddOrEdit(BaseModel):
+    address: str

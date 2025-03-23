@@ -40,3 +40,10 @@ def _delete_camera(camera: CameraModel, db: Session) -> CameraModel:
     db.commit()
 
     return camera
+
+
+def _switch_camera(camera: CameraModel, db: Session) -> CameraModel:
+    camera.is_monitoring = not camera.is_monitoring
+    db.commit()
+
+    return camera

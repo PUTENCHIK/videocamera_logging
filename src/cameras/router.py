@@ -1,15 +1,12 @@
-from typing import Annotated
-from pprint import pprint
-from datetime import datetime
-
-from fastapi import APIRouter, Request, Depends, Form
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from src import Config
 from src.database import DBSession, get_db_session
-from src.cameras import CameraAddOrEdit, Camera
-from src.cameras.logic import _add_camera, _get_cameras, _get_camera, _edit_camera, _delete_camera
+from src.cameras import (CameraAddOrEdit, Camera,
+                         _add_camera, _get_camera, _edit_camera,
+                         _delete_camera, _switch_camera)
 
 
 cameras_router = APIRouter()
@@ -29,13 +26,6 @@ async def add_camera(camera: CameraAddOrEdit, db: DBSession = Depends(get_db_ses
     new_camera = _add_camera(camera, db)
     json_new_camera = jsonable_encoder(new_camera)
     return JSONResponse(content=json_new_camera)
-
-
-@cameras_router.get(router_path + "/{camera_id}", response_model=Camera)
-async def get_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
-    camera = _get_camera(camera_id, db)
-
-    return camera
 
 
 @cameras_router.patch(router_path + "/{camera_id}/edit", response_class=JSONResponse)
@@ -59,5 +49,18 @@ async def delete_camera(camera_id: int, db: DBSession = Depends(get_db_session))
     if db_camera is not None:
         _delete_camera(db_camera, db)
         result["success"] = True
+    
+    return JSONResponse(content=result)
+
+
+@cameras_router.patch(router_path + "/{camera_id}/switch", response_class=JSONResponse)
+async def switch_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
+    db_camera = _get_camera(camera_id, db)
+
+    result = {"success": False}
+    if db_camera is not None:
+        _switch_camera(db_camera, db)
+        result["success"] = True
+        result["is_monitoring"] = db_camera.is_monitoring
     
     return JSONResponse(content=result)

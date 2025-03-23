@@ -23,7 +23,7 @@ createApp({
             this.current_form = 'edit';
             this.cameras.forEach((camera) => {
                 if (camera.id === id) {
-                    this.form_data = camera;
+                    this.form_data = this.clone(camera);
                 }
             });
         },
@@ -32,7 +32,7 @@ createApp({
             this.current_form = 'delete';
             this.cameras.forEach((camera) => {
                 if (camera.id === id) {
-                    this.form_data = camera;
+                    this.form_data = this.clone(camera);
                 }
             });
         },
@@ -54,14 +54,16 @@ createApp({
                 .then(r => r.json())
                 .then((r) => {
                     this.cameras = r;
-                    this.loading = false;
+                    this.formatCamerasDates();
                 });
+            this.loading = false;
         },
 
         addCamera(event) {
             event.preventDefault();
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
+            this.form_data.address = json.address;
             if (this.validateData(json)) {
                 let requestBody = JSON.stringify(json);
                 this.sending = true;
@@ -75,6 +77,7 @@ createApp({
                     .then(r => r.json())
                     .then((r) => {
                         this.cameras.push(r);
+                        this.formatCamerasDates();
                     });
                 this.sending = false;
                 this.closeForm();
@@ -85,6 +88,7 @@ createApp({
             event.preventDefault();
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
+            this.form_data.address = json.address;
             if (this.validateData(json)) {
                 let requestBody = JSON.stringify(json);
                 this.sending = true;
@@ -102,6 +106,7 @@ createApp({
                             for (let i = 0; i < this.cameras.length; i++) {
                                 if (this.cameras[i].id == camera.id) {
                                     this.cameras[i] = camera;
+                                    this.formatCamerasDates();
                                     break;
                                 }
                             }
@@ -140,6 +145,28 @@ createApp({
             this.closeForm();
         },
 
+        switchCameraMonitoring(id) {
+            this.sending = true;
+            fetch(`/cameras/${id}/switch`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(r => r.json())
+                .then((r) => {
+                    if (r.success) {
+                        for (let i = 0; i < this.cameras.length; i++) {
+                            if (this.cameras[i].id === id) {
+                                this.cameras[i].is_monitoring = r.is_monitoring;
+                                break;
+                            }
+                        }
+                    }
+                });
+            this.sending = false;
+        },
+
         validateData(json) {
             if (json.address.length === 0) {
                 this.errors['address'] = "Адрес не может быть пустым";
@@ -149,7 +176,29 @@ createApp({
                 return false;
             }
             return true;
-        }
+        },
+
+        formatCamerasDates() {
+            function format(number) {
+                return String(number).padStart(2, '0');
+            }
+
+            this.cameras.forEach((camera) => {
+                let d = new Date(camera.created_at);
+                camera.created_at = `${d.getFullYear()}-${format(d.getMonth()+1)}-${format(d.getDate())} 
+                                    ${format(d.getHours())}:${format(d.getMinutes())}:${format(d.getSeconds())}`;
+            });
+        },
+
+        formsContainerClicked(event) {
+            if (event.target.className === "forms-container") {
+                this.closeForm();
+            }
+        },
+
+        clone(obj) {
+            return JSON.parse(JSON.stringify(obj))
+        },
     },
 
     mounted() {

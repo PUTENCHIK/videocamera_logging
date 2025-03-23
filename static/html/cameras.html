@@ -34,20 +34,22 @@
             <div v-for="camera in cameras" class="table-row">
                 <div>[[ camera.id ]]</div>
                 <div>[[ camera.address ]]</div>
-                <div>[[ camera.is_monitoring ]]</div>
+                <div>
+                    <div @click="switchCameraMonitoring(camera.id)" class="switch" :class="{ 'on' : camera.is_monitoring }"></div>
+                </div>
                 <div>[[ camera.created_at ]]</div>
                 <div class="icons-box">
                     <img @click="showEditCameraForm(camera.id)" class="icon-button btn-edit-camera"
-                        :data-id="[[ camera.id ]]" src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
+                        src="{{ url_for('images', path='/pencil.png') }}" alt="edit">
                     <img @click="showDeleteCameraForm(camera.id)" class="icon-button btn-delete-camera"
-                        :data-id="[[ camera.id ]]" src="{{ url_for('images', path='/delete.png') }}" alt="delete">
+                        src="{{ url_for('images', path='/delete.png') }}" alt="delete">
                 </div>
             </div>
         </div>
         <p v-else>В базе нет ещё ни одной камеры.</p>
     </div>
 
-    <div class="forms-container" :class="{ 'hidden' : current_form == null }">
+    <div @click="(event) => formsContainerClicked(event)" class="forms-container" :class="{ 'hidden' : current_form == null }">
         <div v-if="current_form === 'add' || current_form === 'edit'" class="camera-window">
             <div class="row-right-container">
                 <div @click="closeForm" class="button-cross"></div>
@@ -58,7 +60,7 @@
                 <form @submit="(event) => current_form === 'add' ? addCamera(event) : editCamera(event)" name="add-camera">
                     <div class="form-inputs">
                         <label class="filled" :class="{ 'error' : errors.address }">
-                            <span class="label-bold">address:</span>
+                            <span class="label-bold">адрес:</span>
                             <input
                                 :value="form_data.address"
                                 type="text" name="address" maxlength="100"

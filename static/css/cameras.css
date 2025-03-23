@@ -17,7 +17,8 @@
 }
 
 .table-row > div.icons-box {
-    column-gap: 20px;
+    display: flex;
+    column-gap: 10px;
 }
 
 .table-row > div + div {

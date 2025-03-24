@@ -84,3 +84,9 @@ def _parse_detecting_results(results: DetectingResults, camera_id: int, db: Sess
         _add_object(object_scheme, db)
     
     return new_snapshot
+
+
+def _get_snapshots(db: Session):
+    return db.query(SnapshotModel) \
+        .filter_by(deleted_at=None) \
+        .order_by(SnapshotModel.created_at.desc()).all()

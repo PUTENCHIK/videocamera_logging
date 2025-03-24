@@ -49,6 +49,7 @@ app.mount("/static/images", StaticFiles(directory=Path("static/images")), name="
 app.mount("/static/js", StaticFiles(directory=Path("static/js")), name="scripts")
 app.mount("/storage", StaticFiles(directory=Path("storage")), name="storage")
 app.mount("/static/images/icons", StaticFiles(directory=Path("static/images/icons")), name="icons")
+app.mount("/storage/snapshots", StaticFiles(directory=Path("storage/snapshots")), name="snapshots")
 
 
 @app.get("/favicon.ico", include_in_schema=False)

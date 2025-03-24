@@ -54,7 +54,7 @@ createApp({
                 .then(r => r.json())
                 .then((r) => {
                     this.cameras = r;
-                    this.formatCamerasDates();
+                    this.formatDates();
                 });
             this.loading = false;
         },
@@ -77,7 +77,7 @@ createApp({
                     .then(r => r.json())
                     .then((r) => {
                         this.cameras.push(r);
-                        this.formatCamerasDates();
+                        this.formatDates();
                     });
                 this.sending = false;
                 this.closeForm();
@@ -106,7 +106,7 @@ createApp({
                             for (let i = 0; i < this.cameras.length; i++) {
                                 if (this.cameras[i].id == camera.id) {
                                     this.cameras[i] = camera;
-                                    this.formatCamerasDates();
+                                    this.formatDates();
                                     break;
                                 }
                             }
@@ -178,15 +178,9 @@ createApp({
             return true;
         },
 
-        formatCamerasDates() {
-            function format(number) {
-                return String(number).padStart(2, '0');
-            }
-
+        formatDates() {
             this.cameras.forEach((camera) => {
-                let d = new Date(camera.created_at);
-                camera.created_at = `${d.getFullYear()}-${format(d.getMonth()+1)}-${format(d.getDate())} 
-                                    ${format(d.getHours())}:${format(d.getMinutes())}:${format(d.getSeconds())}`;
+                camera.created_at = formatDate(camera.created_at);
             });
         },
 

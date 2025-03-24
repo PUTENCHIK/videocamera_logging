@@ -9,7 +9,7 @@ class Snapshot(BaseDBModel):
     camera_id = Column(Integer, nullable=False, unique=False)
     detecting_time = Column(Float, nullable=False, unique=False)
     created_at = Column(DateTime, nullable=False, unique=False)
-    deleted_at = Column(DateTime, nullable=True, unique=False)
+    deleted_at = Column(DateTime, nullable=True, unique=False, default=None)
 
 
 class Object(BaseDBModel):
@@ -20,7 +20,7 @@ class Object(BaseDBModel):
     class_id = Column(Integer, nullable=False, unique=False)
     bbox = Column(JSON, nullable=False)
     created_at = Column(DateTime, nullable=False, unique=False)
-    deleted_at = Column(DateTime, nullable=True, unique=False)
+    deleted_at = Column(DateTime, nullable=True, unique=False, default=None)
 
 
 class TrackableClass(BaseDBModel):

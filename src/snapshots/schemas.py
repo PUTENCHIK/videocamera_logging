@@ -31,3 +31,18 @@ class Object(BaseModel):
 class TrackableClass(BaseModel):
     id: int
     name: str
+
+
+class TrackableClassAdd(BaseModel):
+    name: str
+
+
+class SnapshotAdd(BaseModel):
+    camera_id: int
+    detecting_time: float
+
+
+class ObjectAdd(BaseModel):
+    snapshot_id: int
+    class_id: int
+    bbox: Bbox

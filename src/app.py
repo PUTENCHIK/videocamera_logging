@@ -14,14 +14,19 @@ from src import (
     about_router,
     api_router
 )
+from src.snapshots import add_trackable_classes
 from src.detecting import start_camera_monitoring
-from src.database import BaseDBModel, engine
+from src.database import BaseDBModel, engine, DBSession
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("App starting")
-    await Config.add_trackable_classes()
+    try:
+        db = DBSession()
+        await add_trackable_classes(db)
+    finally:
+        db.close()
     await start_camera_monitoring()
     print("Cameras' tasks added")
     yield

@@ -34,3 +34,7 @@ class DetectingResults:
     @property
     def classes_names(self) -> list:
         return [Config.detecting_classes_names[i] for i, _ in enumerate(self.classes)]
+    
+    @property
+    def any_objects(self) -> bool:
+        return bool(self.classes)

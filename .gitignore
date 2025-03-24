@@ -220,3 +220,7 @@ $RECYCLE.BIN/
 .idea
 
 database.db
+
+.VSCodeCounter
+
+storage/snapshots

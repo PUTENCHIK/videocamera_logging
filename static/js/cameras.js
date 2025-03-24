@@ -156,9 +156,11 @@ createApp({
                 .then(r => r.json())
                 .then((r) => {
                     if (r.success) {
+                        let camera = r.camera;
                         for (let i = 0; i < this.cameras.length; i++) {
-                            if (this.cameras[i].id === id) {
-                                this.cameras[i].is_monitoring = r.is_monitoring;
+                            if (this.cameras[i].id == camera.id) {
+                                this.cameras[i] = camera;
+                                this.formatDates();
                                 break;
                             }
                         }

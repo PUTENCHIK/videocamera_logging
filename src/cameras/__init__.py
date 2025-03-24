@@ -1,4 +1,4 @@
-from .schemas import Camera, CameraAddOrEdit
+from .schemes import Camera, CameraAddOrEdit, CameraAfterEdit
 from .models import Camera as CameraModel
 
 from .logic import (

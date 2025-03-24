@@ -1,10 +1,10 @@
+from typing import Optional
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.encoders import jsonable_encoder
+from fastapi.responses import HTMLResponse
 
 from src import Config
 from src.database import DBSession, get_db_session
-from src.cameras import (CameraAddOrEdit, Camera,
+from src.cameras import (CameraAddOrEdit, Camera, CameraAfterEdit,
                          _add_camera, _get_camera, _edit_camera,
                          _delete_camera, _switch_camera)
 
@@ -21,46 +21,45 @@ async def index(request: Request):
     )
 
 
-@cameras_router.post(f"{router_path}/add", response_class=JSONResponse)
+@cameras_router.post(f"{router_path}/add", response_model=Optional[Camera])
 async def add_camera(camera: CameraAddOrEdit, db: DBSession = Depends(get_db_session)):
     new_camera = _add_camera(camera, db)
-    json_new_camera = jsonable_encoder(new_camera)
-    return JSONResponse(content=json_new_camera)
+    return new_camera
 
 
-@cameras_router.patch(router_path + "/{camera_id}/edit", response_class=JSONResponse)
+@cameras_router.patch(router_path + "/{camera_id}/edit", response_model=CameraAfterEdit)
 async def edit_camera(camera_id: int, camera: CameraAddOrEdit, db: DBSession = Depends(get_db_session)):
     db_camera = _get_camera(camera_id, db)
 
-    result = {"success": False}
+    result = CameraAfterEdit()
     if db_camera is not None:
-        _edit_camera(db_camera, camera, db)
-        result["success"] = True
-        result["camera"] = jsonable_encoder(_get_camera(camera_id, db))
+        edited_camera = _edit_camera(db_camera, camera, db)
+        result.success = True
+        result.camera = edited_camera
     
-    return JSONResponse(content=result)
+    return result
 
 
-@cameras_router.delete(router_path + "/{camera_id}/delete", response_class=JSONResponse)
+@cameras_router.delete(router_path + "/{camera_id}/delete", response_model=CameraAfterEdit)
 async def delete_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
     db_camera = _get_camera(camera_id, db)
 
-    result = {"success": False}
+    result = CameraAfterEdit()
     if db_camera is not None:
         _delete_camera(db_camera, db)
-        result["success"] = True
+        result.success = True
     
-    return JSONResponse(content=result)
+    return result
 
 
-@cameras_router.patch(router_path + "/{camera_id}/switch", response_class=JSONResponse)
+@cameras_router.patch(router_path + "/{camera_id}/switch", response_model=CameraAfterEdit)
 async def switch_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
     db_camera = _get_camera(camera_id, db)
 
-    result = {"success": False}
+    result = CameraAfterEdit()
     if db_camera is not None:
-        _switch_camera(db_camera, db)
-        result["success"] = True
-        result["is_monitoring"] = db_camera.is_monitoring
+        switched_camera = _switch_camera(db_camera, db)
+        result.success = True
+        result.camera = switched_camera
     
-    return JSONResponse(content=result)
+    return result

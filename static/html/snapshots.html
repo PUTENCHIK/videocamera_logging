@@ -60,7 +60,11 @@
                     <div class="objects_wrapper">
                         <h3 class="header3 objects_title">Замеченные объекты:</h3>
                         <div class="objects">
-                            <img v-for="object in snapshot.objects" src="{{ url_for('icons', path='/bear.png') }}" alt="">
+                            <img
+                                v-for="object in snapshot.objects"
+                                :src="'/static/images/icons/' + object.trackable_class.name + '.png'"
+                                :alt="object.trackable_class.name"
+                                :title="object.trackable_class.name + ': ' + object.bbox.probability">
                         </div>
                     </div>
                 </div>

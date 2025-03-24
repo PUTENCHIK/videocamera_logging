@@ -13,3 +13,8 @@ class Camera(BaseModel):
 
 class CameraAddOrEdit(BaseModel):
     address: str
+
+
+class CameraAfterEdit(BaseModel):
+    success: bool = False
+    camera: Optional[Camera] = None

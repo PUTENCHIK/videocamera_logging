@@ -1,5 +1,5 @@
-from .schemas import (Snapshot, Bbox, Object, TrackableClass, TrackableClassAdd,
-                      SnapshotAdd, ObjectAdd)
+from .schemes import (Snapshot, Bbox, Object, TrackableClass, TrackableClassAdd,
+                      SnapshotAdd, ObjectAdd, ObjectFull, SnapshotFull)
 from .models import (Snapshot as SnapshotModel,
                      Object as ObjectModel,
                      TrackableClass as TrackableClassModel)

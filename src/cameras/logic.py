@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from sqlalchemy.orm import Session
 
 from src.cameras import CameraModel, CameraAddOrEdit
 
 
-def _add_camera(camera: CameraAddOrEdit, db: Session) -> Optional[CameraModel]:
+def _add_camera(camera: CameraAddOrEdit, db: Session) -> CameraModel:
     new_camera = CameraModel(
         address=camera.address,
         created_at=datetime.now()
@@ -18,22 +18,23 @@ def _add_camera(camera: CameraAddOrEdit, db: Session) -> Optional[CameraModel]:
     return new_camera
 
 
-def _get_cameras(db: Session):
+def _get_cameras(db: Session) -> List[CameraModel]:
     return db.query(CameraModel).filter_by(deleted_at=None).all()
 
 
-def _get_monitoring_cameras(db: Session):
+def _get_monitoring_cameras(db: Session) -> List[CameraModel]:
     return db.query(CameraModel).filter_by(is_monitoring=True,
                                            deleted_at=None).all()
 
 
-def _get_camera(id: int, db: Session) -> CameraModel:
+def _get_camera(id: int, db: Session) -> Optional[CameraModel]:
     return db.query(CameraModel).filter_by(id=id, deleted_at=None).first()
 
 
 def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: Session) -> CameraModel:
     camera.address = fields.address
     db.commit()
+    db.refresh(camera)
 
     return camera
 
@@ -41,6 +42,7 @@ def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: Session) -> C
 def _delete_camera(camera: CameraModel, db: Session) -> CameraModel:
     camera.deleted_at = datetime.now()
     db.commit()
+    db.refresh(camera)
 
     return camera
 
@@ -48,5 +50,6 @@ def _delete_camera(camera: CameraModel, db: Session) -> CameraModel:
 def _switch_camera(camera: CameraModel, db: Session) -> CameraModel:
     camera.is_monitoring = not camera.is_monitoring
     db.commit()
+    db.refresh(camera)
 
     return camera

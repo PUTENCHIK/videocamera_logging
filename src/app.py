@@ -1,7 +1,6 @@
-import asyncio
 from pathlib import Path
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
@@ -16,17 +15,20 @@ from src import (
 )
 from src.snapshots import add_trackable_classes
 from src.detecting import start_camera_monitoring
-from src.database import BaseDBModel, engine, DBSession
+from src.database import create_db_and_tables, get_db_session
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("App starting")
-    try:
-        db = DBSession()
-        await add_trackable_classes(db)
-    finally:
-        db.close()
+    await create_db_and_tables()
+    
+    async for db in get_db_session():
+        try:
+            await add_trackable_classes(db)
+        except Exception as e:
+            print(f"Adding trackable classes failed: {e}")
+            db.rollback()
     await start_camera_monitoring()
     print("Cameras' tasks added")
     yield
@@ -34,8 +36,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
-BaseDBModel.metadata.create_all(bind=engine)
 
 app.include_router(snapshots_router)
 app.include_router(cameras_router)

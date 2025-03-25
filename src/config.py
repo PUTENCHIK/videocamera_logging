@@ -8,6 +8,8 @@ class Config:
     app_port = 5050
     app_icon = Path("favicon.ico")
 
+    database_name = "./storage/database.db"
+
     templates = Jinja2Templates(directory="static/html")
 
     model_storage = Path("storage/models")

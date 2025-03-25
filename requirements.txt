@@ -2,6 +2,7 @@ fastapi
 uvicorn
 jinja2
 sqlalchemy
+aiosqlite
 python-multipart
 opencv-python
 ultralytics

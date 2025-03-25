@@ -1,73 +1,81 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
-from sqlalchemy.orm import Session
+from sqlalchemy import select, insert, desc
+from sqlalchemy.orm import joinedload
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import Config
 from src.snapshots import (
-    TrackableClassAdd, TrackableClassModel, SnapshotAdd, SnapshotModel, ObjectAdd, ObjectModel,
-    Bbox)
+    TrackableClassAdd, TrackableClassModel, SnapshotAdd, SnapshotModel, ObjectAdd, ObjectModel, Bbox)
 from src.detecting import DetectingResults
 
 
-def _add_trackable_class(class_: TrackableClassAdd, db: Session) -> Optional[TrackableClassModel]:
-    new_class = TrackableClassModel(
+async def _add_trackable_class(class_: TrackableClassAdd, db: AsyncSession) -> Optional[TrackableClassModel]:
+    query = insert(TrackableClassModel).values(
         name=class_.name
-    )
-
-    db.add(new_class)
-    db.commit()
-    db.refresh(new_class)
+    ).returning(TrackableClassModel)
+    result = await db.execute(query)
+    new_class = result.scalar_one()
+    
+    await db.commit()
+    await db.refresh(new_class)
 
     return new_class
 
 
-def _get_trackable_class(name: str, db: Session) -> Optional[TrackableClassModel]:
-    return db.query(TrackableClassModel).filter_by(name=name).first()
+async def _get_trackable_class(name: str, db: AsyncSession) -> Optional[TrackableClassModel]:
+    query = select(TrackableClassModel).where(TrackableClassModel.name == name)
+    result = await db.execute(query)
+    return result.scalar_one_or_none()
 
 
-async def add_trackable_classes(db: Session):
-    for label, name in Config.detecting_classes_names.items():
-        class_ = _get_trackable_class(name, db)
+async def add_trackable_classes(db: AsyncSession):
+    for _, name in Config.detecting_classes_names.items():
+        class_ = await _get_trackable_class(name, db)
         if class_ is None:
             scheme = TrackableClassAdd(name=name)
-            _add_trackable_class(scheme, db)
+            await _add_trackable_class(scheme, db)
 
 
-def _add_snapshot(snapshot: SnapshotAdd, db: Session) -> Optional[SnapshotModel]:
-    new_snapshot = SnapshotModel(
-        camera_id=snapshot.camera_id,
-        detecting_time=snapshot.detecting_time,
-        created_at=datetime.now()
-    )
+async def _add_snapshot(snapshot: SnapshotAdd, db: AsyncSession) -> SnapshotModel:
+    query = insert(SnapshotModel) \
+        .values(
+            camera_id=snapshot.camera_id,
+            detecting_time=snapshot.detecting_time,
+            created_at=datetime.now()) \
+        .returning(SnapshotModel)
+    result = await db.execute(query)
+    new_snapshot = result.scalar_one()
 
-    db.add(new_snapshot)
-    db.commit()
-    db.refresh(new_snapshot)
+    await db.commit()
+    await db.refresh(new_snapshot)
 
     return new_snapshot
 
 
-def _add_object(object: ObjectModel, db: Session) -> Optional[ObjectModel]:
-    new_object = ObjectModel(
-        snapshot_id=object.snapshot_id,
-        class_id=object.class_id,
-        bbox=object.bbox.dict(),
-        created_at=datetime.now()
-    )
+async def _add_object(object: ObjectModel, db: AsyncSession) -> Optional[ObjectModel]:
+    query = insert(ObjectModel) \
+        .values(
+            snapshot_id=object.snapshot_id,
+            class_id=object.class_id,
+            bbox=object.bbox.dict(),
+            created_at=datetime.now()) \
+        .returning(ObjectModel)
+    result = await db.execute(query)
+    new_object = result.scalar_one()
 
-    db.add(new_object)
-    db.commit()
-    db.refresh(new_object)
+    await db.commit()
+    await db.refresh(new_object)
 
     return new_object
 
 
-def _parse_detecting_results(results: DetectingResults, camera_id: int, db: Session) -> SnapshotModel:
+async def _parse_detecting_results(results: DetectingResults, camera_id: int, db: AsyncSession) -> SnapshotModel:
     snapshot_scheme = SnapshotAdd(
         camera_id=camera_id,
         detecting_time=results.time
     )
-    new_snapshot = _add_snapshot(snapshot_scheme, db)
+    new_snapshot = await _add_snapshot(snapshot_scheme, db)
     results_json = results.to_json()
     for object in results_json["objects"]:
         x1, y1, x2, y2 = object["box"]
@@ -81,12 +89,16 @@ def _parse_detecting_results(results: DetectingResults, camera_id: int, db: Sess
             class_id=object["class_index"]+1,
             bbox=bbox
         )
-        _add_object(object_scheme, db)
+        await _add_object(object_scheme, db)
     
     return new_snapshot
 
 
-def _get_snapshots(db: Session):
-    return db.query(SnapshotModel) \
-        .filter_by(deleted_at=None) \
-        .order_by(SnapshotModel.created_at.desc()).all()
+async def _get_snapshots(db: AsyncSession) -> List[SnapshotModel]:
+    query = select(SnapshotModel) \
+        .options(joinedload(SnapshotModel.objects) \
+        .options(joinedload(ObjectModel.trackable_class))) \
+        .where(SnapshotModel.deleted_at == None) \
+        .order_by(desc(SnapshotModel.created_at))
+    result = await db.execute(query)
+    return result.scalars().unique().all()

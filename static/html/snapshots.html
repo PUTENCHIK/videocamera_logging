@@ -46,7 +46,15 @@
 
         <div v-if="snapshots.length" class="images-container">
             <div v-for="snapshot in snapshots" class="image-box">
-                <img :src="'/storage/snapshots/' + snapshot.id + '.jpg'" alt="snapshot">
+                <div class="snapshot-wrapper">
+                    <img :src="'/storage/snapshots/' + snapshot.id + '.jpg'" alt="snapshot">
+                    <div
+                        v-for="object in snapshot.objects"
+                        class="object-bbox"
+                        :class="{ 'current' : objectBboxHoverId == object.id }"
+                        :style="generateObjectsBoxes(object)"></div>
+                </div>
+
                 <div class="image_description_wrapper">
                     <div class="information_wrapper">
                         <div class="information_block">
@@ -60,11 +68,16 @@
                     <div class="objects_wrapper">
                         <h3 class="header3 objects_title">Замеченные объекты:</h3>
                         <div class="objects">
-                            <img
-                                v-for="object in snapshot.objects"
-                                :src="'/static/images/icons/' + object.trackable_class.name + '.png'"
-                                :alt="object.trackable_class.name"
-                                :title="object.trackable_class.name + ': ' + object.bbox.probability">
+                            <div
+                                    v-for="object in snapshot.objects"
+                                    @mouseover="handlerObjectIconMouseover(object.id, object.trackable_class.id)"
+                                    @mouseleave="handlerObjectIconMouseleave"
+                                    class="object-icon-wrapper">
+                                <img
+                                    :src="'/static/images/icons/' + object.trackable_class.name + '.png'"
+                                    :alt="object.trackable_class.name"
+                                    :title="object.trackable_class.name + ': ' + object.bbox.probability">
+                            </div>
                         </div>
                     </div>
                 </div>

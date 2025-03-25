@@ -17,7 +17,7 @@ class DetectingResults:
         self.probs = [round(float(data[4]), 2) for data in results[0].boxes.data]
     
     def __str__(self) -> str:
-        return f"({round(self.time, 3)} s): {[pair for pair in zip(self.classes_names, self.probs)]}"
+        return f"({round(self.time, 3)} s): {[(self.classes_names[i], prob) for i, prob in enumerate(self.probs)]}"
     
     def to_json(self) -> dict:
         return {
@@ -33,7 +33,7 @@ class DetectingResults:
 
     @property
     def classes_names(self) -> list:
-        return [Config.detecting_classes_names[i] for i, _ in enumerate(self.classes)]
+        return [Config.detecting_classes_names[cls_] for cls_ in self.classes]
     
     @property
     def any_objects(self) -> bool:

@@ -1,7 +1,9 @@
 from typing import Optional, List
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 
+from src import Config
 from src.database import DBSession, get_db_session
 from src.cameras import Camera, _get_camera, _get_cameras
 from src.snapshots import SnapshotFull, _get_snapshots
@@ -28,3 +30,8 @@ async def get_camera(camera_id: int, db: DBSession = Depends(get_db_session)):
 async def get_snapshots(db: DBSession = Depends(get_db_session)):
     snapshots = _get_snapshots(db)
     return snapshots
+
+
+@api_router.get(f"{router_path}/class_colors", response_class=JSONResponse)
+async def get_trackable_class_colors():
+    return Config.detecting_classes_colors

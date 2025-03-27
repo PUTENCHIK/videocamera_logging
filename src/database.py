@@ -1,8 +1,8 @@
 from src import Config
 from typing import AsyncGenerator
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
@@ -18,8 +18,7 @@ async def create_db_and_tables():
         await conn.run_sync(BaseDBModel.metadata.create_all)
 
 
-database_name = Config.database_name
-database_path = f"sqlite+aiosqlite:///{database_name}"
+database_path = f"sqlite+aiosqlite:///{Config.database_name}"
 
 engine = create_async_engine(database_path, echo=False)
 BaseDBModel = declarative_base()

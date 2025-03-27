@@ -10,6 +10,10 @@ class Camera(BaseModel):
     created_at: datetime
     deleted_at: Optional[datetime] = None
 
+    class Config:
+        # orm_mode = True
+        from_attributes = True
+
 
 class CameraAddOrEdit(BaseModel):
     address: str

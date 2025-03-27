@@ -1,7 +1,7 @@
 import time
 
 from numpy import ndarray
-from typing import Union
+from typing import Union, List
 from pathlib import Path
 from ultralytics import YOLO
 
@@ -18,14 +18,15 @@ class DetectingModel:
     
     def predict(
             self,
-            source: Union[str, Path, ndarray],
+            source: Union[str, Path, ndarray, list],
+            ids: List[int],
             conf: float = Config.model_confidence
         ) -> DetectingResults:
         start = time.time()
         results = self.__model.predict(source=source, conf=conf, verbose=False)
         detecting_time = time.time() - start
 
-        return DetectingResults(results, detecting_time)
+        return DetectingResults(results, ids, detecting_time)
 
 
 detecting_model = DetectingModel()

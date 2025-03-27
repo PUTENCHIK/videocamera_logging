@@ -5,9 +5,8 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import Config
-from src.snapshots import (
-    TrackableClassAdd, TrackableClassModel, SnapshotAdd, SnapshotModel, ObjectAdd, ObjectModel, Bbox)
-from src.detecting import DetectingResults
+from src.snapshots import (TrackableClassAdd, TrackableClassModel, SnapshotAdd,
+                           SnapshotModel, ObjectModel)
 
 
 async def _add_trackable_class(class_: TrackableClassAdd, db: AsyncSession) -> Optional[TrackableClassModel]:
@@ -68,30 +67,6 @@ async def _add_object(object: ObjectModel, db: AsyncSession) -> Optional[ObjectM
     await db.refresh(new_object)
 
     return new_object
-
-
-async def _parse_detecting_results(results: DetectingResults, camera_id: int, db: AsyncSession) -> SnapshotModel:
-    snapshot_scheme = SnapshotAdd(
-        camera_id=camera_id,
-        detecting_time=results.time
-    )
-    new_snapshot = await _add_snapshot(snapshot_scheme, db)
-    results_json = results.to_json()
-    for object in results_json["objects"]:
-        x1, y1, x2, y2 = object["box"]
-        bbox = Bbox(
-            probability=object["prob"],
-            x1=x1, y1=y1,
-            x2=x2, y2=y2,
-        )
-        object_scheme = ObjectAdd(
-            snapshot_id=new_snapshot.id,
-            class_id=object["class_index"]+1,
-            bbox=bbox
-        )
-        await _add_object(object_scheme, db)
-    
-    return new_snapshot
 
 
 async def _get_snapshots(db: AsyncSession) -> List[SnapshotModel]:

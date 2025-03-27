@@ -8,7 +8,9 @@ class Config:
     app_port = 5050
     app_icon = Path("favicon.ico")
 
-    database_name = "./storage/database.db"
+    storage_path = Path("storage")
+    snapshots_path = storage_path / "snapshots"
+    database_name = storage_path / "database.db"
 
     templates = Jinja2Templates(directory="static/html")
 
@@ -28,4 +30,4 @@ class Config:
         2: (252, 50, 192),
         3: (235, 212, 38),
     }
-    detecting_delay = 1 #sec
+    detecting_delay = 2 #sec

@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.cameras import CameraModel, CameraAddOrEdit
+from src.cameras import CameraModel, CameraAddOrEdit, Camera
 
 
 async def _add_camera(camera: CameraAddOrEdit, db: AsyncSession) -> CameraModel:
@@ -25,10 +25,10 @@ async def _get_cameras(db: AsyncSession) -> List[CameraModel]:
     return result.scalars().all()
 
 
-async def _get_monitoring_cameras(db: AsyncSession) -> List[CameraModel]:
+async def _get_monitoring_cameras(db: AsyncSession) -> List[Camera]:
     query = select(CameraModel).where(CameraModel.deleted_at == None, CameraModel.is_monitoring)
     result = await db.execute(query)
-    return result.scalars().all()
+    return [Camera.model_validate(camera) for camera in result.scalars().all()]
 
 
 async def _get_camera(id: int, db: AsyncSession) -> Optional[CameraModel]:
@@ -37,7 +37,7 @@ async def _get_camera(id: int, db: AsyncSession) -> Optional[CameraModel]:
     return result.scalar_one_or_none()
 
 
-async def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: AsyncSession) -> CameraModel:
+async def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: AsyncSession) -> Camera:
     query = update(CameraModel) \
         .where(CameraModel.id == camera.id) \
         .values(address=fields.address) \
@@ -48,7 +48,7 @@ async def _edit_camera(camera: CameraModel, fields: CameraAddOrEdit, db: AsyncSe
     await db.commit()
     await db.refresh(updated_camera)
 
-    return updated_camera
+    return Camera.model_validate(updated_camera)
 
 
 async def _delete_camera(camera: CameraModel, db: AsyncSession) -> CameraModel:

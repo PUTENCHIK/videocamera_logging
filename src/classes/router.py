@@ -11,8 +11,8 @@ from src.classes import (TrackableClassAddOrEdit, TrackableClassFull, TrackableC
 from src.detecting import task_manager
 
 
-router_name = "classes"
-classes_router = APIRouter(prefix=f"/{router_name}", tags=[router_name])
+classes_router = APIRouter(prefix=f"/{Config.routers.classes_name}",
+                           tags=[Config.routers.classes_name])
 
 
 @classes_router.get("", response_class=HTMLResponse)
@@ -24,13 +24,16 @@ async def index(request: Request):
 
 
 @classes_router.post("/add", response_model=Optional[TrackableClassFull])
-async def add_class(class_: TrackableClassAddOrEdit, db: AsyncSession = Depends(get_db_session)):
+async def add_class(class_: TrackableClassAddOrEdit,
+                    db: AsyncSession = Depends(get_db_session)):
     new_class = await _add_class(class_, db)
     return new_class
 
 
 @classes_router.patch("/{class_id}/edit", response_model=TrackableClassAfterEdit)
-async def edit_class(class_id: int, fields: TrackableClassAddOrEdit, db: AsyncSession = Depends(get_db_session)):
+async def edit_class(class_id: int,
+                     fields: TrackableClassAddOrEdit,
+                     db: AsyncSession = Depends(get_db_session)):
     db_class = await _get_class(class_id, db)
 
     result = TrackableClassAfterEdit()
@@ -43,7 +46,8 @@ async def edit_class(class_id: int, fields: TrackableClassAddOrEdit, db: AsyncSe
 
 
 @classes_router.delete("/{class_id}/delete", response_model=TrackableClassAfterEdit)
-async def delete_class(class_id: int, db: AsyncSession = Depends(get_db_session)):
+async def delete_class(class_id: int,
+                       db: AsyncSession = Depends(get_db_session)):
     db_class = await _get_class(class_id, db)
 
     result = TrackableClassAfterEdit()

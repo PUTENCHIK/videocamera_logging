@@ -24,7 +24,8 @@ class TaskManager:
         self.vcs: Dict[int, cv2.VideoCapture] = {}
         self.lock = asyncio.Lock()
 
-    def set_task(self, task: Optional[asyncio.Task]):
+    def set_task(self,
+                 task: Optional[asyncio.Task]):
         self.__task = task
     
     def info(self):
@@ -53,7 +54,8 @@ class TaskManager:
                     await db.rollback()
                     raise e
 
-    def create_vc(self, address: str) -> cv2.VideoCapture:
+    def create_vc(self,
+                  address: str) -> cv2.VideoCapture:
         capture = cv2.VideoCapture(address)
         capture.set(cv2.CAP_PROP_VIDEO_STREAM, cv2.CAP_FFMPEG)
         return capture
@@ -71,7 +73,8 @@ class TaskManager:
                     self.vcs[camera.id] = self.create_vc(camera.address)
                     print(f"VideoCapture added for camera [{camera.id}]")
     
-    async def update_camera(self, camera: Camera):
+    async def update_camera(self,
+                            camera: Camera):
         async with self.lock:
             if camera.id in self.cameras:
                 self.cameras[camera.id] = camera
@@ -115,7 +118,7 @@ class TaskManager:
             while not self.__task.cancelled():
                 cameras_id, frames = await self.get_frames()
                 current_time = time.time()
-                if len(frames) and current_time - previous_time >= Config.detecting_delay:
+                if len(frames) and current_time - previous_time >= Config.model.detecting_delay:
                     results = detecting_model.predict(source=frames,
                                                       ids=cameras_id)
                     if results.any_objects:
@@ -131,7 +134,9 @@ class TaskManager:
             print(f"Task ended")
             await self.kill_task()
 
-    async def save_results(self, results: DetectingResults, frames: List[ndarray]):
+    async def save_results(self,
+                           results: DetectingResults,
+                           frames: List[ndarray]):
         results_json = results.to_json()
         async for db in get_db_session():
             try:
@@ -142,7 +147,7 @@ class TaskManager:
                             detecting_time=results.time
                         )
                         new_snapshot = await _add_snapshot(snapshot_scheme, db)
-                        cv2.imwrite(str(Config.snapshots_path / f"{new_snapshot.id}.jpg"), frames[i])
+                        cv2.imwrite(str(Config.pathes.snapshots / f"{new_snapshot.id}.jpg"), frames[i])
                         print(f"Snapshot [{new_snapshot.id}] added")
                         for object in objects:
                             x1, y1, x2, y2 = object["box"]

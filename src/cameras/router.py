@@ -12,11 +12,11 @@ from src.cameras import (CameraAddOrEdit, Camera, CameraAfterEdit,
 from src.detecting import task_manager
 
 
-cameras_router = APIRouter()
-router_path = "/cameras"
+cameras_router = APIRouter(prefix=f"/{Config.routers.cameras_name}",
+                           tags=[Config.routers.cameras_name])
 
 
-@cameras_router.get(f"{router_path}", response_class=HTMLResponse)
+@cameras_router.get("", response_class=HTMLResponse)
 async def index(request: Request):
     return Config.templates.TemplateResponse(
         request=request,
@@ -24,14 +24,17 @@ async def index(request: Request):
     )
 
 
-@cameras_router.post(f"{router_path}/add", response_model=Optional[Camera])
-async def add_camera(camera: CameraAddOrEdit, db: AsyncSession = Depends(get_db_session)):
+@cameras_router.post("/add", response_model=Optional[Camera])
+async def add_camera(camera: CameraAddOrEdit,
+                     db: AsyncSession = Depends(get_db_session)):
     new_camera = await _add_camera(camera, db)
     return new_camera
 
 
-@cameras_router.patch(router_path + "/{camera_id}/edit", response_model=CameraAfterEdit)
-async def edit_camera(camera_id: int, camera: CameraAddOrEdit, db: AsyncSession = Depends(get_db_session)):
+@cameras_router.patch("/{camera_id}/edit", response_model=CameraAfterEdit)
+async def edit_camera(camera_id: int,
+                      camera: CameraAddOrEdit,
+                      db: AsyncSession = Depends(get_db_session)):
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()
@@ -44,8 +47,9 @@ async def edit_camera(camera_id: int, camera: CameraAddOrEdit, db: AsyncSession 
     return result
 
 
-@cameras_router.delete(router_path + "/{camera_id}/delete", response_model=CameraAfterEdit)
-async def delete_camera(camera_id: int, db: AsyncSession = Depends(get_db_session)):
+@cameras_router.delete("/{camera_id}/delete", response_model=CameraAfterEdit)
+async def delete_camera(camera_id: int,
+                        db: AsyncSession = Depends(get_db_session)):
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()
@@ -57,8 +61,9 @@ async def delete_camera(camera_id: int, db: AsyncSession = Depends(get_db_sessio
     return result
 
 
-@cameras_router.patch(router_path + "/{camera_id}/switch", response_model=CameraAfterEdit)
-async def switch_camera(camera_id: int, db: AsyncSession = Depends(get_db_session)):
+@cameras_router.patch("/{camera_id}/switch", response_model=CameraAfterEdit)
+async def switch_camera(camera_id: int,
+                        db: AsyncSession = Depends(get_db_session)):
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()

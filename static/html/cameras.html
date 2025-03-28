@@ -49,7 +49,7 @@
         <p v-else>В базе нет ещё ни одной камеры.</p>
     </div>
 
-    <div @click="(event) => formsContainerClicked(event)"
+    <div @mousedown="(event) => formsContainerClicked(event)"
             class="forms-container"
             :class="{ 'hidden' : current_form == null }">
 

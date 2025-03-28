@@ -1,27 +1,22 @@
 import asyncio
-from pathlib import Path
 
-from fastapi import FastAPI, Request, BackgroundTasks
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from src import (
-    Config,
-    classes_router,
-    snapshots_router,
-    cameras_router,
-    statistic_router,
-    about_router,
-    api_router
+    Config, classes_router, snapshots_router, cameras_router,
+    statistic_router, about_router, api_router
 )
 from src.detecting import task_manager
-from src.database import create_db_and_tables, get_db_session
+from src.database import create_db_and_tables
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("App starting")
+    Config.pathes.snapshots.mkdir(exist_ok=True)
     await create_db_and_tables()        
     asyncio.create_task(task_manager.start())
     print("Cameras task added")
@@ -39,18 +34,18 @@ app.include_router(statistic_router)
 app.include_router(about_router)
 app.include_router(api_router)
 
-app.mount("/static", StaticFiles(directory=Path("static")), name="static")
-app.mount("/static/css", StaticFiles(directory=Path("static/css")), name="styles")
-app.mount("/static/images", StaticFiles(directory=Path("static/images")), name="images")
-app.mount("/static/js", StaticFiles(directory=Path("static/js")), name="scripts")
-app.mount("/storage", StaticFiles(directory=Path("storage")), name="storage")
-app.mount("/static/images/icons", StaticFiles(directory=Path("static/images/icons")), name="icons")
-app.mount("/storage/snapshots", StaticFiles(directory=Path("storage/snapshots")), name="snapshots")
+app.mount("/static", StaticFiles(directory=Config.pathes.static), name="static")
+app.mount("/static/css", StaticFiles(directory=Config.pathes.css), name="styles")
+app.mount("/static/images", StaticFiles(directory=Config.pathes.images), name="images")
+app.mount("/static/js", StaticFiles(directory=Config.pathes.js), name="scripts")
+app.mount("/storage", StaticFiles(directory=Config.pathes.storage), name="storage")
+app.mount("/static/images/icons", StaticFiles(directory=Config.pathes.icons), name="icons")
+app.mount("/storage/snapshots", StaticFiles(directory=Config.pathes.snapshots), name="snapshots")
 
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return FileResponse(Config.app_icon)
+    return FileResponse(Config.pathes.icons / Config.app.icon)
 
 
 @app.get("/", response_class=HTMLResponse)

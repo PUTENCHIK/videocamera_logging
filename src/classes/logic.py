@@ -19,16 +19,17 @@ def _parse_color(color: str) -> Optional[Color]:
     return result
 
 
-async def _add_class(class_: TrackableClassAddOrEdit, db: AsyncSession) -> TrackableClassFull:
+async def _add_class(class_: TrackableClassAddOrEdit,
+                     db: AsyncSession) -> TrackableClassFull:
     color = _parse_color(class_.color)
-    query = insert(TrackableClassModel) \
+    query = (insert(TrackableClassModel)
         .values(
             name=class_.name.lower(),
             label=int(class_.label),
             title=class_.title.lower(),
             color=color.model_dump(),
-            created_at=datetime.now()) \
-        .returning(TrackableClassModel)
+            created_at=datetime.now())
+        .returning(TrackableClassModel))
     result = await db.execute(query)
     new_class = result.scalar_one()
 
@@ -44,7 +45,8 @@ async def _get_classes(db: AsyncSession) -> List[TrackableClassFull]:
     return [TrackableClassFull.model_validate(class_) for class_ in result.scalars().all()]
 
 
-async def _get_class(id: int, db: AsyncSession) -> Optional[TrackableClassFull]:
+async def _get_class(id: int,
+                     db: AsyncSession) -> Optional[TrackableClassFull]:
     query = (select(TrackableClassModel)
         .where(TrackableClassModel.deleted_at == None,
                TrackableClassModel.id == id))
@@ -53,15 +55,17 @@ async def _get_class(id: int, db: AsyncSession) -> Optional[TrackableClassFull]:
     return TrackableClassFull.model_validate(class_) if class_ is not None else None
 
 
-async def _edit_class(class_: TrackableClassFull, fields: TrackableClassAddOrEdit, db: AsyncSession) -> TrackableClassFull:
+async def _edit_class(class_: TrackableClassFull,
+                      fields: TrackableClassAddOrEdit,
+                      db: AsyncSession) -> TrackableClassFull:
     color = _parse_color(fields.color)
-    query = update(TrackableClassModel) \
-        .where(TrackableClassModel.id == class_.id) \
+    query = (update(TrackableClassModel)
+        .where(TrackableClassModel.id == class_.id)
         .values(name=fields.name.lower(),
                 label=int(fields.label),
                 title=fields.title.lower(),
-                color=color.model_dump()) \
-        .returning(TrackableClassModel)
+                color=color.model_dump())
+        .returning(TrackableClassModel))
     result = await db.execute(query)
     updated_class = result.scalar_one()
 
@@ -71,11 +75,12 @@ async def _edit_class(class_: TrackableClassFull, fields: TrackableClassAddOrEdi
     return TrackableClassFull.model_validate(updated_class)
 
 
-async def _delete_class(class_: TrackableClassFull, db: AsyncSession) -> TrackableClassFull:
-    query = update(TrackableClassModel) \
-        .where(TrackableClassModel.id == class_.id) \
-        .values(deleted_at=datetime.now()) \
-        .returning(TrackableClassModel)
+async def _delete_class(class_: TrackableClassFull,
+                        db: AsyncSession) -> TrackableClassFull:
+    query = (update(TrackableClassModel)
+        .where(TrackableClassModel.id == class_.id)
+        .values(deleted_at=datetime.now())
+        .returning(TrackableClassModel))
     result = await db.execute(query)
     deleted_class = result.scalar_one()
 

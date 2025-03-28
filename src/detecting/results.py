@@ -5,18 +5,16 @@ from src import Config
 
 
 class DetectingResults:
-    def __init__(
-            self,
-            results: Results,
-            ids: List[int],
-            detecting_time: float
-        ):
+    def __init__(self,
+                 results: Results,
+                 ids: List[int],
+                 detecting_time: float):
         self.ids = ids
         self.time = detecting_time
         self.classes = []
         self.boxes = []
         self.probs = []
-        for i, result in enumerate(results):
+        for result in results:
             if result.boxes:
                 self.classes += [[int(cls_) for cls_ in result.boxes.cls]]
                 self.boxes += [[list(map(int, [*xyxy])) for xyxy in result.boxes.xyxy]]
@@ -30,7 +28,7 @@ class DetectingResults:
         return(f"Time: {round(self.time, 3)}\n"
                f"Cameras id: {self.ids}\n"
                f"Classes: {self.classes}\n"
-               f"Classes names: {self.classes_names}\n"
+            #    f"Classes names: {self.classes_names}\n"
                f"Boxes: {self.boxes}\n"
                f"Probs: {self.probs}\n")
     
@@ -51,9 +49,9 @@ class DetectingResults:
             "results": results
         }
 
-    @property
-    def classes_names(self) -> list:
-        return [[Config.detecting_classes_names[cls_] for cls_ in class_] for class_ in self.classes]
+    # @property
+    # def classes_names(self) -> list:
+    #     return [[Config.detecting_classes_names[cls_] for cls_ in class_] for class_ in self.classes]
     
     @property
     def any_objects(self) -> bool:

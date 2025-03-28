@@ -53,9 +53,9 @@
         </div>
         <p v-else>В базе нет ещё ни одного класса.</p>
 
-        <div @click="(event) => formsContainerClicked(event)"
-            class="forms-container"
-            :class="{ 'hidden' : current_form == null }">
+        <div @mousedown="(event) => formsContainerClicked(event)"
+                class="forms-container"
+                :class="{ 'hidden' : current_form == null }">
         
             <div v-if="current_form === 'add' || current_form === 'edit'" class="add-edit-window">
                 <div class="row-right-container">

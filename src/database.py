@@ -18,9 +18,10 @@ async def create_db_and_tables():
         await conn.run_sync(BaseDBModel.metadata.create_all)
 
 
-database_path = f"sqlite+aiosqlite:///{Config.database_name}"
+database_path = f"sqlite+aiosqlite:///{Config.pathes.storage / Config.database.name}"
 
-engine = create_async_engine(database_path, echo=False)
+engine = create_async_engine(database_path,
+                             echo=False)
 BaseDBModel = declarative_base()
 
 DBSession = sessionmaker(

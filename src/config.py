@@ -2,32 +2,47 @@ from pathlib import Path
 from fastapi.templating import Jinja2Templates
 
 
-class Config:
-    app_name = "src.app:app"
-    app_host = "localhost"
-    app_port = 5050
-    app_icon = Path("favicon.ico")
+class ConfigApp:
+    name = "src.app:app"
+    host = "localhost"
+    port = 5050
+    icon = "favicon.ico"
 
-    storage_path = Path("storage")
-    snapshots_path = storage_path / "snapshots"
-    database_name = storage_path / "database.db"
 
-    templates = Jinja2Templates(directory="static/html")
+class ConfigPathes:
+    static = Path("static")
+    css = static / "css"
+    images = static / "images"
+    js = static / "js"
+    storage = Path("storage")
+    icons = images / "icons"
+    models = storage / "models"
+    snapshots = storage / "snapshots"
 
-    model_storage = Path("storage/models")
-    model_name = "yolo11l_100.pt"
-    model_confidence = 0.75
-    detecting_classes_names = {
-        0: 'human',
-        1: 'bear',
-        2: 'elk',
-        3: 'fox',
-    }
-    # BGR encoding
-    detecting_classes_colors = {
-        0: (53, 124, 240),
-        1: (52, 235, 161),
-        2: (252, 50, 192),
-        3: (235, 212, 38),
-    }
+
+class ConfigDatabase:
+    name = "database.db"
+
+
+class ConfigModel:
+    default = "yolo11l_100.pt"
+    confidence = 0.75
     detecting_delay = 2 #sec
+
+
+class ConfigRouters:
+    classes_name = "classes"
+    snapshots_name = "snapshots"
+    cameras_name = "cameras"
+    statistic_name = "statistic"
+    about_name = "about"
+    api_name = "api"
+
+
+class Config:
+    app = ConfigApp()
+    pathes = ConfigPathes()
+    database = ConfigDatabase()
+    model = ConfigModel()
+    templates = Jinja2Templates(directory="static/html")
+    routers = ConfigRouters()

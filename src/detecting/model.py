@@ -10,18 +10,14 @@ from src.detecting.results import DetectingResults
 
 
 class DetectingModel:
-    def __init__(
-            self,
-            model: str = Config.model_name
-        ):
-        self.__model = YOLO(Config.model_storage / model)
+    def __init__(self,
+                 model: str = Config.model.default):
+        self.__model = YOLO(Config.pathes.models / model)
     
-    def predict(
-            self,
-            source: Union[str, Path, ndarray, list],
-            ids: List[int],
-            conf: float = Config.model_confidence
-        ) -> DetectingResults:
+    def predict(self,
+                source: Union[str, Path, ndarray, list],
+                ids: List[int],
+                conf: float = Config.model.confidence) -> DetectingResults:
         start = time.time()
         results = self.__model.predict(source=source, conf=conf, verbose=False)
         detecting_time = time.time() - start

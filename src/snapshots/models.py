@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, Float, String, DateTime, JSON, ForeignKe
 from sqlalchemy.orm import relationship
 
 from src.database import BaseDBModel
+from src.classes import TrackableClass
 
 
 class Snapshot(BaseDBModel):
@@ -29,12 +30,3 @@ class Object(BaseDBModel):
 
     snapshot = relationship("Snapshot", back_populates="objects")
     trackable_class = relationship("TrackableClass", back_populates="objects")
-
-
-class TrackableClass(BaseDBModel):
-    __tablename__ = "trackable_classes"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False, unique=True)
-
-    objects = relationship("Object", back_populates="trackable_class")

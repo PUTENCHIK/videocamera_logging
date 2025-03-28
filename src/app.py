@@ -8,13 +8,13 @@ from contextlib import asynccontextmanager
 
 from src import (
     Config,
+    classes_router,
     snapshots_router,
     cameras_router,
     statistic_router,
     about_router,
     api_router
 )
-from src.snapshots import add_trackable_classes
 from src.detecting import task_manager
 from src.database import create_db_and_tables, get_db_session
 
@@ -22,16 +22,7 @@ from src.database import create_db_and_tables, get_db_session
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("App starting")
-    await create_db_and_tables()
-    
-    async for db in get_db_session():
-        try:
-            await add_trackable_classes(db)
-        except Exception as e:
-            print(f"Adding trackable classes failed: {e}")
-            db.rollback()
-            raise e
-        
+    await create_db_and_tables()        
     asyncio.create_task(task_manager.start())
     print("Cameras task added")
     yield
@@ -41,7 +32,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
+app.include_router(classes_router)
 app.include_router(snapshots_router)
 app.include_router(cameras_router)
 app.include_router(statistic_router)

@@ -4,36 +4,7 @@ from sqlalchemy import select, insert, desc
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src import Config
-from src.snapshots import (TrackableClassAdd, TrackableClassModel, SnapshotAdd,
-                           SnapshotModel, ObjectModel)
-
-
-async def _add_trackable_class(class_: TrackableClassAdd, db: AsyncSession) -> Optional[TrackableClassModel]:
-    query = insert(TrackableClassModel).values(
-        name=class_.name
-    ).returning(TrackableClassModel)
-    result = await db.execute(query)
-    new_class = result.scalar_one()
-    
-    await db.commit()
-    await db.refresh(new_class)
-
-    return new_class
-
-
-async def _get_trackable_class(name: str, db: AsyncSession) -> Optional[TrackableClassModel]:
-    query = select(TrackableClassModel).where(TrackableClassModel.name == name)
-    result = await db.execute(query)
-    return result.scalar_one_or_none()
-
-
-async def add_trackable_classes(db: AsyncSession):
-    for _, name in Config.detecting_classes_names.items():
-        class_ = await _get_trackable_class(name, db)
-        if class_ is None:
-            scheme = TrackableClassAdd(name=name)
-            await _add_trackable_class(scheme, db)
+from src.snapshots import (SnapshotAdd, SnapshotModel, ObjectModel, ObjectAdd)
 
 
 async def _add_snapshot(snapshot: SnapshotAdd, db: AsyncSession) -> SnapshotModel:
@@ -52,7 +23,7 @@ async def _add_snapshot(snapshot: SnapshotAdd, db: AsyncSession) -> SnapshotMode
     return new_snapshot
 
 
-async def _add_object(object: ObjectModel, db: AsyncSession) -> Optional[ObjectModel]:
+async def _add_object(object: ObjectAdd, db: AsyncSession) -> Optional[ObjectModel]:
     query = insert(ObjectModel) \
         .values(
             snapshot_id=object.snapshot_id,

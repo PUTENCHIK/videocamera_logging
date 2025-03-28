@@ -2,6 +2,8 @@ from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel
 
+from src.classes import TrackableClass
+
 
 class Snapshot(BaseModel):
     id: int
@@ -25,15 +27,6 @@ class Object(BaseModel):
     bbox: Bbox
     created_at: datetime
     deleted_at: Optional[datetime] = None
-
-
-class TrackableClass(BaseModel):
-    id: int
-    name: str
-
-
-class TrackableClassAdd(BaseModel):
-    name: str
 
 
 class SnapshotAdd(BaseModel):

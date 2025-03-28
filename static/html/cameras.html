@@ -18,12 +18,12 @@
         <h1>Отслеживаемые камеры</h1>
 
         <div class="row-right-container">
-            <button @click="showAddCameraForm" class="primary btn-add-camera">
+            <button @click="showAddCameraForm" class="primary">
                 <span>Добавить видеокамеру</span>
             </button>
         </div>
         
-        <div v-if="cameras.length" class="cameras-container">
+        <div v-if="cameras.length" class="table-display">
             <div class="table-row">
                 <div class="label-bold">id</div>
                 <div class="label-bold">Адрес</div>
@@ -39,9 +39,9 @@
                 </div>
                 <div>[[ camera.created_at ]]</div>
                 <div class="icons-box">
-                    <img @click="showEditCameraForm(camera.id)" class="icon-button btn-edit-camera"
+                    <img @click="showEditCameraForm(camera.id)" class="icon-button"
                         src="{{ url_for('icons', path='/pencil.png') }}" alt="edit">
-                    <img @click="showDeleteCameraForm(camera.id)" class="icon-button btn-delete-camera"
+                    <img @click="showDeleteCameraForm(camera.id)" class="icon-button"
                         src="{{ url_for('icons', path='/delete.png') }}" alt="delete">
                 </div>
             </div>
@@ -49,12 +49,15 @@
         <p v-else>В базе нет ещё ни одной камеры.</p>
     </div>
 
-    <div @click="(event) => formsContainerClicked(event)" class="forms-container" :class="{ 'hidden' : current_form == null }">
-        <div v-if="current_form === 'add' || current_form === 'edit'" class="camera-window">
+    <div @click="(event) => formsContainerClicked(event)"
+            class="forms-container"
+            :class="{ 'hidden' : current_form == null }">
+
+        <div v-if="current_form === 'add' || current_form === 'edit'" class="add-edit-window">
             <div class="row-right-container">
                 <div @click="closeForm" class="button-cross"></div>
             </div>
-            <div class="container__content">
+            <div class="window__content">
                 <h2 v-if="current_form === 'add'">Добавление новой видеокамеры в БД</h2>
                 <h2 v-else>Изменение видеокамеры #[[ form_data.id ]]</h2>
                 <form @submit="(event) => current_form === 'add' ? addCamera(event) : editCamera(event)" name="add-camera">
@@ -75,6 +78,7 @@
                 </form>
             </div>
         </div>
+
         <div v-else class="delete-window">
             <p>Вы точно хотите удалить камеру #[[ form_data.id ]]?</p>
             <div class="buttons-box">

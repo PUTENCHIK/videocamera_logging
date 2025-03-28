@@ -8,6 +8,7 @@ from src import Config
 from src.database import get_db_session
 from src.cameras import Camera, _get_camera, _get_cameras
 from src.snapshots import SnapshotFull, _get_snapshots
+from src.classes import TrackableClassFull, _get_classes
 
 
 api_router = APIRouter()
@@ -36,3 +37,9 @@ async def get_snapshots(db: AsyncSession = Depends(get_db_session)):
 @api_router.get(f"{router_path}/class_colors", response_class=JSONResponse)
 async def get_trackable_class_colors():
     return Config.detecting_classes_colors
+
+
+@api_router.get(f"{router_path}/classes", response_model=List[TrackableClassFull])
+async def get_classes(db: AsyncSession = Depends(get_db_session)):
+    classes = await _get_classes(db)
+    return classes

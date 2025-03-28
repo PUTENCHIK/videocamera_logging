@@ -8,6 +8,9 @@
             </span>
         </a>
         <nav>
+            <a class="header__link {% if page_name == 'classes' %}current{% endif %}" {% if page_name != "classes" %}href="/classes"{% endif %}>
+                <span>Классы</span>
+            </a>
             <a class="header__link {% if page_name == 'snapshots' %}current{% endif %}" {% if page_name != "snapshots" %}href="/snapshots"{% endif %}>
                 <span>Снимки</span>
             </a>

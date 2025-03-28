@@ -23,7 +23,7 @@ createApp({
             this.current_form = 'edit';
             this.cameras.forEach((camera) => {
                 if (camera.id === id) {
-                    this.form_data = this.clone(camera);
+                    this.form_data = clone_object(camera);
                 }
             });
         },
@@ -32,7 +32,7 @@ createApp({
             this.current_form = 'delete';
             this.cameras.forEach((camera) => {
                 if (camera.id === id) {
-                    this.form_data = this.clone(camera);
+                    this.form_data = clone_object(camera);
                 }
             });
         },
@@ -190,10 +190,6 @@ createApp({
             if (event.target.className === "forms-container") {
                 this.closeForm();
             }
-        },
-
-        clone(obj) {
-            return JSON.parse(JSON.stringify(obj))
         },
     },
 

@@ -150,6 +150,13 @@ input:not([type="radio"]):hover {
     color: black;
 }
 
+input[type="color"], input[type="color"]:hover {
+    width: 40px;
+    height: 40px;
+    outline: 0;
+    padding: 0;
+}
+
 
 
 
@@ -188,14 +195,20 @@ label.password input {
     width: 100%;
 }
 
-label.error input,
-label.error:hover input {
+label.error:not(.color) input,
+label.error:not(.color):hover input {
     outline: 1px solid #FF070C;
 }
 
 label.error span.error-text {
     color: #FF070C;
     font-size: 12px;
+}
+
+label.color > div {
+    display: flex;
+    column-gap: 15px;
+    align-items: center;
 }
 
 
@@ -295,3 +308,132 @@ label.error span.error-text {
     transform: translateX(24px);
 }
 /* ============================================================== */
+
+
+
+
+/* Table display layout         */
+.table-display {
+    display: table;
+    border-collapse: collapse;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-row > div {
+    display: table-cell;
+    border: 0px solid transparent;
+    background-clip: padding-box;
+}
+
+.table-row > div.icons-box {
+    display: flex;
+    column-gap: 10px;
+}
+
+.table-row > div + div {
+    border-left-width: 20px;
+}
+
+.table-row + .table-row > div {
+    border-top-width: 20px;
+}
+
+.table-row > .row-cell {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+/* ============================= */
+
+
+
+
+/* Forms container                            */
+.forms-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+    background-color: rgba(69, 69, 69, 0.4);
+    z-index: 99;
+}
+
+.forms-container > div {
+    display: inline-flex;
+    flex-direction: column;
+    margin: auto;
+
+    box-shadow: 5px 5px 7px #808080;
+    border-radius: 20px;
+    background-color: white;
+}
+/* ========================================== */
+/* Add or edit window                         */
+.add-edit-window {
+    row-gap: 20px;
+    padding: 20px 20px 40px 20px;
+}
+
+.window__content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    padding: 0 60px;
+}
+
+.window__content > form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+}
+
+.window__content > form > .form-inputs {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+/* ========================================== */
+/* Delete window                              */
+.delete-window {
+    row-gap: 30px;
+    padding: 20px 30px;
+}
+
+.delete-window .buttons-box {
+    display: flex;
+    column-gap: 30px;
+}
+
+.delete-window p {
+    margin: 0;
+}
+
+.delete-window button.close-window {
+    display: inline-flex;
+}
+
+.delete-window form,
+.delete-window button.delete-camera {
+    display: flex;
+    width: 100%;
+}
+/* ========================================== */
+
+
+
+
+.color-box {
+    width: 20px;
+    height: 20px;
+
+    outline: 1px solid black;
+    border-radius: 4px;
+    background-color: #808080;
+}

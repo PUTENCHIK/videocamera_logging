@@ -47,12 +47,18 @@
         <div v-if="snapshots.length" class="images-container">
             <div v-for="snapshot in snapshots" class="image-box">
                 <div class="snapshot-wrapper">
-                    <img :src="'/storage/snapshots/' + snapshot.id + '.jpg'" alt="snapshot">
+                    <img
+                        :key="snapshot.id"
+                        :src="'/storage/snapshots/' + snapshot.id + '.jpg'"
+                        :ref="'snapshot_' + snapshot.id"
+                        @load="onSnapshotImageLoaded(snapshot)"
+                        alt="snapshot">
                     <div
                         v-for="object in snapshot.objects"
+                        :key="snapshot.objects"
                         class="object-bbox"
                         :class="{ 'current' : objectBboxHoverId == object.id }"
-                        :style="generateObjectsBoxes(object)"></div>
+                        :style="objects_styles[object.id]"></div>
                 </div>
 
                 <div class="image_description_wrapper">
@@ -70,13 +76,13 @@
                         <div class="objects">
                             <div
                                     v-for="object in snapshot.objects"
-                                    @mouseover="handlerObjectIconMouseover(object.id, object.trackable_class.id)"
+                                    @mouseover="handlerObjectIconMouseover(object.id, (object.trackable_class?.color || default_color))"
                                     @mouseleave="handlerObjectIconMouseleave"
                                     class="object-icon-wrapper">
                                 <img
-                                    :src="'/static/images/icons/' + object.trackable_class.name + '.png'"
-                                    :alt="object.trackable_class.name"
-                                    :title="object.trackable_class.name + ': ' + object.bbox.probability">
+                                    :src="'/static/images/icons/' + (object.trackable_class?.name || 'unknown') + '.png'"
+                                    :alt="(object.trackable_class?.name || 'unknown')"
+                                    :title="(object.trackable_class?.name || 'unknown') + ': ' + object.probability">
                             </div>
                         </div>
                     </div>

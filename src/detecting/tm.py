@@ -93,7 +93,7 @@ class TaskManager:
                 print(f"camera [{camera_id}]: is not opened")
             else:
                 ret, frame = vc.read()
-                if ret is None:
+                if ret is None or frame is None:
                     print(f"camera [{camera_id}]: frame has not been gotten")
                 else:
                     cameras_id += [camera_id]
@@ -152,13 +152,13 @@ class TaskManager:
                         for object in objects:
                             x1, y1, x2, y2 = object["box"]
                             bbox = Bbox(
-                                probability=object["prob"],
                                 x1=x1, y1=y1,
                                 x2=x2, y2=y2,
                             )
                             object_scheme = ObjectAdd(
                                 snapshot_id=new_snapshot.id,
-                                class_id=object["class_index"]+1,
+                                label=object["label"],
+                                probability=object["prob"],
                                 bbox=bbox
                             )
                             obj = await _add_object(object_scheme, db)

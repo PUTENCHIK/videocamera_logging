@@ -25,21 +25,21 @@ async def index(request: Request):
 
 
 @cameras_router.post("/add", response_model=Optional[Camera])
-async def add_camera(camera: CameraAddOrEdit,
+async def add_camera(fields: CameraAddOrEdit,
                      db: AsyncSession = Depends(get_db_session)):
-    new_camera = await _add_camera(camera, db)
+    new_camera = await _add_camera(fields, db)
     return new_camera
 
 
 @cameras_router.patch("/{camera_id}/edit", response_model=CameraAfterEdit)
 async def edit_camera(camera_id: int,
-                      camera: CameraAddOrEdit,
+                      fields: CameraAddOrEdit,
                       db: AsyncSession = Depends(get_db_session)):
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()
     if db_camera is not None:
-        edited_camera = await _edit_camera(db_camera, camera, db)
+        edited_camera = await _edit_camera(camera_id, fields, db)
         result.success = True
         result.camera = edited_camera
         asyncio.create_task(task_manager.update_camera(edited_camera))
@@ -54,7 +54,7 @@ async def delete_camera(camera_id: int,
 
     result = CameraAfterEdit()
     if db_camera is not None:
-        await _delete_camera(db_camera, db)
+        await _delete_camera(camera_id, db)
         result.success = True
         asyncio.create_task(task_manager.update())
     
@@ -68,7 +68,7 @@ async def switch_camera(camera_id: int,
 
     result = CameraAfterEdit()
     if db_camera is not None:
-        switched_camera = await _switch_camera(db_camera, db)
+        switched_camera = await _switch_camera(camera_id, db_camera.is_monitoring, db)
         result.success = True
         result.camera = switched_camera
         asyncio.create_task(task_manager.update())

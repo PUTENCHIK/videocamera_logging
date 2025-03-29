@@ -38,7 +38,7 @@ async def edit_class(class_id: int,
 
     result = TrackableClassAfterEdit()
     if db_class is not None:
-        edited_class = await _edit_class(db_class, fields, db)
+        edited_class = await _edit_class(class_id, fields, db)
         result.success = True
         result.class_ = edited_class
     
@@ -52,7 +52,7 @@ async def delete_class(class_id: int,
 
     result = TrackableClassAfterEdit()
     if db_class is not None:
-        await _delete_class(db_class, db)
+        await _delete_class(class_id, db)
         result.success = True
     
     return result

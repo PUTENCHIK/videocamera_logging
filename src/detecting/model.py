@@ -19,7 +19,9 @@ class DetectingModel:
                 ids: List[int],
                 conf: float = Config.model.confidence) -> DetectingResults:
         start = time.time()
-        results = self.__model.predict(source=source, conf=conf, verbose=False)
+        results = self.__model.predict(source=source,
+                                       conf=conf,
+                                       verbose=False)
         detecting_time = time.time() - start
 
         return DetectingResults(results, ids, detecting_time)

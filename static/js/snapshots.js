@@ -6,9 +6,10 @@ createApp({
     data() {
         return {
             snapshots: [],
-            colors: {},
             loading: false,
             objectBboxHoverId: 0,
+            default_color: {r: 128, g: 128, b: 128},
+            objects_styles: {}
         }
     },
 
@@ -33,47 +34,62 @@ createApp({
             });
         },
 
-        generateObjectsBoxes(object) {
-            let c = object.trackable_class.id - 1;
-            let color = `${this.colors[c][0]}, ${this.colors[c][1]}, ${this.colors[c][2]}`;
-            return {
-                'width': `${object.bbox.x2-object.bbox.x1}px`,
-                'height': `${object.bbox.y2-object.bbox.y1}px`,
-                'top': `${object.bbox.y1}px`,
-                'left': `${object.bbox.x1}px`,
-                'border-color': `rgb(${color})`,
-            }
-        },
-
-        loadClassColors() {
-            fetch("/api/class_colors", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-                .then(r => r.json())
-                .then((r) => {
-                    this.colors = r;
-                });
-        },
-
-        handlerObjectIconMouseover(id, class_id) {
+        handlerObjectIconMouseover(id, color) {
             this.objectBboxHoverId = id;
-            let c = class_id - 1;
-            let color = `${this.colors[c][0]}, ${this.colors[c][1]}, ${this.colors[c][2]}`;
-            document.documentElement.style.setProperty('--color-bbox-hover', `rgba(${color}, 0.2)`);
+            let color_str = `${color.r}, ${color.g}, ${color.b}`;
+            document.documentElement.style.setProperty('--color-bbox-hover', `rgba(${color_str}, 0.2)`);
         },
 
         handlerObjectIconMouseleave() {
             this.objectBboxHoverId = 0;
+        },
+
+        getSnapshotImageSizes(id) {
+            
+            console.log(img_snapshot);
+            
+            if (img_snapshot === undefined) {
+                return {
+                    width: 640,
+                    height: 480,
+                }
+            } else {
+                return {
+                    width: img_snapshot[0].width,
+                    height: img_snapshot[0].height,
+                } 
+            }
+        },
+
+        onSnapshotImageLoaded(snapshot) {
+            let img_snapshot = this.$refs['snapshot_' + snapshot.id][0];
+            snapshot.objects.forEach((object) => {
+                let color;
+                if (object.trackable_class !== null) {
+                    color = object.trackable_class.color;
+                } else {
+                    color = this.default_color;
+                }
+                let color_str = `${color.r}, ${color.g}, ${color.b}`;
+                let sizes = {
+                    width: img_snapshot.width,
+                    height: img_snapshot.height,
+                }
+                
+                this.objects_styles[object.id] = {
+                    'width': `${(object.bbox.x2-object.bbox.x1) * sizes.width}px`,
+                    'height': `${(object.bbox.y2-object.bbox.y1) * sizes.height}px`,
+                    'top': `${(object.bbox.y1) * sizes.height}px`,
+                    'left': `${(object.bbox.x1) * sizes.width}px`,
+                    'border-color': `rgb(${color_str})`,
+                }
+            });
         },
     },
 
     mounted() {
         this.loading = true;
         this.loadSnapshots();
-        this.loadClassColors();
         this.loading = false;
     }
 

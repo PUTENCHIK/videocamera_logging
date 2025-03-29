@@ -7,12 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.snapshots import (SnapshotAdd, SnapshotModel, ObjectModel, ObjectAdd)
 
 
-async def _add_snapshot(snapshot: SnapshotAdd,
+async def _add_snapshot(fields: SnapshotAdd,
                         db: AsyncSession) -> SnapshotModel:
     query = (insert(SnapshotModel)
         .values(
-            camera_id=snapshot.camera_id,
-            detecting_time=snapshot.detecting_time,
+            camera_id=fields.camera_id,
+            detecting_time=fields.detecting_time,
             created_at=datetime.now())
         .returning(SnapshotModel))
     result = await db.execute(query)
@@ -24,13 +24,14 @@ async def _add_snapshot(snapshot: SnapshotAdd,
     return new_snapshot
 
 
-async def _add_object(object: ObjectAdd,
+async def _add_object(fields: ObjectAdd,
                       db: AsyncSession) -> Optional[ObjectModel]:
     query = (insert(ObjectModel)
         .values(
-            snapshot_id=object.snapshot_id,
-            class_id=object.class_id,
-            bbox=object.bbox.dict(),
+            snapshot_id=fields.snapshot_id,
+            label=fields.label,
+            probability=fields.probability,
+            bbox=fields.bbox.model_dump(),
             created_at=datetime.now())
         .returning(ObjectModel))
     result = await db.execute(query)

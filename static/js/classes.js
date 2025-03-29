@@ -44,8 +44,6 @@ createApp({
         },
 
         formsContainerClicked(event) {
-            console.log(event);
-            
             if (event.target.className === "forms-container") {
                 this.closeForm();
             }

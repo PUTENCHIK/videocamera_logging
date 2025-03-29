@@ -122,8 +122,8 @@ h3 {
 }
 
 .snapshot-wrapper > img {
-    /* max-width: 640px;
-    max-height: 640px; */
+    max-width: 640px;
+    max-height: 640px;
     z-index: 1;
 }
 

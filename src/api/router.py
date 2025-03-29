@@ -1,7 +1,5 @@
 from typing import Optional, List
-
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import Config
@@ -33,16 +31,6 @@ async def get_camera(camera_id: int,
 async def get_snapshots(db: AsyncSession = Depends(get_db_session)):
     snapshots = await _get_snapshots(db)
     return snapshots
-
-
-@api_router.get("/class_colors", response_class=JSONResponse)
-async def get_trackable_class_colors():
-    return {
-        0: (53, 124, 240),
-        1: (52, 235, 161),
-        2: (252, 50, 192),
-        3: (235, 212, 38),
-    }
 
 
 @api_router.get("/classes", response_model=List[TrackableClassFull])

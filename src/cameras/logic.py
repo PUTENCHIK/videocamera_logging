@@ -6,10 +6,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.cameras import CameraModel, CameraAddOrEdit, Camera
 
 
-async def _add_camera(camera: CameraAddOrEdit,
-                      db: AsyncSession) -> CameraModel:
+async def _add_camera(fields: CameraAddOrEdit,
+                      db: AsyncSession) -> Camera:
     query = (insert(CameraModel)
-        .values(address=camera.address,
+        .values(address=fields.address,
                 created_at=datetime.now())
         .returning(CameraModel))
     result = await db.execute(query)
@@ -18,13 +18,13 @@ async def _add_camera(camera: CameraAddOrEdit,
     await db.commit()
     await db.refresh(new_camera)
 
-    return new_camera
+    return Camera.model_validate(new_camera)
 
 
-async def _get_cameras(db: AsyncSession) -> List[CameraModel]:
+async def _get_cameras(db: AsyncSession) -> List[Camera]:
     query = select(CameraModel).where(CameraModel.deleted_at == None)
     result = await db.execute(query)
-    return result.scalars().all()
+    return [Camera.model_validate(camera) for camera in result.scalars().all()]
 
 
 async def _get_monitoring_cameras(db: AsyncSession) -> List[Camera]:
@@ -36,19 +36,20 @@ async def _get_monitoring_cameras(db: AsyncSession) -> List[Camera]:
 
 
 async def _get_camera(id: int,
-                      db: AsyncSession) -> Optional[CameraModel]:
+                      db: AsyncSession) -> Optional[Camera]:
     query = (select(CameraModel)
         .where(CameraModel.deleted_at == None,
                CameraModel.id == id))
     result = await db.execute(query)
-    return result.scalar_one_or_none()
+    camera = result.scalar_one_or_none()
+    return Camera.model_validate(camera) if camera is not None else None
 
 
-async def _edit_camera(camera: CameraModel,
+async def _edit_camera(id: int,
                        fields: CameraAddOrEdit,
                        db: AsyncSession) -> Camera:
     query = (update(CameraModel)
-        .where(CameraModel.id == camera.id)
+        .where(CameraModel.id == id)
         .values(address=fields.address)
         .returning(CameraModel))
     result = await db.execute(query)
@@ -60,10 +61,10 @@ async def _edit_camera(camera: CameraModel,
     return Camera.model_validate(updated_camera)
 
 
-async def _delete_camera(camera: CameraModel,
-                         db: AsyncSession) -> CameraModel:
+async def _delete_camera(id: int,
+                         db: AsyncSession) -> Camera:
     query = (update(CameraModel)
-        .where(CameraModel.id == camera.id)
+        .where(CameraModel.id == id)
         .values(deleted_at=datetime.now())
         .returning(CameraModel))
     result = await db.execute(query)
@@ -72,14 +73,15 @@ async def _delete_camera(camera: CameraModel,
     await db.commit()
     await db.refresh(deleted_camera)
 
-    return deleted_camera
+    return Camera.model_validate(deleted_camera)
 
 
-async def _switch_camera(camera: CameraModel,
-                         db: AsyncSession) -> CameraModel:
+async def _switch_camera(id: int,
+                         is_monitoring: bool,
+                         db: AsyncSession) -> Camera:
     query = (update(CameraModel)
-        .where(CameraModel.id == camera.id)
-        .values(is_monitoring=not camera.is_monitoring)
+        .where(CameraModel.id == id)
+        .values(is_monitoring=not is_monitoring)
         .returning(CameraModel))
     result = await db.execute(query)
     switched_camera = result.scalar_one()
@@ -87,4 +89,4 @@ async def _switch_camera(camera: CameraModel,
     await db.commit()
     await db.refresh(switched_camera)
 
-    return switched_camera
+    return Camera.model_validate(switched_camera)

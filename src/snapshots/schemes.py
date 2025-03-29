@@ -5,25 +5,25 @@ from pydantic import BaseModel
 from src.classes import TrackableClass
 
 
-class Snapshot(BaseModel):
-    id: int
-    camera_id: int
-    detecting_time: float
-    created_at: datetime
-    deleted_at: Optional[datetime] = None
-
-
 class Bbox(BaseModel):
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+
+
+class ObjectAdd(BaseModel):
+    snapshot_id: int
+    label: int
     probability: float
-    x1: int
-    y1: int
-    x2: int
-    y2: int
+    bbox: Bbox
 
 
-class Object(BaseModel):
+class ObjectFull(BaseModel):
     id: int
     snapshot_id: int
+    trackable_class: Optional[TrackableClass] = None
+    probability: float
     bbox: Bbox
     created_at: datetime
     deleted_at: Optional[datetime] = None
@@ -34,15 +34,10 @@ class SnapshotAdd(BaseModel):
     detecting_time: float
 
 
-class ObjectAdd(BaseModel):
-    snapshot_id: int
-    class_id: int
-    bbox: Bbox
-
-
-class ObjectFull(Object):
-    trackable_class: TrackableClass
-
-
-class SnapshotFull(Snapshot):
+class SnapshotFull(BaseModel):
+    id: int
+    camera_id: int
+    detecting_time: float
     objects: List[ObjectFull]
+    created_at: datetime
+    deleted_at: Optional[datetime] = None

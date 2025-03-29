@@ -1,6 +1,6 @@
 import re
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 from datetime import datetime
 from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,14 +19,14 @@ def _parse_color(color: str) -> Optional[Color]:
     return result
 
 
-async def _add_class(class_: TrackableClassAddOrEdit,
+async def _add_class(fields: TrackableClassAddOrEdit,
                      db: AsyncSession) -> TrackableClassFull:
-    color = _parse_color(class_.color)
+    color = _parse_color(fields.color)
     query = (insert(TrackableClassModel)
         .values(
-            name=class_.name.lower(),
-            label=int(class_.label),
-            title=class_.title.lower(),
+            name=fields.name.lower(),
+            label=int(fields.label),
+            title=fields.title.lower(),
             color=color.model_dump(),
             created_at=datetime.now())
         .returning(TrackableClassModel))
@@ -55,12 +55,12 @@ async def _get_class(id: int,
     return TrackableClassFull.model_validate(class_) if class_ is not None else None
 
 
-async def _edit_class(class_: TrackableClassFull,
+async def _edit_class(id: int,
                       fields: TrackableClassAddOrEdit,
                       db: AsyncSession) -> TrackableClassFull:
     color = _parse_color(fields.color)
     query = (update(TrackableClassModel)
-        .where(TrackableClassModel.id == class_.id)
+        .where(TrackableClassModel.id == id)
         .values(name=fields.name.lower(),
                 label=int(fields.label),
                 title=fields.title.lower(),
@@ -75,10 +75,10 @@ async def _edit_class(class_: TrackableClassFull,
     return TrackableClassFull.model_validate(updated_class)
 
 
-async def _delete_class(class_: TrackableClassFull,
+async def _delete_class(id: int,
                         db: AsyncSession) -> TrackableClassFull:
     query = (update(TrackableClassModel)
-        .where(TrackableClassModel.id == class_.id)
+        .where(TrackableClassModel.id == id)
         .values(deleted_at=datetime.now())
         .returning(TrackableClassModel))
     result = await db.execute(query)

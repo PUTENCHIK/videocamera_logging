@@ -20,21 +20,25 @@ createApp({
         },
 
         showEditCameraForm(id) {
-            this.current_form = 'edit';
-            this.cameras.forEach((camera) => {
-                if (camera.id === id) {
-                    this.form_data = clone_object(camera);
-                }
-            });
+            if (!this.sending) {
+                this.current_form = 'edit';
+                this.cameras.forEach((camera) => {
+                    if (camera.id === id) {
+                        this.form_data = clone_object(camera);
+                    }
+                });
+            }
         },
 
         showDeleteCameraForm(id) {
-            this.current_form = 'delete';
-            this.cameras.forEach((camera) => {
-                if (camera.id === id) {
-                    this.form_data = clone_object(camera);
-                }
-            });
+            if (!this.sending) {
+                this.current_form = 'delete';
+                this.cameras.forEach((camera) => {
+                    if (camera.id === id) {
+                        this.form_data = clone_object(camera);
+                    }
+                });
+            }
         },
 
         closeForm() {
@@ -44,7 +48,6 @@ createApp({
         },
 
         loadCameras() {
-            this.loading = true;
             fetch("/api/cameras", {
                 method: "GET",
                 headers: {
@@ -56,13 +59,13 @@ createApp({
                     this.cameras = r;
                     this.formatDates();
                 });
-            this.loading = false;
         },
 
         addCamera(event) {
             event.preventDefault();
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
+            json = this.processJsonData(json);
             this.form_data.address = json.address;
             if (this.validateData(json)) {
                 let requestBody = JSON.stringify(json);
@@ -88,6 +91,7 @@ createApp({
             event.preventDefault();
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
+            json = this.processJsonData(json);
             this.form_data.address = json.address;
             if (this.validateData(json)) {
                 let requestBody = JSON.stringify(json);
@@ -145,28 +149,34 @@ createApp({
             this.closeForm();
         },
 
-        switchCameraMonitoring(id) {
-            this.sending = true;
-            fetch(`/cameras/${id}/switch`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-                .then(r => r.json())
-                .then((r) => {
-                    if (r.success) {
-                        let camera = r.camera;
-                        for (let i = 0; i < this.cameras.length; i++) {
-                            if (this.cameras[i].id == camera.id) {
-                                this.cameras[i] = camera;
-                                this.formatDates();
-                                break;
-                            }
-                        }
+        switchCameraMonitoring(id) {            
+            if (!this.sending) {
+                this.sending = true;
+                fetch(`/cameras/${id}/switch`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json"
                     }
-                });
-            this.sending = false;
+                })
+                    .then(r => r.json())
+                    .then((r) => {
+                        if (r.success) {
+                            let camera = r.camera;
+                            for (let i = 0; i < this.cameras.length; i++) {
+                                if (this.cameras[i].id == camera.id) {
+                                    this.cameras[i] = camera;
+                                    this.formatDates();
+                                    break;
+                                }
+                            }
+                            this.sending = false;
+                        }
+                    })
+                    .catch(e => {
+                        this.sending = false;
+                        throw(e);
+                    });
+            }
         },
 
         validateData(json) {
@@ -191,10 +201,17 @@ createApp({
                 this.closeForm();
             }
         },
+
+        processJsonData(json) {
+            json.address = json.address.trim();
+            return json;
+        },
     },
 
     mounted() {
+        this.loading = true;
         this.loadCameras();
+        this.loading = false;
     }
 
 }).mount("#app");

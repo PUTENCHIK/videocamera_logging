@@ -17,79 +17,89 @@
     <div class="main">
         <h1>Снимки с камер</h1>
 
-        <div v-if="snapshots.length" class="filters-container">
-            <form name="filters">
-                <div class="form-group">    
-                    <label class="filled">
-                        <span>id изображения:</span>
-                        <input type="number" name="id" min="1" placeholder="123">
-                    </label>
-                    <label class="fixed">
-                        <span>От:</span>
-                        <input type="date" name="from">
-                    </label>
-                    <label class="fixed">
-                        <span>До:</span>
-                        <input type="date" name="until">
-                    </label>
-                    <label class="filled">
-                        <span>Кол-во объектов:</span>
-                        <input type="number" name="amount" min="1" value="1">
-                    </label>
-                </div>
-
-                <button class="primary" type="submit">
-                    <span>Применить</span>
-                </button>
-            </form>
-        </div>
-
-        <div v-if="snapshots.length" class="images-container">
-            <div v-for="snapshot in snapshots" class="image-box">
-                <div class="snapshot-wrapper">
-                    <img
-                        :key="snapshot.id"
-                        :src="'/storage/snapshots/' + snapshot.id + '.jpg'"
-                        :ref="'snapshot_' + snapshot.id"
-                        @load="onSnapshotImageLoaded(snapshot)"
-                        alt="snapshot">
-                    <div
-                        v-for="object in snapshot.objects"
-                        :key="snapshot.objects"
-                        class="object-bbox"
-                        :class="{ 'current' : objectBboxHoverId == object.id }"
-                        :style="objects_styles[object.id]"></div>
-                </div>
-
-                <div class="image_description_wrapper">
-                    <div class="information_wrapper">
-                        <div class="information_block">
-                            <h3 class="header3 information_title">Общая информация:</h3>
-                            <span class="regular information_image_id">ID: [[ snapshot.id ]]</span>
-                            <span class="regular information_time">Сохранено: [[ snapshot.created_at ]]</span>
-                            <span class="regular information_camera_id">ID камеры: [[ snapshot.camera_id ]]</span>
-                        </div>
-                        <img src="{{ url_for('images', path='/info.svg') }}" alt="">
+        <div v-if="!loading" class="__content">
+            <div v-if="snapshots.length" class="filters-container">
+                <form name="filters">
+                    <div class="form-group">    
+                        <label class="filled">
+                            <span>id изображения:</span>
+                            <input type="number" name="id" min="1" placeholder="123">
+                        </label>
+                        <label class="fixed">
+                            <span>От:</span>
+                            <input type="date" name="from">
+                        </label>
+                        <label class="fixed">
+                            <span>До:</span>
+                            <input type="date" name="until">
+                        </label>
+                        <label class="filled">
+                            <span>Кол-во объектов:</span>
+                            <input type="number" name="amount" min="1" value="1">
+                        </label>
                     </div>
-                    <div class="objects_wrapper">
-                        <h3 class="header3 objects_title">Замеченные объекты:</h3>
-                        <div class="objects">
+    
+                    <button class="primary" type="submit">
+                        <span>Применить</span>
+                    </button>
+                </form>
+            </div>
+    
+            <div v-if="snapshots.length" class="snapshots-container">
+                <div v-for="snapshot in snapshots" class="snapshot-box" :key="snapshot.id">
+                    <div class="snapshot-content">
+                        <div class="snapshot-wrapper">
+                            <img
+                                :src="'/storage/snapshots/' + snapshot.id + '.jpg'"
+                                :ref="'snapshot_' + snapshot.id"
+                                @load="onSnapshotImageLoaded(snapshot)"
+                                alt="snapshot">
                             <div
-                                    v-for="object in snapshot.objects"
-                                    @mouseover="handlerObjectIconMouseover(object.id, (object.trackable_class?.color || default_color))"
-                                    @mouseleave="handlerObjectIconMouseleave"
-                                    class="object-icon-wrapper">
-                                <img
-                                    :src="'/static/images/icons/' + (object.trackable_class?.name || 'unknown') + '.png'"
-                                    :alt="(object.trackable_class?.name || 'unknown')"
-                                    :title="(object.trackable_class?.name || 'unknown') + ': ' + object.probability">
+                                v-for="object in snapshot.objects"
+                                :key="object.id"
+                                class="object-bbox"
+                                :class="{ 'current' : objectBboxHoverId == object.id }"
+                                :style="objects_styles[object.id]"></div>
+                        </div>
+                    </div>
+    
+                    <div class="snapshot-description">
+                        <div class="snapshot-information">
+                            <div class="__content">
+                                <h3>Общая информация:</h3>
+                                <div class="information-rows">
+                                    <span>ID: [[ snapshot.id ]]</span>
+                                    <span>Сохранено: [[ snapshot.created_at ]]</span>
+                                    <span>ID камеры: [[ snapshot.camera_id ]]</span>
+                                </div>
+                            </div>
+                            <img src="{{ url_for('images', path='/info.svg') }}" alt="">
+                        </div>
+                        <div class="objects-box">
+                            <h3>Замеченные объекты:</h3>
+                            <div class="objects">
+                                <div
+                                        v-for="object in snapshot.objects"
+                                        :key="object.id"
+                                        @mouseover="handlerObjectIconMouseover(object.id, (object.trackable_class?.color || default_color))"
+                                        @mouseleave="handlerObjectIconMouseleave"
+                                        class="object-icon-wrapper">
+                                    <img
+                                        :src="'/static/images/icons/' + (object.trackable_class?.name || 'unknown') + '.png'"
+                                        :alt="(object.trackable_class?.name || 'unknown')"
+                                        :title="(object.trackable_class?.name || 'unknown') + ': ' + object.probability">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <p v-else>В базе нет ещё ни одного снимка с камер.</p>
         </div>
-        <p v-else>В базе нет ещё ни одного снимка с камер.</p>
+        <div v-else class="loader-wrapper">
+            <span class="loader"></span>
+        </div>
+
     </div>
 
 {% endblock %}

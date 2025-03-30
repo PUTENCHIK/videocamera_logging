@@ -20,21 +20,25 @@ createApp({
         },
 
         showEditClassForm(id) {
-            this.current_form = 'edit';
-            this.classes.forEach((class_) => {
-                if (class_.id === id) {
-                    this.form_data = clone_object(class_);
-                }
-            });
+            if (!this.sending) {
+                this.current_form = 'edit';
+                this.classes.forEach((class_) => {
+                    if (class_.id === id) {
+                        this.form_data = clone_object(class_);
+                    }
+                });
+            }
         },
 
         showDeleteClassForm(id) {
-            this.current_form = 'delete';
-            this.classes.forEach((class_) => {
-                if (class_.id === id) {
-                    this.form_data = clone_object(class_);
-                }
-            });
+            if (!this.sending) {
+                this.current_form = 'delete';
+                this.classes.forEach((class_) => {
+                    if (class_.id === id) {
+                        this.form_data = clone_object(class_);
+                    }
+                });
+            }
         },
 
         closeForm() {
@@ -50,7 +54,6 @@ createApp({
         },
 
         loadClasses() {
-            this.loading = true;
             fetch("/api/classes", {
                 method: "GET",
                 headers: {
@@ -62,13 +65,13 @@ createApp({
                     this.classes = r;
                     this.formatClassesData();
                 });
-            this.loading = false;
         },
 
         addClass(event) {
             event.preventDefault();
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
+            json = this.processJsonData(json);
             this.form_data = clone_object(json);
             if (this.validateData(json)) {
                 let requestBody = JSON.stringify(json);
@@ -94,6 +97,7 @@ createApp({
             event.preventDefault();
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
+            json = this.processJsonData(json);
             let id = this.form_data.id;
             this.form_data = clone_object(json);
             this.form_data.id = id;
@@ -174,7 +178,7 @@ createApp({
                     if (class_.name === json.name) {
                         this.errors['name'] = "Такое имя уже существует!";
                     }
-                    if (class_.label == json.label) {
+                    if (json.label.length && Number(class_.label) === Number(json.label)) {
                         this.errors['label'] = "Такая метка уже существует!";
                     }
                 }
@@ -191,10 +195,18 @@ createApp({
                 }
             });
         },
+
+        processJsonData(json) {
+            json.name = json.name.trim();
+            json.title = json.title.trim();
+            return json;
+        },
     },
 
     mounted() {
+        this.loading = true;
         this.loadClasses();
+        this.loading = false;
     }
 
 }).mount("#app");

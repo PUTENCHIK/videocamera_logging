@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Видеокамеры{% endblock %}
+{% block title %}Классы{% endblock %}
 
 {% block styles %}
     <link href="{{ url_for('styles', path='/classes.css') }}" rel="stylesheet">
@@ -18,12 +18,15 @@
         <h1>Классы модели</h1>
 
         <div class="row-right-container">
-            <button @click="showAddClassForm" class="primary">
+            <button
+                    @click="showAddClassForm"
+                    class="primary"
+                    :disabled="loading || sending">
                 <span>Добавить класс</span>
             </button>
         </div>
 
-        <div v-if="classes.length" class="table-display">
+        <div v-if="classes.length && !loading" class="table-display">
             <div class="table-row">
                 <div class="label-bold">id</div>
                 <div class="label-bold">системное имя</div>
@@ -33,7 +36,7 @@
                 <div class="label-bold">добавлен</div>
             </div>
             
-            <div v-for="class_ in classes" class="table-row">
+            <div v-for="class_ in classes" class="table-row" :key="class_.id">
                 <div>[[ class_.id ]]</div>
                 <div>[[ class_.name ]]</div>
                 <div>[[ class_.label ]]</div>
@@ -44,16 +47,28 @@
                 </div>
                 <div>[[ class_.created_at ]]</div>
                 <div class="icons-box">
-                    <img @click="showEditClassForm(class_.id)" class="icon-button"
-                        src="{{ url_for('icons', path='/pencil.png') }}" alt="edit">
-                    <img @click="showDeleteClassForm(class_.id)" class="icon-button"
-                        src="{{ url_for('icons', path='/delete.png') }}" alt="delete">
+                    <img
+                        @click="showEditClassForm(class_.id)"
+                        class="icon-button"
+                        :class="{ 'disabled' : sending }"
+                        src="{{ url_for('icons', path='/pencil.png') }}"
+                        alt="edit">
+                    <img
+                        @click="showDeleteClassForm(class_.id)"
+                        class="icon-button"
+                        :class="{ 'disabled' : sending }"
+                        src="{{ url_for('icons', path='/delete.png') }}"
+                        alt="delete">
                 </div>
             </div>
         </div>
-        <p v-else>В базе нет ещё ни одного класса.</p>
+        <p v-else-if="!loading">В базе нет ещё ни одного класса.</p>
+        <div v-else class="loader-wrapper">
+            <span class="loader"></span>
+        </div>
 
-        <div @mousedown="(event) => formsContainerClicked(event)"
+        <div
+                @mousedown="(event) => formsContainerClicked(event)"
                 class="forms-container"
                 :class="{ 'hidden' : current_form == null }">
         
@@ -78,7 +93,7 @@
                                 <span class="label-bold">метка:</span>
                                 <input
                                     :value="form_data.label"
-                                    type="number" name="label" min="0"
+                                    type="number" name="label"
                                     placeholder="0">
                                 <span v-if="errors.label" class="error-text">[[ errors.label ]]</span>
                             </label>

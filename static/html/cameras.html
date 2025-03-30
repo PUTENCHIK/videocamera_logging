@@ -18,12 +18,15 @@
         <h1>Отслеживаемые камеры</h1>
 
         <div class="row-right-container">
-            <button @click="showAddCameraForm" class="primary">
+            <button
+                    @click="showAddCameraForm"
+                    class="primary"
+                    :disabled="loading || sending">
                 <span>Добавить видеокамеру</span>
             </button>
         </div>
         
-        <div v-if="cameras.length" class="table-display">
+        <div v-if="cameras.length && !loading" class="table-display">
             <div class="table-row">
                 <div class="label-bold">id</div>
                 <div class="label-bold">Адрес</div>
@@ -31,25 +34,40 @@
                 <div class="label-bold">Добавлена</div>
             </div>
             
-            <div v-for="camera in cameras" class="table-row">
+            <div v-for="camera in cameras" class="table-row" :key="camera.id">
                 <div>[[ camera.id ]]</div>
                 <div>[[ camera.address ]]</div>
                 <div>
-                    <div @click="switchCameraMonitoring(camera.id)" class="switch" :class="{ 'on' : camera.is_monitoring }"></div>
+                    <div
+                        @click="switchCameraMonitoring(camera.id)"
+                        class="switch"
+                        :class="{ 'on' : camera.is_monitoring, 'disabled' : sending }"></div>
                 </div>
                 <div>[[ camera.created_at ]]</div>
                 <div class="icons-box">
-                    <img @click="showEditCameraForm(camera.id)" class="icon-button"
-                        src="{{ url_for('icons', path='/pencil.png') }}" alt="edit">
-                    <img @click="showDeleteCameraForm(camera.id)" class="icon-button"
-                        src="{{ url_for('icons', path='/delete.png') }}" alt="delete">
+                    <img
+                        @click="showEditCameraForm(camera.id)"
+                        class="icon-button"
+                        :class="{ 'disabled' : sending }"
+                        src="{{ url_for('icons', path='/pencil.png') }}"
+                        alt="edit">
+                    <img
+                        @click="showDeleteCameraForm(camera.id)"
+                        class="icon-button"
+                        :class="{ 'disabled' : sending }"
+                        src="{{ url_for('icons', path='/delete.png') }}"
+                        alt="delete">
                 </div>
             </div>
         </div>
-        <p v-else>В базе нет ещё ни одной камеры.</p>
+        <p v-else-if="!loading">В базе нет ещё ни одной камеры.</p>
+        <div v-else class="loader-wrapper">
+            <span class="loader"></span>
+        </div>
     </div>
 
-    <div @mousedown="(event) => formsContainerClicked(event)"
+    <div
+            @mousedown="(event) => formsContainerClicked(event)"
             class="forms-container"
             :class="{ 'hidden' : current_form == null }">
 

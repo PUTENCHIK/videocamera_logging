@@ -42,7 +42,7 @@ async def edit_camera(camera_id: int,
         edited_camera = await _edit_camera(camera_id, fields, db)
         result.success = True
         result.camera = edited_camera
-        asyncio.create_task(task_manager.update_camera(edited_camera))
+        asyncio.create_task(task_manager.edit_camera(edited_camera))
     
     return result
 
@@ -54,9 +54,9 @@ async def delete_camera(camera_id: int,
 
     result = CameraAfterEdit()
     if db_camera is not None:
-        await _delete_camera(camera_id, db)
+        deleted_camera = await _delete_camera(camera_id, db)
         result.success = True
-        asyncio.create_task(task_manager.update())
+        asyncio.create_task(task_manager.delete_camera(deleted_camera))
     
     return result
 
@@ -71,6 +71,6 @@ async def switch_camera(camera_id: int,
         switched_camera = await _switch_camera(camera_id, db_camera.is_monitoring, db)
         result.success = True
         result.camera = switched_camera
-        asyncio.create_task(task_manager.update())
+        asyncio.create_task(task_manager.switch_camera(switched_camera))
     
     return result

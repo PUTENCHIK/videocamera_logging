@@ -16,7 +16,6 @@ from src.database import create_db_and_tables
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("App starting")
-    Config.pathes.snapshots.mkdir(exist_ok=True)
     await create_db_and_tables()        
     asyncio.create_task(task_manager.start())
     print("Cameras task added")

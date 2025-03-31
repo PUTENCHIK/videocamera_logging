@@ -12,8 +12,8 @@ from src.detecting.results import DetectingResults
 class DetectingModel:
     def __init__(self,
                  model: str = Config.model.default):
-        model_path = Config.pathes.models / model
-        self.__model = YOLO(model_path) if model_path.exists() else None
+        self.model_path = Config.pathes.models / model
+        self.__model = YOLO(self.model_path) if self.model_path.exists() else None
     
     def predict(self,
                 source: Union[str, Path, ndarray, list],
@@ -26,6 +26,10 @@ class DetectingModel:
         detecting_time = time.perf_counter() - start
 
         return DetectingResults(results, ids, detecting_time)
+    
+    @property
+    def model_specified(self) -> bool:
+        return self.model_path.exists() and self.__model is not None
 
 
 detecting_model = DetectingModel()

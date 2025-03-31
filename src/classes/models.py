@@ -15,4 +15,8 @@ class TrackableClass(BaseDBModel):
     created_at = Column(DateTime, nullable=False, unique=False)
     deleted_at = Column(DateTime, nullable=True, unique=False, default=None)
 
-    objects = relationship("Object", back_populates="trackable_class")
+    objects = relationship(
+        "Object",
+        back_populates="trackable_class",
+        primaryjoin="and_(Object.label == TrackableClass.label, TrackableClass.deleted_at == None)"
+    )

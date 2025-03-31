@@ -94,7 +94,7 @@
                                 <input
                                     :value="form_data.label"
                                     type="number" name="label"
-                                    placeholder="0">
+                                    placeholder="целое неотрицательное число">
                                 <span v-if="errors.label" class="error-text">[[ errors.label ]]</span>
                             </label>
                             <label class="filled" :class="{ 'error' : errors.title }">
@@ -102,7 +102,7 @@
                                 <input
                                     :value="form_data.title"
                                     type="text" name="title" maxlength="100"
-                                    placeholder="Человек">
+                                    placeholder="понятное вам описание">
                                 <span v-if="errors.title" class="error-text">[[ errors.title ]]</span>
                             </label>
                             <label class="filled color" :class="{ 'error' : errors.color }">

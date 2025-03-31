@@ -17,6 +17,13 @@ createApp({
     methods: {
         showAddClassForm() {
             this.current_form = 'add';
+            let max_label = -1;
+            this.classes.forEach((class_) => {
+                if (class_.label > max_label) {
+                    max_label = class_.label;
+                }
+            });
+            this.form_data.label = max_label+1;
         },
 
         showEditClassForm(id) {
@@ -54,6 +61,7 @@ createApp({
         },
 
         loadClasses() {
+            this.loading = true;
             fetch("/api/classes", {
                 method: "GET",
                 headers: {
@@ -64,6 +72,11 @@ createApp({
                 .then((r) => {
                     this.classes = r;
                     this.formatClassesData();
+                    this.loading = false;
+                })
+                .catch(e => {
+                    loading = false;
+                    throw(e);
                 });
         },
 
@@ -204,9 +217,7 @@ createApp({
     },
 
     mounted() {
-        this.loading = true;
         this.loadClasses();
-        this.loading = false;
     }
 
 }).mount("#app");

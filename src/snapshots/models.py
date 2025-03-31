@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, DateTime, JSON, ForeignKey
+from sqlalchemy import Column, Integer, Float, DateTime, JSON, ForeignKey, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 
 from src.database import BaseDBModel
@@ -23,7 +23,7 @@ class Object(BaseDBModel):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     snapshot_id = Column(Integer, ForeignKey("snapshots.id"), nullable=False)
-    label = Column(Integer, ForeignKey("trackable_classes.label"), nullable=False)
+    label = Column(Integer, nullable=False)
     probability = Column(Float, nullable=False, unique=False)
     bbox = Column(JSON, nullable=False, unique=False)
     created_at = Column(DateTime, nullable=False, unique=False)
@@ -31,3 +31,17 @@ class Object(BaseDBModel):
 
     snapshot = relationship("Snapshot", back_populates="objects")
     trackable_class = relationship("TrackableClass", back_populates="objects")
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["label"],
+            ["trackable_classes.label"],
+        ),
+    )
+
+    trackable_class = relationship(
+        "TrackableClass",
+        primaryjoin="and_(Object.label == TrackableClass.label, TrackableClass.deleted_at == None)",
+        uselist=False,
+        foreign_keys=[label]
+    )

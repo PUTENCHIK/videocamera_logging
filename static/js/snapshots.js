@@ -15,6 +15,7 @@ createApp({
 
     methods: {
         loadSnapshots() {
+            this.loading = true;
             fetch("/api/snapshots", {
                 method: "GET",
                 headers: {
@@ -25,6 +26,11 @@ createApp({
                 .then((r) => {
                     this.snapshots = r;
                     this.formatDates();
+                    this.loading = false;
+                })
+                .catch(e => {
+                    this.loading = false;
+                    throw(e);
                 });
         },
 
@@ -88,9 +94,7 @@ createApp({
     },
 
     mounted() {
-        this.loading = true;
         this.loadSnapshots();
-        this.loading = false;
     }
 
 }).mount("#app");

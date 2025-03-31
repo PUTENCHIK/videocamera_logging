@@ -1,6 +1,7 @@
 import cv2
 import time
 import asyncio
+import concurrent.futures
 
 from numpy import ndarray
 from pprint import pprint
@@ -22,14 +23,29 @@ class TaskManager:
         self.cameras: Dict[int, Camera] = {}
         self.vcs: Dict[int, cv2.VideoCapture] = {}
         self.lock = asyncio.Lock()
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
 
     def set_task(self,
                  task: Optional[asyncio.Task]):
         self.__task = task
+
+    def init_vc(self,
+                address: str) -> Optional[cv2.VideoCapture]:
+        print(f"Init VideoCapture for {address}")
+        try:
+            capture = cv2.VideoCapture(address)
+            if not capture.isOpened():
+                print("\tVideoCapture is not opened")
+                return None
+            return capture
+        except Exception as e:
+            print(f"Catched exception: {e}")
+            raise e
     
     async def create_vc(self,
                         address: str) -> cv2.VideoCapture:
-        capture = cv2.VideoCapture(address)
+        loop = asyncio.get_event_loop()
+        capture = await loop.run_in_executor(self.executor, self.init_vc, address)
         capture.set(cv2.CAP_PROP_VIDEO_STREAM, cv2.CAP_FFMPEG)
         return capture
     
@@ -64,37 +80,62 @@ class TaskManager:
     
     async def edit_camera(self,
                           camera: Camera):
-        if camera.id in self.cameras:
-            new_vc = await self.create_vc(camera.address)
-            async with self.lock:
-                self.cameras[camera.id] = camera
-                self.vcs[camera.id] = new_vc
-            print(f"VideoCapture recreated for camera [{camera.id}]")
+        if detecting_model.model_specified:
+            if camera.id in self.cameras:
+                new_vc = await self.create_vc(camera.address)
+                async with self.lock:
+                    self.cameras[camera.id] = camera
+                    self.vcs[camera.id] = new_vc
+                print(f"VideoCapture recreated for camera [{camera.id}]")
+            else:
+                print(f"[WARNING] [{camera.id}] not in cameras")
         else:
-            print(f"[WARNING] [{camera.id}] not in cameras")
-    
+            print(f"[ERROR] Specified model in config must exist: {detecting_model.model_specified}")
+
+    def release_vc(self,
+                   vc: cv2.VideoCapture):
+        vc.release()
+
     async def delete_camera(self,
                             camera: Camera):
-        if camera.id in self.cameras:
-            self.vcs[camera.id].release()
-            async with self.lock:
-                self.cameras.pop(camera.id)
-                self.vcs.pop(camera.id)
-            print(f"Camera and VideoCapture deleted for [{camera.id}]")
+        if detecting_model.model_specified:
+            if camera.id in self.cameras:
+                async with self.lock:
+                    self.cameras.pop(camera.id)
+                print(f"Camera deleted for [{camera.id}]")
+            else:
+                print(f"[WARNING] [{camera.id}] not in cameras")
+            
+            if camera.id in self.vcs:
+                async with self.lock:
+                    vc = self.vcs.pop(camera.id, None)
+                if vc is not None:
+                    loop = asyncio.get_event_loop()
+                    await loop.run_in_executor(self.executor, self.release_vc, vc)
+                print(f"VideoCapture ({vc}) deleted for [{camera.id}]")
+            else:
+                print(f"[WARNING] [{camera.id}] not in vcs")
         else:
-            print(f"[WARNING] [{camera.id}] not in cameras")
+            print(f"[ERROR] Specified model in config must exist: {detecting_model.model_specified}")
+
     
     async def switch_camera(self,
                             camera: Camera):
-        if camera.id not in self.cameras and camera.is_monitoring:
-            new_vc = await self.create_vc(camera.address)
-            async with self.lock:
-                self.cameras[camera.id] = camera
-                self.vcs[camera.id] = new_vc
-            print(f"Camera switched on for [{camera.id}]")
-        elif camera.id in self.cameras and not camera.is_monitoring:
-            await self.delete_camera(camera)
-            print(f"Camera switched off for [{camera.id}]")
+        if detecting_model.model_specified:
+            if camera.id not in self.cameras and camera.is_monitoring:
+                async with self.lock:
+                    self.cameras[camera.id] = camera
+                new_vc = await self.create_vc(camera.address)
+                async with self.lock:
+                    self.vcs[camera.id] = new_vc
+                print(f"Camera switched on for [{camera.id}]")
+                if camera.id not in self.cameras:
+                    await self.delete_camera(camera)
+            elif camera.id in self.cameras and not camera.is_monitoring:
+                await self.delete_camera(camera)
+                print(f"Camera switched off for [{camera.id}]")
+        else:
+            print(f"[ERROR] Specified model in config must exist: {detecting_model.model_specified}")
 
     def release_all_vcs(self):
         for camera_id, vc in self.vcs.items():
@@ -124,17 +165,20 @@ class TaskManager:
                     cameras_id += [camera_id]
                     frames += [frame]
         return cameras_id, frames
-    
+
     async def start(self):
         print("start_task called")
-        init_cameras = asyncio.create_task(self.initialize_cameras())
-        print("init_cameras task created")
-        await init_cameras
-        print("Cameras initialization ended, creating vcs task")
-        asyncio.create_task(self.initialize_vcs())
-        if self.__task is None or self.__task.cancelled():
-            task = asyncio.create_task(self.monitor_cameras())
-            self.set_task(task)
+        if detecting_model.model_specified:
+            init_cameras = asyncio.create_task(self.initialize_cameras())
+            print("init_cameras task created")
+            await init_cameras
+            print("Cameras initialization ended, creating vcs task")
+            asyncio.create_task(self.initialize_vcs())
+            if self.__task is None or self.__task.cancelled():
+                task = asyncio.create_task(self.monitor_cameras())
+                self.set_task(task)
+        else:
+            print(f"[ERROR] Specified model in config must exist: {detecting_model.model_specified}")
         self.info()
     
     async def kill_task(self):
@@ -159,7 +203,7 @@ class TaskManager:
                         pprint(results.to_json())
                         asyncio.create_task(self.save_results(results, frames))
                     else:
-                        print("no detections")
+                        print(f"no detections in {len(frames)} frames")
                     previous_time = current_time
 
                 await asyncio.sleep(0.01)

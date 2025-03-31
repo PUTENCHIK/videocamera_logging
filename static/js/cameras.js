@@ -48,6 +48,7 @@ createApp({
         },
 
         loadCameras() {
+            this.loading = true;
             fetch("/api/cameras", {
                 method: "GET",
                 headers: {
@@ -58,6 +59,11 @@ createApp({
                 .then((r) => {
                     this.cameras = r;
                     this.formatDates();
+                    this.loading = false;
+                })
+                .catch((e) => {
+                    this.loading = false;
+                    throw(e);
                 });
         },
 
@@ -209,9 +215,7 @@ createApp({
     },
 
     mounted() {
-        this.loading = true;
         this.loadCameras();
-        this.loading = false;
     }
 
 }).mount("#app");

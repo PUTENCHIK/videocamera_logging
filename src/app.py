@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
@@ -11,6 +11,7 @@ from src import (
 )
 from src.detecting import task_manager
 from src.database import create_db_and_tables
+from src.websockets import message_manager
 
 
 @asynccontextmanager
@@ -40,6 +41,24 @@ app.mount("/static/js", StaticFiles(directory=Config.pathes.js), name="scripts")
 app.mount("/storage", StaticFiles(directory=Config.pathes.storage), name="storage")
 app.mount("/static/images/icons", StaticFiles(directory=Config.pathes.icons), name="icons")
 app.mount("/storage/snapshots", StaticFiles(directory=Config.pathes.snapshots), name="snapshots")
+
+
+@app.websocket("/ws")
+async def wb_messages(websocket: WebSocket):
+    await message_manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            print(f"Received: {data}")
+            await message_manager.broadcast(f"Client says: {data}")
+    except WebSocketDisconnect:
+        message_manager.disconnect(websocket)
+        print("Client disconnected")
+    except Exception as e:
+        error_message = f"Error: {type(e).__name__} - {str(e)}"
+        await message_manager.send_error_message(websocket, e)
+        print(f"Error occurred: {error_message}")
+        message_manager.disconnect(websocket)
 
 
 @app.get("/favicon.ico", include_in_schema=False)

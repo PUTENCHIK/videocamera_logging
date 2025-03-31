@@ -80,13 +80,13 @@
                 <h2 v-else>Изменение видеокамеры #[[ form_data.id ]]</h2>
                 <form @submit="(event) => current_form === 'add' ? addCamera(event) : editCamera(event)" name="add-camera">
                     <div class="form-inputs">
-                        <label class="filled" :class="{ 'error' : errors.address }">
+                        <label class="filled" :class="{ 'error' : form_errors.address }">
                             <span class="label-bold">адрес:</span>
                             <input
                                 :value="form_data.address"
                                 type="text" name="address" maxlength="100"
                                 placeholder="rtsp://{ip}:{port}/{thread}">
-                            <span v-if="errors.address" class="error-text">[[ errors.address ]]</span>
+                            <span v-if="form_errors.address" class="error-text">[[ form_errors.address ]]</span>
                         </label>
                     </div>
                     <button type="submit" class="primary submit-form" :disable="sending">
@@ -109,9 +109,20 @@
             </div>
         </div>
     </div>
+
+    <div class="messages-container">
+        <message
+            v-for="(error, index) in system_errors"
+            :key="index"
+            :type="error.type"
+            :title="error.title"
+            :text="error.text">
+        </message>
+    </div>
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
-    <script src="{{ url_for('scripts', path='/cameras.js') }}"></script>
+    <script type="module" src="{{ url_for('scripts', path='/Message.js') }}"></script>
+    <script type="module" src="{{ url_for('scripts', path='/cameras.js') }}"></script>
 {% endblock %}

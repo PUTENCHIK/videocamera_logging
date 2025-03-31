@@ -1,0 +1,1 @@
+from .mm import message_manager

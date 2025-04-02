@@ -16,7 +16,7 @@ const Message = {
     template: `
         <div class="message" :class="type">
             <div class="icon-wrapper">
-                <img :src="'/static/images/icons/' + type + '.png'" :alt="type">
+                <div class="img"></div>
             </div>
             <div class="__content">
                 <div class="title label-bold">{{ title }}</div>

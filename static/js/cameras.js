@@ -71,6 +71,10 @@ createApp({
                     this.loading = false;
                 })
                 .catch((e) => {
+                    this.addError({
+                        title: "Загрузка камер",
+                        text: "Ошибка при загрузке"
+                    });
                     this.loading = false;
                     throw(e);
                 });
@@ -96,14 +100,23 @@ createApp({
                     .then((r) => {
                         this.cameras.push(r);
                         this.formatDates();
+                        this.sending = false;
+                    })
+                    .catch(e => {
+                        this.addError({
+                            title: "Добавление камеры",
+                            text: `Ошибка при добавлении камеры`
+                        }, 10000);
+                        this.sending = false;
+                        throw(e);
                     });
-                this.sending = false;
                 this.closeForm();
             }
         },
 
         editCamera(event) {
             event.preventDefault();
+            let id = this.form_data.id;
             let data = new FormData(event.target);
             let json = Object.fromEntries(data);
             json = this.processJsonData(json);
@@ -111,7 +124,7 @@ createApp({
             if (this.validateData(json)) {
                 let requestBody = JSON.stringify(json);
                 this.sending = true;
-                fetch(`/cameras/${this.form_data.id}/edit`, {
+                fetch(`/cameras/${id}/edit`, {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json"
@@ -129,7 +142,21 @@ createApp({
                                     break;
                                 }
                             }
+                        } else {
+                            this.addWarning({
+                                title: "Редактирование камеры",
+                                text: `Камеры [${id}] не существует`
+                            }, 5000);
                         }
+                        this.sending = false;
+                    })
+                    .catch(e => {
+                        this.addError({
+                            title: "Редактирование камеры",
+                            text: `Ошибка при редактировании камеры`
+                        }, 10000);
+                        this.sending = false;
+                        throw(e);
                     });
                 this.sending = false;
                 this.closeForm();
@@ -137,8 +164,8 @@ createApp({
         },
 
         deleteCamera() {
-            this.sending = true;
             let id = this.form_data.id;
+            this.sending = true;
             fetch(`/cameras/${id}/delete`, {
                 method: "DELETE",
                 headers: {
@@ -158,7 +185,21 @@ createApp({
                         if (index != undefined) {
                             this.cameras.splice(index, 1);
                         }
+                    } else {
+                        this.addWarning({
+                            title: "Удаление камеры",
+                            text: `Камеры [${id}] не существует`
+                        }, 5000);
                     }
+                    this.sending = false;
+                })
+                .catch(e => {
+                    this.addError({
+                        title: "Удаление камеры",
+                        text: `Ошибка при удалении камеры`
+                    }, 10000);
+                    this.sending = false;
+                    throw(e);
                 });
             this.sending = false;
             this.closeForm();
@@ -184,10 +225,19 @@ createApp({
                                     break;
                                 }
                             }
-                            this.sending = false;
+                        } else {
+                            this.addWarning({
+                                title: "Переключение камеры",
+                                text: `Камеры [${id}] не существует`
+                            }, 5000);
                         }
+                        this.sending = false;
                     })
                     .catch(e => {
+                        this.addError({
+                            title: "Переключение камеры",
+                            text: `Ошибка при переключении камеры`
+                        }, 10000);
                         this.sending = false;
                         throw(e);
                     });
@@ -223,9 +273,13 @@ createApp({
         },
 
         initWebSocket() {
+            const ws_reinit = 3;
             this.ws_messages = new WebSocket('ws://localhost:5050/ws');
             this.ws_messages.addEventListener("open", () => {
-                console.log("WebSocket opened");            
+                this.addInfo({
+                    title: "Вебсокет",
+                    text: "Получение сообщений с сервера работает"
+                }, 5000);
                 this.ws_inits_counter = 0;
             });
     
@@ -234,17 +288,28 @@ createApp({
                     const data = JSON.parse(event.data);
                     this.addMessage(data);
                 } catch (e) {
-                    console.log(event.data);
-                    throw(e);
+                    this.addCamera({
+                        type: "error",
+                        title: "Получение сообщения",
+                        text: "Ошибка при получении сообщения с сервера"
+                    }, 10000);
                 }                
             });
         
             this.ws_messages.addEventListener("close", () => {
-                console.log('WebSocket disconnected');
-                if (this.ws_inits_counter < 3) {
+                if (this.ws_inits_counter < ws_reinit) {
+                    this.addWarning({
+                        title: "Вебсокет",
+                        text: `Соединение с вебсокетом разорвано. Переподключение ${this.ws_inits_counter+1}/${ws_reinit}`,
+                    }, 5000);
                     setTimeout(() => {
                         this.initWebSocket();
                     }, 3000);
+                } else {
+                    this.addError({
+                        title: "Вебсокет",
+                        text: `Соединение с вебсокетом разорвано.`,
+                    });
                 }
             });
         
@@ -254,12 +319,29 @@ createApp({
             });
         },
 
-        addMessage(message) {
+        addError(data, delay) {
+            this.addMessage(data, "error", delay)
+        },
+
+        addWarning(data, delay) {
+            this.addMessage(data, "warning", delay)
+        },
+
+        addInfo(data, delay) {
+            this.addMessage(data, "info", delay)
+        },
+
+        addMessage(message, type, delay) {
             message.id = this.ws_id++;
+            if (type != undefined) {
+                message.type = type;
+            }
             this.system_errors.push(message);
-            setTimeout(() => {
-                this.deleteMessage(message.id);
-            }, 5000);
+            if (delay != undefined) {
+                setTimeout(() => {
+                    this.deleteMessage(message.id);
+                }, delay);
+            }
         },
 
         deleteMessage(id) {
@@ -273,8 +355,6 @@ createApp({
             };
             if (index != undefined) {
                 this.system_errors.splice(index, 1);
-                console.log(`Message ${id} has been deleted`);
-                
             }
         },
     },

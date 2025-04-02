@@ -49,14 +49,13 @@ async def wb_messages(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            print(f"Received: {data}")
-            await message_manager.broadcast(f"Client says: {data}")
+            print(f"WebSocket messages received: {data}")
     except WebSocketDisconnect:
         message_manager.disconnect(websocket)
         print("Client disconnected")
     except Exception as e:
         error_message = f"Error: {type(e).__name__} - {str(e)}"
-        await message_manager.send_error_message(websocket, e)
+        await message_manager.send_error(websocket, e)
         print(f"Error occurred: {error_message}")
         message_manager.disconnect(websocket)
 

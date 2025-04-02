@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import WebSocket
 
 
@@ -15,11 +15,11 @@ class MessagesManager:
                    websocket: WebSocket):
         self.connections.remove(websocket)
 
-    async def send_error_message(self,
-                                 websocket: WebSocket,
-                                 ex: Exception = None,
-                                 title: str = "server error",
-                                 text: str = "unknown"):
+    async def send_error(self,
+                         websocket: WebSocket,
+                         ex: Optional[Exception] = None,
+                         title: str = "server error",
+                         text: str = "unknown"):
         if ex is not None:
             text = str(ex)
         await websocket.send_json({
@@ -28,10 +28,44 @@ class MessagesManager:
             "text": text
         })
 
-    async def broadcast(self,
-                        message: str):
+    async def send_warning(self,
+                            websocket: WebSocket,
+                            title: str = "warning",
+                            text: str = "unknown"):
+        await websocket.send_json({
+            "type": "warning",
+            "title": title,
+            "text": text
+        })
+
+    async def send_info(self,
+                        websocket: WebSocket,
+                        title: str = "info",
+                        text: str = "unknown"):
+        await websocket.send_json({
+            "type": "info",
+            "title": title,
+            "text": text
+        })
+    
+    async def send_error_all(self,
+                             ex: Optional[Exception] = None,
+                             title: str = "server error",
+                             text: str = "unknown"):
         for connection in self.connections:
-            await connection.send_text(message)
+            self.send_error(connection, ex, title, text)
+    
+    async def send_warning_all(self,
+                             title: str = "warning",
+                             text: str = "unknown"):
+        for connection in self.connections:
+            self.send_warning(connection, title, text)
+    
+    async def send_info_all(self,
+                             title: str = "info",
+                             text: str = "unknown"):
+        for connection in self.connections:
+            self.send_info(connection, title, text)
 
 
 message_manager = MessagesManager()

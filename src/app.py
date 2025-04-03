@@ -3,6 +3,7 @@ import asyncio
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from src import (
@@ -41,6 +42,14 @@ app.mount("/static/js", StaticFiles(directory=Config.pathes.js), name="scripts")
 app.mount("/storage", StaticFiles(directory=Config.pathes.storage), name="storage")
 app.mount("/static/images/icons", StaticFiles(directory=Config.pathes.icons), name="icons")
 app.mount("/storage/snapshots", StaticFiles(directory=Config.pathes.snapshots), name="snapshots")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=Config.app.origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.websocket("/ws")

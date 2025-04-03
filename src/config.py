@@ -6,7 +6,11 @@ class ConfigApp:
     name = "src.app:app"
     host = "localhost"
     port = 5050
-    icon = "favicon.ico"
+    port_vue = 5173
+    origins = [
+        "http://localhost",
+        f"http://localhost:{port_vue}",
+    ]
 
 
 class ConfigPathes:

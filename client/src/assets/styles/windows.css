@@ -1,0 +1,43 @@
+.forms-container > div {
+    display: inline-flex;
+    flex-direction: column;
+    margin: auto;
+
+    box-shadow: 5px 5px 7px #808080;
+    border-radius: 20px;
+    background-color: white;
+}
+
+.forms-container h2 {
+    text-align: center;
+}
+
+.button-cross {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    border-radius: 20px;
+    background-color: white;
+}
+
+.button-cross::before {
+    display: block;
+    
+    content: "\00d7";
+    font-size: 30px;
+    color: black;
+}
+
+.button-cross:hover {
+    background-color: #E1E1E1;
+    cursor: pointer;
+}
+
+.row-right-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}

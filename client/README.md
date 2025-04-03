@@ -1,0 +1,1 @@
+# Клиентское приложение VideocameraLogging на Vue.js

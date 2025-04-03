@@ -4,7 +4,7 @@ function format(number) {
 
 export function formatDate(date) {
     let d = new Date(date);
-    return `${d.getFullYear()}-${format(d.getMonth()+1)}-${format(d.getDate())} ${format(d.getHours())}:${format(d.getMinutes())}:${format(d.getSeconds())}`;
+    return `${format(d.getDate())}.${format(d.getMonth()+1)}.${d.getFullYear()} ${format(d.getHours())}:${format(d.getMinutes())}:${format(d.getSeconds())}`;
 }
 
 export function getFormData(event) {
@@ -14,4 +14,8 @@ export function getFormData(event) {
 
 export function cloneObject(obj) {
     return JSON.parse(JSON.stringify(obj));
+}
+
+export function getColor(color) {
+    return `#${format(color.r.toString(16))}${format(color.g.toString(16))}${format(color.b.toString(16))}`.toUpperCase();
 }

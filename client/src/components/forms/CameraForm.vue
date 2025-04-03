@@ -28,32 +28,6 @@
 
 <style scoped>
     @import url('../../assets/styles/windows.css');
-
-    .add-edit-window {
-        min-width: 500px;
-        row-gap: 20px;
-        padding: 20px 20px 40px 20px;
-    }
-
-    .window__content {
-        display: flex;
-        flex-direction: column;
-        row-gap: 10px;
-
-        padding: 0 60px;
-    }
-
-    .window__content > form {
-        display: flex;
-        flex-direction: column;
-        row-gap: 30px;
-    }
-
-    .window__content > form > .form-inputs {
-        display: flex;
-        flex-direction: column;
-        row-gap: 20px;
-    }
 </style>
 
 <script>
@@ -108,6 +82,7 @@ export default {
         },
 
         validateCameraData(data) {
+            this.error = {};
             if (data.address.length === 0) {
                 this.errors['address'] = "Адрес не может быть пустым";
                 return false;

@@ -1,12 +1,12 @@
 <template>
     <div class="delete-window">
-        <p>Вы точно хотите удалить камеру #{{ id }}?</p>
+        <p>Вы точно хотите удалить {{ entity }} #{{ id }}?</p>
         <div class="buttons-box">
-            <button @click="handleButtonClose" class="basic close-window">
+            <button @click="handleButtonClose" class="basic">
                 <span>Закрыть</span>
             </button>
-            <button @click="handleButtonDelete" class="danger delete-camera">
-                <span>Удалить камеру</span>
+            <button @click="handleButtonDelete" class="danger">
+                <span>Удалить {{ entity }}</span>
             </button>
         </div>
     </div>
@@ -29,12 +29,12 @@
         margin: 0;
     }
 
-    .delete-window button.close-window {
+    .delete-window button.basic {
         display: inline-flex;
     }
 
     .delete-window form,
-    .delete-window button.delete-camera {
+    .delete-window button.danger {
         display: flex;
         width: 100%;
     }
@@ -44,6 +44,9 @@
 export default {
     props: {
         id: {
+            required: true
+        },
+        entity: {
             required: true
         },
         onClose: {

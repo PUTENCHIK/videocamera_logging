@@ -2,7 +2,9 @@
     <h1>Отслеживаемые камеры</h1>
 
     <div class="row-right-container">
-        <button @click="showAddCameraForm" class="primary" :disabled="loading || sending">
+        <button @click="showAddCameraForm"
+                class="primary"
+                :disabled="loading || sending">
             <span>Добавить видеокамеру</span>
         </button>
     </div>
@@ -24,10 +26,16 @@
             </div>
             <div>{{ camera.created_at }}</div>
             <div class="icons-box">
-                <img @click="showEditCameraForm(camera.id)" class="icon-button" :class="{ 'disabled': sending }"
-                    src="../assets/icons/edit.png" alt="edit">
-                <img @click="showDeleteCameraForm(camera.id)" class="icon-button" :class="{ 'disabled': sending }"
-                    src="../assets/icons/delete.png" alt="delete">
+                <img @click="showEditCameraForm(camera.id)"
+                    class="icon-button"
+                    :class="{ 'disabled': sending }"
+                    src="../assets/icons/edit.png"
+                    alt="edit">
+                <img @click="showDeleteCameraForm(camera.id)"
+                    class="icon-button"
+                    :class="{ 'disabled': sending }"
+                    src="../assets/icons/delete.png"
+                    alt="delete">
             </div>
         </div>
     </div>
@@ -39,14 +47,14 @@
     <FormsContainer v-if="current_form">
         <template #form>
             <CameraForm 
-                v-if="current_form === 'add'"
+                v-if="current_form == 'add'"
                 :type="current_form"
                 :data="form_data"
                 :onClose="closeForm"
                 :onSubmit="addCamera"
                 @update:data="updateFormData" />
             <CameraForm
-                v-else-if="current_form === 'edit'"
+                v-else-if="current_form == 'edit'"
                 :type="current_form"
                 :data="form_data"
                 :onClose="closeForm"
@@ -55,6 +63,7 @@
             <DeleteForm
                 v-else
                 :id="form_data.id"
+                :entity="entity"
                 :onClose="closeForm"
                 :onDelete="deleteCamera"/>
         </template>
@@ -87,6 +96,7 @@ export default {
             cameras: [],
             current_form: null,
             form_data: {},
+            entity: "камеру"
         }
     },
 
@@ -94,7 +104,9 @@ export default {
         async loadCameras() {
             try {
                 this.loading = true;
-                const response = await axios.get("http://localhost:5050/api/cameras");
+                const response = await axios.get(
+                    "http://localhost:5050/api/cameras"
+                );
                 this.cameras = response.data;
                 this.formatDates();
             } catch (error) {
@@ -106,27 +118,30 @@ export default {
 
         async addCamera() {
             try {
+                let data = cloneObject(this.form_data);
+                this.closeForm();
                 this.sending = true;
                 const response = await axios.post(
                     "http://localhost:5050/cameras/add",
-                    this.form_data
+                    data
                 );
                 this.cameras.push(response.data);
                 this.formatDates();
             } catch (error) {
                 throw(error);
             } finally {
-                this.closeForm();
                 this.sending = false;
             }
         },
 
         async editCamera() {            
             try {
+                let data = cloneObject(this.form_data);
+                this.closeForm();
                 this.sending = true;
                 const response = await axios.patch(
-                    `http://localhost:5050/cameras/${this.form_data.id}/edit`,
-                    this.form_data
+                    `http://localhost:5050/cameras/${data.id}/edit`,
+                    data
                 );
                 let result = response.data;
                 if (result.success) {
@@ -142,7 +157,6 @@ export default {
             } catch (error) {
                 throw(error);
             } finally {
-                this.closeForm();
                 this.sending = false;
             }
         },
@@ -150,9 +164,10 @@ export default {
         async deleteCamera() {
             try {
                 let id = this.form_data.id;
+                this.closeForm();
                 this.sending = true;
                 const response = await axios.delete(
-                    `http://localhost:5050/cameras/${this.form_data.id}/delete`
+                    `http://localhost:5050/cameras/${id}/delete`
                 );
                 let result = response.data;                
                 if (result.success) {
@@ -170,7 +185,6 @@ export default {
             } catch (error) {
                 throw(error);
             } finally {
-                this.closeForm();
                 this.sending = false;
             }
         },
@@ -195,7 +209,6 @@ export default {
             } catch (error) {
                 throw(error);
             } finally {
-                this.closeForm();
                 this.sending = false;
             }
         },
@@ -216,7 +229,6 @@ export default {
                 this.cameras.forEach((camera) => {
                     if (camera.id === id) {
                         this.form_data = cloneObject(camera);
-                        // this.form_data.id = id;
                     }
                 });
             }
@@ -228,7 +240,6 @@ export default {
                 this.cameras.forEach((camera) => {
                     if (camera.id === id) {
                         this.form_data = cloneObject(camera);
-                        // this.form_data.id = id;
                     }
                 });
             }
@@ -236,7 +247,6 @@ export default {
 
         closeForm() {
             this.current_form = null;
-            this.form_errors = {};
             this.form_data = {};
         },
 

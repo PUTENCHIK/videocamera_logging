@@ -44,7 +44,7 @@
 
         border-bottom: 1px solid #808080;
         background-color: white;
-        z-index: 99;
+        z-index: 8;
     }
 
     header a {

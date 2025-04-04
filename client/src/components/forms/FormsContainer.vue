@@ -1,5 +1,7 @@
 <template>
-    <div class="forms-container">
+    <div class="forms-container"
+        @mousedown="(event) => handleMouseDown(event)"
+        @mouseup="(event) => handleMouseUp(event)">
         <slot name="form">
             <span>Form must be defined</span>
         </slot>
@@ -19,3 +21,37 @@
         z-index: 9;
     }
 </style>
+
+<script>
+export default {
+    props: {
+        onClose: {
+            type: Function,
+            required: true
+        }
+    },
+
+    data() {
+        return {
+            was_mouse_down: false
+        }
+    },
+
+    methods: {
+        handleMouseDown(event) {
+            if (event.target.className === "forms-container") {
+                this.was_mouse_down = true;
+            }
+        },
+
+        handleMouseUp(event) {
+            if (this.was_mouse_down && event.target.className === "forms-container") {
+                this.was_mouse_down = false;
+                if (this.onClose) {
+                    this.onClose();
+                }
+            }
+        }
+    }
+}
+</script>

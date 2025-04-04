@@ -21,7 +21,8 @@
             <div>{{ camera.id }}</div>
             <div>{{ camera.address }}</div>
             <div>
-                <div @click="switchCameraMonitoring(camera.id)" class="switch"
+                <div @click="switchCameraMonitoring(camera.id)"
+                    class="switch"
                     :class="{ 'on': camera.is_monitoring, 'disabled': sending }"></div>
             </div>
             <div>{{ camera.created_at }}</div>
@@ -44,7 +45,7 @@
         <span class="loader"></span>
     </div>
 
-    <FormsContainer v-if="current_form">
+    <FormsContainer v-if="current_form" :onClose="closeForm">
         <template #form>
             <CameraForm 
                 v-if="current_form == 'add'"

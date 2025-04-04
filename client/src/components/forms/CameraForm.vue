@@ -1,5 +1,5 @@
 <template>
-    <div class="add-edit-window">
+    <div class="window add-edit-window">
         <div class="row-right-container">
             <div @click="handleButtonClose" class="button-cross"></div>
         </div>

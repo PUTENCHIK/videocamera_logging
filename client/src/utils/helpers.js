@@ -16,6 +16,10 @@ export function cloneObject(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
-export function getColor(color) {
+export function colorToHex(color) {
     return `#${format(color.r.toString(16))}${format(color.g.toString(16))}${format(color.b.toString(16))}`.toUpperCase();
+}
+
+export function colorToString(color) {
+    return `${color.r}, ${color.g}, ${color.b}`;
 }

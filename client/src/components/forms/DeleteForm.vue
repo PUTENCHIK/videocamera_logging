@@ -1,5 +1,5 @@
 <template>
-    <div class="delete-window">
+    <div class="window delete-window">
         <p>Вы точно хотите удалить {{ entity }} #{{ id }}?</p>
         <div class="buttons-box">
             <button @click="handleButtonClose" class="basic">

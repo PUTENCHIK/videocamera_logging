@@ -1,4 +1,4 @@
-.forms-container > div {
+.window {
     display: inline-flex;
     flex-direction: column;
     margin: auto;
@@ -8,7 +8,7 @@
     background-color: white;
 }
 
-.forms-container h2 {
+.window h2 {
     text-align: center;
 }
 

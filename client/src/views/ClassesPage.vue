@@ -48,7 +48,7 @@
         <span class="loader"></span>
     </div>
 
-    <FormsContainer v-if="current_form">
+    <FormsContainer v-if="current_form" :onClose="closeForm">
         <template #form>
             <ClassForm
                 v-if="current_form == 'add'"
@@ -85,7 +85,7 @@
 
 <script>
 import axios from 'axios';
-import { formatDate, cloneObject, getColor } from '/src/utils/helpers';
+import { formatDate, cloneObject, colorToHex } from '/src/utils/helpers';
 import FormsContainer from '/src/components/forms/FormsContainer.vue';
 import ClassForm from '/src/components/forms/ClassForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
@@ -199,7 +199,7 @@ export default {
             this.classes.forEach((class_) => {
                 class_.created_at = formatDate(class_.created_at);
                 if (typeof(class_.color) !== "string") {
-                    class_.color = getColor(class_.color);
+                    class_.color = colorToHex(class_.color);
                 }
             });
         },

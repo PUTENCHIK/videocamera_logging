@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standart]
+websockets
+jinja2
+sqlalchemy
+aiosqlite
+python-multipart
+opencv-python
+ultralytics
+asyncio

@@ -1,9 +1,0 @@
-fastapi
-uvicorn[standart]
-jinja2
-sqlalchemy
-aiosqlite
-python-multipart
-opencv-python
-ultralytics
-asyncio

@@ -1,0 +1,1 @@
+# FastAPI сервер VideocameraLogging

@@ -75,7 +75,6 @@
 @import url('../assets/styles/tables.css');
 @import url('../assets/styles/windows.css');
 @import url('../assets/styles/loader.css');
-@import url('../assets/styles/messages.css');
 </style>
 
 <script>
@@ -86,6 +85,8 @@ import CameraForm from '/src/components/forms/CameraForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
 
 export default {
+    inject: ['addError', 'addWarning', 'addInfo'],
+
     components: {
         FormsContainer, CameraForm, DeleteForm
     },
@@ -111,6 +112,7 @@ export default {
                 this.cameras = response.data;
                 this.formatDates();
             } catch (error) {
+                this.addError("Загрузка камер", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.loading = false;
@@ -129,6 +131,7 @@ export default {
                 this.cameras.push(response.data);
                 this.formatDates();
             } catch (error) {
+                this.addError("Добавление камеры", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;
@@ -156,6 +159,7 @@ export default {
                     }
                 }
             } catch (error) {
+                this.addError("Редактирование камеры", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;
@@ -184,6 +188,7 @@ export default {
                     }
                 }
             } catch (error) {
+                this.addError("Удаление камеры", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;
@@ -208,6 +213,7 @@ export default {
                     }
                 }
             } catch (error) {
+                this.addError("Переключение камер", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;

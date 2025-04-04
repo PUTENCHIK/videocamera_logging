@@ -80,7 +80,6 @@
 @import url('../assets/styles/tables.css');
 @import url('../assets/styles/windows.css');
 @import url('../assets/styles/loader.css');
-@import url('../assets/styles/messages.css');
 </style>
 
 <script>
@@ -91,6 +90,8 @@ import ClassForm from '/src/components/forms/ClassForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
 
 export default {
+    inject: ['addError', 'addWarning', 'addInfo'],
+
     components: {
         FormsContainer, ClassForm, DeleteForm
     },
@@ -116,6 +117,7 @@ export default {
                 this.classes = response.data;
                 this.formatClassesData();
             } catch (error) {
+                this.addError("Загрузка классов", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.loading = false;
@@ -134,6 +136,7 @@ export default {
                 this.classes.push(response.data);
                 this.formatClassesData();
             } catch (error) {
+                this.addError("Добавление класса", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;
@@ -161,6 +164,7 @@ export default {
                     }
                 }
             } catch (error) {
+                this.addError("Редактирование класса", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;
@@ -189,6 +193,7 @@ export default {
                     }
                 }
             } catch (error) {
+                this.addError("Удаление класса", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;

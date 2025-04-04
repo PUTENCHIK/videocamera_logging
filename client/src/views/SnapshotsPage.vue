@@ -43,7 +43,6 @@
 
 <style scoped>
     @import url('../assets/styles/loader.css');
-    @import url('../assets/styles/messages.css');
 
     .main > .__content {
         display: flex;
@@ -77,10 +76,12 @@
 
 <script>
 import axios from 'axios';
-import { formatDate, colorToString } from '/src/utils/helpers';
+import { formatDate } from '/src/utils/helpers';
 import SnapshotBox from '/src/components/snapshots/SnapshotBox.vue';
 
 export default {
+    inject: ['addError', 'addWarning', 'addInfo'],
+
     components: {
         SnapshotBox
     },
@@ -103,6 +104,7 @@ export default {
                 );
                 this.snapshots = response.data;
             } catch (error) {
+                this.addError("Загрузка снимков", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.loading = false;

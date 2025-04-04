@@ -4,6 +4,8 @@ function format(number) {
 
 export function formatDate(date) {
     let d = new Date(date);
+    if (isNaN(d))
+        return date.toString();
     return `${format(d.getDate())}.${format(d.getMonth()+1)}.${d.getFullYear()} ${format(d.getHours())}:${format(d.getMinutes())}:${format(d.getSeconds())}`;
 }
 
@@ -22,4 +24,12 @@ export function colorToHex(color) {
 
 export function colorToString(color) {
     return `${color.r}, ${color.g}, ${color.b}`;
+}
+
+export function getClassColor(object) {
+    if (object.trackable_class !== null) {
+        return object.trackable_class.color;
+    } else {
+        return {r: 128, g: 128, b: 128};
+    }
 }

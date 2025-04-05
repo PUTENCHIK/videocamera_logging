@@ -1,7 +1,11 @@
 <template>
     <h1>Снимки с камер</h1>
 
-    <div v-if="!loading" class="__content">
+    <div v-if="loading" class="loader-wrapper">
+        <span class="loader"></span>
+    </div>
+    <p v-else-if="snapshots == null">Не удалось загрузить снимки с камер.</p>
+    <div v-else class="__content">
         <div v-if="snapshots.length" class="filters-container">
             <form name="filters">
                 <div class="form-group">
@@ -35,9 +39,6 @@
                 :data="snapshot" />
         </div>
         <p v-else>В базе нет ещё ни одного снимка с камер.</p>
-    </div>
-    <div v-else class="loader-wrapper">
-        <span class="loader"></span>
     </div>
 </template>
 
@@ -89,7 +90,7 @@ export default {
     data() {
         return {
             loading: false,
-            snapshots: [],
+            snapshots: null,
             objectBboxHoverId: 0,
             objects_styles: {}
         }

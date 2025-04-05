@@ -33,3 +33,7 @@ export function getClassColor(object) {
         return {r: 128, g: 128, b: 128};
     }
 }
+
+export function firstToUpperCase(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

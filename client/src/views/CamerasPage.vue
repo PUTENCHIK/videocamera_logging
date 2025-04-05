@@ -9,7 +9,11 @@
         </button>
     </div>
 
-    <div v-if="cameras.length && !loading" class="table-display">
+    <div v-if="loading" class="loader-wrapper">
+        <span class="loader"></span>
+    </div>
+    <p v-else-if="cameras == null">Не удалось загрузить камеры.</p>
+    <div v-else-if="cameras.length" class="table-display">
         <div class="table-row">
             <div class="label-bold">id</div>
             <div class="label-bold">Адрес</div>
@@ -40,10 +44,7 @@
             </div>
         </div>
     </div>
-    <p v-else-if="!loading">В базе нет ещё ни одной камеры.</p>
-    <div v-else class="loader-wrapper">
-        <span class="loader"></span>
-    </div>
+    <p v-else="!cameras.length">В базе нет ещё ни одной камеры.</p>
 
     <FormsContainer v-if="current_form" :onClose="closeForm">
         <template #form>
@@ -64,7 +65,7 @@
             <DeleteForm
                 v-else
                 :id="form_data.id"
-                :entity="entity"
+                :entity="'камеру'"
                 :onClose="closeForm"
                 :onDelete="deleteCamera"/>
         </template>
@@ -80,6 +81,7 @@
 <script>
 import axios from 'axios';
 import { formatDate, cloneObject } from '/src/utils/helpers';
+import CamerasMixin from '/src/utils/CamerasMixin';
 import FormsContainer from '/src/components/forms/FormsContainer.vue';
 import CameraForm from '/src/components/forms/CameraForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
@@ -87,38 +89,21 @@ import DeleteForm from '/src/components/forms/DeleteForm.vue';
 export default {
     inject: ['addError', 'addWarning', 'addInfo'],
 
+    mixins: [CamerasMixin],
+
     components: {
         FormsContainer, CameraForm, DeleteForm
     },
 
     data() {
         return {
-            loading: false,
             sending: false,
-            cameras: [],
             current_form: null,
-            form_data: {},
-            entity: "камеру"
+            form_data: {}
         }
     },
 
     methods: {
-        async loadCameras() {
-            try {
-                this.loading = true;
-                const response = await axios.get(
-                    "http://localhost:5050/api/cameras"
-                );
-                this.cameras = response.data;
-                this.formatDates();
-            } catch (error) {
-                this.addError("Загрузка камер", `Получена ошибка: ${error}`);
-                throw(error);
-            } finally {
-                this.loading = false;
-            }
-        },
-
         async addCamera() {
             try {
                 let data = cloneObject(this.form_data);
@@ -262,8 +247,11 @@ export default {
         }
     },
 
-    mounted() {
-        this.loadCameras();
+    async mounted() {
+        await this.loadCameras();
+        if (this.cameras != null) {
+            this.formatDates();
+        }
     },
 };
 </script>

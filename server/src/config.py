@@ -14,12 +14,7 @@ class ConfigApp:
 
 
 class ConfigPathes:
-    static = Path("static")
-    css = static / "css"
-    images = static / "images"
-    js = static / "js"
     storage = Path("storage")
-    icons = images / "icons"
     models = storage / "models"
     snapshots = storage / "snapshots"
 

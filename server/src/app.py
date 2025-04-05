@@ -1,7 +1,7 @@
 import asyncio
 
-from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import JSONResponse, HTMLResponse, FileResponse
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
@@ -33,6 +33,8 @@ app.include_router(cameras_router)
 app.include_router(statistic_router)
 app.include_router(about_router)
 app.include_router(api_router)
+
+app.mount("/storage/snapshots", StaticFiles(directory=Config.pathes.snapshots), name="snapshots")
 
 app.add_middleware(
     CORSMiddleware,

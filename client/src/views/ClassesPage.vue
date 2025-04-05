@@ -9,7 +9,11 @@
         </button>
     </div>
 
-    <div v-if="classes.length && !loading" class="table-display">
+    <div v-if="loading" class="loader-wrapper">
+        <span class="loader"></span>
+    </div>
+    <p v-else-if="classes == null">Не удалось загрузить классы.</p>
+    <div v-else-if="classes.length" class="table-display">
         <div class="table-row">
             <div class="label-bold">id</div>
             <div class="label-bold">системное имя</div>
@@ -43,10 +47,7 @@
             </div>
         </div>
     </div>
-    <p v-else-if="!loading">В базе нет ещё ни одного класса.</p>
-    <div v-else class="loader-wrapper">
-        <span class="loader"></span>
-    </div>
+    <p v-else="!classes.length">В базе нет ещё ни одного класса.</p>
 
     <FormsContainer v-if="current_form" :onClose="closeForm">
         <template #form>
@@ -69,7 +70,7 @@
             <DeleteForm
                 v-else
                 :id="form_data.id"
-                :entity="entity"
+                :entity="'класс'"
                 :onClose="closeForm"
                 :onDelete="deleteClass"/>
         </template>
@@ -85,6 +86,7 @@
 <script>
 import axios from 'axios';
 import { formatDate, cloneObject, colorToHex } from '/src/utils/helpers';
+import ClassesMixin from '/src/utils/ClassesMixin';
 import FormsContainer from '/src/components/forms/FormsContainer.vue';
 import ClassForm from '/src/components/forms/ClassForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
@@ -92,38 +94,21 @@ import DeleteForm from '/src/components/forms/DeleteForm.vue';
 export default {
     inject: ['addError', 'addWarning', 'addInfo'],
 
+    mixins: [ClassesMixin],
+
     components: {
         FormsContainer, ClassForm, DeleteForm
     },
     
     data() {
         return {
-            loading: false,
             sending: false,
-            classes: [],
             current_form: null,
-            form_data: {},
-            entity: "класс"
+            form_data: {}
         }
     },
 
     methods: {
-        async loadClasses() {
-            try {
-                this.loading = true;
-                const response = await axios.get(
-                    "http://localhost:5050/api/classes"
-                );
-                this.classes = response.data;
-                this.formatClassesData();
-            } catch (error) {
-                this.addError("Загрузка классов", `Получена ошибка: ${error}`);
-                throw(error);
-            } finally {
-                this.loading = false;
-            }
-        },
-
         async addClass() {
             try {
                 let data = cloneObject(this.form_data);
@@ -245,8 +230,11 @@ export default {
         }
     },
 
-    mounted() {
-        this.loadClasses();
+    async mounted() {
+        await this.loadClasses();
+        if (this.classes != null) {
+            this.formatClassesData();
+        }
     }
 }
 </script>

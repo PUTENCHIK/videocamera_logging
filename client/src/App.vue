@@ -7,21 +7,27 @@ import Message from './components/messages/Message.vue';
 <template>
     <Header current="{{ $route.fullPath }}"></Header>
     
-    <div class="main">
-        <RouterView />
-        <MessagesContainer>
-            <template #messages>
-                <Message v-for="message in messages"
-                    :key="message.id"
-                    :data="message"
-                    :onClose="deleteMessage" />
-            </template>
-        </MessagesContainer>
-    </div>
+    <main>
+        <div class="main">
+            <RouterView />
+            <MessagesContainer>
+                <template #messages>
+                    <Message v-for="message in messages"
+                        :key="message.id"
+                        :data="message"
+                        :onClose="deleteMessage" />
+                </template>
+            </MessagesContainer>
+        </div>
+    </main>
 </template>
 
 <style scoped>
-
+    main {
+        height: calc(100% - 40px);
+        margin-top: 80px;
+        overflow-y: auto;
+    }
 </style>
 
 <script>

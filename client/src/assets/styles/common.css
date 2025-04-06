@@ -8,6 +8,19 @@
 	background-color: #fff;
 }
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+#app {
+    height: 100vh;
+    box-sizing: border-box;
+    padding-bottom: 40px;
+}
+
 body,
 input,
 button {
@@ -24,11 +37,19 @@ button {
 }
 
 .main {
+    width: 1240px;
+    box-sizing: border-box;
+    margin: 0 auto 0 auto;
+    padding-top: 40px;
+    padding-bottom: 60px;
+
     display: flex;
     flex-direction: column;
     row-gap: 40px;
-    width: 1240px;
-    margin: 100px auto 0 auto;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
 }
 
 h1 {

@@ -86,7 +86,7 @@
 <script>
 import axios from 'axios';
 import { formatDate, cloneObject, colorToHex } from '/src/utils/helpers';
-import ClassesMixin from '/src/utils/ClassesMixin';
+import ClassesMixin from '/src/mixins/ClassesMixin';
 import FormsContainer from '/src/components/forms/FormsContainer.vue';
 import ClassForm from '/src/components/forms/ClassForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';

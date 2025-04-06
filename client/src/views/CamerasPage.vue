@@ -81,7 +81,7 @@
 <script>
 import axios from 'axios';
 import { formatDate, cloneObject } from '/src/utils/helpers';
-import CamerasMixin from '/src/utils/CamerasMixin';
+import CamerasMixin from '/src/mixins/CamerasMixin';
 import FormsContainer from '/src/components/forms/FormsContainer.vue';
 import CameraForm from '/src/components/forms/CameraForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';

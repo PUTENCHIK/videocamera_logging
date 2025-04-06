@@ -118,6 +118,8 @@ export default {
         clickOutside: clickOutside
     },
 
+    inject: ['addError', 'addWarning', 'addInfo'],
+
     props: {
         title: {
             required: true
@@ -142,6 +144,12 @@ export default {
         updateChoosing() {
             if (this.items.length) {
                 this.choosing = !this.choosing;
+            } else {
+                if (!this.chosen) {
+                    this.addWarning(`Категория '${this.title}'`,
+                        "Нет ни одного объекта. Добавьте их для отображения статистики"
+                    );
+                }
             }
         },
 

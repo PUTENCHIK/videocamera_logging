@@ -6,20 +6,20 @@ export default {
     data() {
         return {
             loading: false,
-            cameras: null,
+            classes: null,
         }
     },
 
     methods: {
-        async loadCameras() {
+        async loadClasses() {
             try {
                 this.loading = true;
                 const response = await axios.get(
-                    "http://localhost:5050/api/cameras"
+                    "http://localhost:5050/classes"
                 );
-                this.cameras = response.data;
+                this.classes = response.data;
             } catch (error) {
-                this.addError("Загрузка камер", `Получена ошибка: ${error}`);
+                this.addError("Загрузка классов", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.loading = false;

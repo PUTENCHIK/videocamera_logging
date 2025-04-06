@@ -76,12 +76,14 @@
 </style>
 
 <script>
-import axios from 'axios';
 import { formatDate } from '/src/utils/helpers';
+import SnapshotsMixin from '/src/mixins/SnapshotsMixin';
 import SnapshotBox from '/src/components/snapshots/SnapshotBox.vue';
 
 export default {
     inject: ['addError', 'addWarning', 'addInfo'],
+    
+    mixins: [SnapshotsMixin],
 
     components: {
         SnapshotBox
@@ -89,30 +91,12 @@ export default {
 
     data() {
         return {
-            loading: false,
-            snapshots: null,
             objectBboxHoverId: 0,
             objects_styles: {}
         }
     },
 
     methods: {
-        async loadSnapshots() {
-            try {
-                this.loading = true;
-                const response = await axios.get(
-                    "http://localhost:5050/api/snapshots"
-                );
-                this.snapshots = response.data;
-            } catch (error) {
-                this.addError("Загрузка снимков", `Получена ошибка: ${error}`);
-                throw(error);
-            } finally {
-                this.loading = false;
-                this.formatDates();
-            }
-        },
-
         formatDates() {
             this.snapshots.forEach((snapshot) => {
                 snapshot.created_at = formatDate(snapshot.created_at);
@@ -120,8 +104,11 @@ export default {
         },
     },
 
-    mounted() {
-        this.loadSnapshots();
+    async mounted() {
+        await this.loadSnapshots();
+        if (this.snapshots != null) {
+            this.formatDates();
+        }
     }
 }
 </script>

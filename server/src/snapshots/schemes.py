@@ -19,6 +19,12 @@ class ObjectAdd(BaseModel):
     bbox: Bbox
 
 
+class Object(ObjectAdd):
+    id: int
+    created_at: datetime
+    deleted_at: Optional[datetime] = None
+
+
 class ObjectFull(BaseModel):
     id: int
     snapshot_id: int
@@ -32,6 +38,12 @@ class ObjectFull(BaseModel):
 class SnapshotAdd(BaseModel):
     camera_id: int
     detecting_time: float
+
+
+class Snapshot(SnapshotAdd):
+    id: int
+    created_at: datetime
+    deleted_at: Optional[datetime] = None
 
 
 class SnapshotFull(BaseModel):

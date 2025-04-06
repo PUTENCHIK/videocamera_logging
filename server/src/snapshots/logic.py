@@ -4,11 +4,12 @@ from sqlalchemy import select, insert, desc
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.snapshots import (SnapshotAdd, SnapshotModel, ObjectModel, ObjectAdd)
+from src.snapshots import (SnapshotAdd, SnapshotModel, ObjectModel,
+                           ObjectAdd, Snapshot, Object, ObjectFull)
 
 
 async def _add_snapshot(fields: SnapshotAdd,
-                        db: AsyncSession) -> SnapshotModel:
+                        db: AsyncSession) -> Snapshot:
     query = (insert(SnapshotModel)
         .values(
             camera_id=fields.camera_id,
@@ -21,11 +22,11 @@ async def _add_snapshot(fields: SnapshotAdd,
     await db.commit()
     await db.refresh(new_snapshot)
 
-    return new_snapshot
+    return Snapshot.model_validate(new_snapshot)
 
 
 async def _add_object(fields: ObjectAdd,
-                      db: AsyncSession) -> Optional[ObjectModel]:
+                      db: AsyncSession) -> Object:
     query = (insert(ObjectModel)
         .values(
             snapshot_id=fields.snapshot_id,
@@ -40,7 +41,7 @@ async def _add_object(fields: ObjectAdd,
     await db.commit()
     await db.refresh(new_object)
 
-    return new_object
+    return Object.model_validate(new_object)
 
 
 async def _get_snapshots(db: AsyncSession) -> List[SnapshotModel]:
@@ -50,4 +51,14 @@ async def _get_snapshots(db: AsyncSession) -> List[SnapshotModel]:
         .where(SnapshotModel.deleted_at == None)
         .order_by(desc(SnapshotModel.created_at)))
     result = await db.execute(query)
-    return result.scalars().unique().all()
+    snapshots = result.scalars().unique().all()
+    return snapshots
+
+
+async def _get_objects(db: AsyncSession) -> List[ObjectFull]:
+    query = (select(ObjectModel)
+        .options(joinedload(ObjectModel.trackable_class))
+        .where(ObjectModel.deleted_at == None))
+    result = await db.execute(query)
+    objects = result.scalars().unique().all()
+    return objects

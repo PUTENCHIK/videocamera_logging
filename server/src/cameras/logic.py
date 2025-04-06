@@ -24,7 +24,8 @@ async def _add_camera(fields: CameraAddOrEdit,
 async def _get_cameras(db: AsyncSession) -> List[Camera]:
     query = select(CameraModel).where(CameraModel.deleted_at == None)
     result = await db.execute(query)
-    return [Camera.model_validate(camera) for camera in result.scalars().all()]
+    return [Camera.model_validate(camera)
+            for camera in result.scalars().all()]
 
 
 async def _get_monitoring_cameras(db: AsyncSession) -> List[Camera]:
@@ -32,7 +33,8 @@ async def _get_monitoring_cameras(db: AsyncSession) -> List[Camera]:
         .where(CameraModel.deleted_at == None,
                CameraModel.is_monitoring))
     result = await db.execute(query)
-    return [Camera.model_validate(camera) for camera in result.scalars().all()]
+    return [Camera.model_validate(camera)
+            for camera in result.scalars().all()]
 
 
 async def _get_camera(id: int,

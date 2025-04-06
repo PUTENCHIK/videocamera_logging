@@ -42,7 +42,8 @@ async def _add_class(fields: TrackableClassAddOrEdit,
 async def _get_classes(db: AsyncSession) -> List[TrackableClassFull]:
     query = select(TrackableClassModel).where(TrackableClassModel.deleted_at == None)
     result = await db.execute(query)
-    return [TrackableClassFull.model_validate(class_) for class_ in result.scalars().all()]
+    return [TrackableClassFull.model_validate(class_)
+            for class_ in result.scalars().all()]
 
 
 async def _get_class(id: int,

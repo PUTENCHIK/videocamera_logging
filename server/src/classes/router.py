@@ -1,14 +1,11 @@
-import asyncio
-from typing import Optional
-from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from typing import Optional, List
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import Config
 from src.database import get_db_session
 from src.classes import (TrackableClassAddOrEdit, TrackableClassFull, TrackableClassAfterEdit,
-                         _add_class, _get_class, _edit_class, _delete_class)
-from src.detecting import task_manager
+                         _add_class, _get_class, _get_classes, _edit_class, _delete_class)
 
 
 classes_router = APIRouter(prefix=f"/{Config.routers.classes_name}",
@@ -20,6 +17,12 @@ async def add_class(class_: TrackableClassAddOrEdit,
                     db: AsyncSession = Depends(get_db_session)):
     new_class = await _add_class(class_, db)
     return new_class
+
+
+@classes_router.get("", response_model=List[TrackableClassFull])
+async def get_classes(db: AsyncSession = Depends(get_db_session)):
+    classes = await _get_classes(db)
+    return classes
 
 
 @classes_router.patch("/{class_id}/edit", response_model=TrackableClassAfterEdit)

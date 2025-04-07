@@ -1,7 +1,7 @@
 <template>
     <h1>Классы модели</h1>
 
-    <div class="row-right-container">
+    <div v-if="!loading && classes != null" class="row-right-container">
         <button @click="showAddClassForm"
                 class="primary"
                 :disabled="loading || sending">
@@ -92,7 +92,7 @@ import ClassForm from '/src/components/forms/ClassForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
 
 export default {
-    inject: ['addError', 'addWarning', 'addInfo'],
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
 
     mixins: [ClassesMixin],
 
@@ -231,6 +231,7 @@ export default {
     },
 
     async mounted() {
+        this.deleteAllMessages();
         await this.loadClasses();
         if (this.classes != null) {
             this.formatClassesData();

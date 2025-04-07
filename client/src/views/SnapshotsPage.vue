@@ -81,7 +81,7 @@ import SnapshotsMixin from '/src/mixins/SnapshotsMixin';
 import SnapshotBox from '/src/components/snapshots/SnapshotBox.vue';
 
 export default {
-    inject: ['addError', 'addWarning', 'addInfo'],
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
     
     mixins: [SnapshotsMixin],
 
@@ -105,6 +105,7 @@ export default {
     },
 
     async mounted() {
+        this.deleteAllMessages();
         await this.loadSnapshots();
         if (this.snapshots != null) {
             this.formatDates();

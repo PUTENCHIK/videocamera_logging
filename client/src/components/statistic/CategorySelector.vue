@@ -21,7 +21,7 @@
     }
 
     .vertical-line {
-        width: 2px;
+        min-width: 2px;
         height: 60px;
         display: block;
 

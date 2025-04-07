@@ -2,10 +2,10 @@
     <div v-if="loading" class="loader-wrapper">
         <span class="loader"></span>
     </div>
-    <div v-else-if="cameras == null || classes == null">
+    <template v-else-if="cameras == null || classes == null">
         <h1>Статистика</h1>
         <p>Не удалось загрузить данные камер или классов.</p>
-    </div>
+    </template>
     <div v-else class="content">
         <CategorySelector :cameras="cameras" :classes="classes" @update:source="updateGraphicSource" />
 
@@ -58,15 +58,13 @@
 import ECharts from 'vue-echarts';
 import * as echarts from 'echarts';
 
-import { firstToUpperCase } from '/src/utils/helpers';
-import CamerasMixin from '/src/mixins/CamerasMixin';
-import ClassesMixin from '/src/mixins/ClassesMixin';
-import SnapshotsMixin from '/src/mixins/SnapshotsMixin';
 import GraphicTypesMixin from '/src/mixins/GraphicTypesMixin';
 import CategorySelector from '/src/components/statistic/CategorySelector.vue';
 
 export default {
-    mixins: [CamerasMixin, ClassesMixin, SnapshotsMixin],
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
+
+    mixins: [GraphicTypesMixin],
 
     components: {
         CategorySelector,
@@ -75,71 +73,19 @@ export default {
 
     data() {
         return {
-            source: null,
-            data: [
-                { value: 10, imageUrl: '/src/assets/icons/bear.png' },
-                { value: 20, imageUrl: '/src/assets/icons/human.png' },
-                { value: 15, imageUrl: '/src/assets/icons/fox.png' }
-            ],
-            chartOption: {}
+            
         }
     },
 
     methods: {
-        getCategoryTitle() {
-            if (this.source == null) {
-                return "Выберите категорию и объект";
-            } else {
-                let result = "Статистика ";
-                if (this.source.category == "camera") {
-                    this.cameras.forEach((camera) => {
-                        if (camera.id == this.source.id) {
-                            result += `камеры #${camera.id}`;
-                        }
-                    });
-                } else {
-                    this.classes.forEach((class_) => {
-                        if (class_.id == this.source.id) {
-                            result += `класса '${firstToUpperCase(class_.title)}'`;
-                        }
-                    });
-                }
-                return result;
-            }
-        },
-
         updateGraphicSource(newSource) {
             this.source = newSource;
-            this.chartOption = {
-                title: {
-                    text: this.getCategoryTitle()
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['A', 'B', 'C']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        data: this.data.map((item) => ({
-                            value: item.value,
-                            symbol: 'image://' + item.imageUrl,
-                            symbolSize: 24,
-                            symbolOffset: [0, 0],
-                        })),
-                        type: 'line',
-                    }
-                ]
-            };
+            this.updateChartOption();
         },
     },
 
-    async mounted() {
-        await this.loadCameras();
-        await this.loadClasses();
-        await this.loadObjects();
+    mounted() {
+        this.deleteAllMessages();
     }
 }
 </script>

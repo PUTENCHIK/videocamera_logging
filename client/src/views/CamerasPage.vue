@@ -1,7 +1,7 @@
 <template>
     <h1>Отслеживаемые камеры</h1>
 
-    <div class="row-right-container">
+    <div v-if="!loading && cameras != null" class="row-right-container">
         <button @click="showAddCameraForm"
                 class="primary"
                 :disabled="loading || sending">
@@ -87,7 +87,7 @@ import CameraForm from '/src/components/forms/CameraForm.vue';
 import DeleteForm from '/src/components/forms/DeleteForm.vue';
 
 export default {
-    inject: ['addError', 'addWarning', 'addInfo'],
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
 
     mixins: [CamerasMixin],
 
@@ -248,6 +248,7 @@ export default {
     },
 
     async mounted() {
+        this.deleteAllMessages();
         await this.loadCameras();
         if (this.cameras != null) {
             this.formatDates();

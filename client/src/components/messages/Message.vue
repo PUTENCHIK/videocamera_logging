@@ -1,5 +1,7 @@
 <template>
-    <div class="message" :class="data.type" @click="handleClick">
+    <div class="message"
+        :class="data.type"
+        @mousedown="handleClick">
         <div class="icon-wrapper">
             <img :src="'/src/assets/icons/' + data.type + '.png'"
                 :alt="data.type">
@@ -75,8 +77,9 @@ export default {
     },
 
     methods: {
-        handleClick() {
-            if (this.onClose) {
+        handleClick(event) {
+            let b = event.button;
+            if ((b == 0 || b == 1) && this.onClose) {
                 this.onClose(this.data.id);
             }
         }

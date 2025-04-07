@@ -116,8 +116,10 @@ export default {
 
         updateCurrent(newCurrent, newColor) {
             let idToChange = newCurrent === 0 ? this.currentBbox : newCurrent;
-            this.bbox_styles[idToChange]['background-color'] = newColor;
-            this.currentBbox = newCurrent;
+            if (this.bbox_styles[idToChange]) {
+                this.bbox_styles[idToChange]['background-color'] = newColor;
+                this.currentBbox = newCurrent;
+            }
         }
     }
 }

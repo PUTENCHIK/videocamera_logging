@@ -49,6 +49,7 @@ export default {
             addError: this.addError,
             addWarning: this.addWarning,
             addInfo: this.addInfo,
+            deleteAllMessages: this.deleteAllMessages
         }
     },
 
@@ -102,6 +103,10 @@ export default {
             if (index != undefined) {
                 this.messages.splice(index, 1);
             }
+        },
+
+        deleteAllMessages() {
+            this.messages = [];
         },
 
         initMessagesWebSocket() {

@@ -3,3 +3,13 @@
 
     <p>Информация о приложении</p>
 </template>
+
+<script>
+export default {
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
+
+    mounted() {
+        this.deleteAllMessages();
+    }
+}
+</script>

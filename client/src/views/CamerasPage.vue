@@ -80,11 +80,11 @@
 
 <script>
 import axios from 'axios';
-import { formatDate, cloneObject } from '/src/utils/helpers';
-import CamerasMixin from '/src/mixins/CamerasMixin';
-import FormsContainer from '/src/components/forms/FormsContainer.vue';
-import CameraForm from '/src/components/forms/CameraForm.vue';
-import DeleteForm from '/src/components/forms/DeleteForm.vue';
+import { formatDate, cloneObject } from '../utils/helpers';
+import CamerasMixin from '../mixins/CamerasMixin';
+import FormsContainer from '../components/forms/FormsContainer.vue';
+import CameraForm from '../components/forms/CameraForm.vue';
+import DeleteForm from '../components/forms/DeleteForm.vue';
 
 export default {
     inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],

@@ -1,8 +1,8 @@
-import { cloneObject, firstToUpperCase } from '/src/utils/helpers';
+import { formatDate, firstToUpperCase } from '../utils/helpers';
 
-import CamerasMixin from '/src/mixins/CamerasMixin';
-import ClassesMixin from '/src/mixins/ClassesMixin';
-import SnapshotsMixin from '/src/mixins/SnapshotsMixin';
+import CamerasMixin from './CamerasMixin';
+import ClassesMixin from './ClassesMixin';
+import SnapshotsMixin from './SnapshotsMixin';
 
 export default {
     mixins: [CamerasMixin, ClassesMixin, SnapshotsMixin],
@@ -48,9 +48,15 @@ export default {
 
         getTooltip() {
             return {
-                trigger: 'axis',
-                position: function (pt) {
-                    return [pt[0], '10%']; 
+                trigger: 'item',
+                formatter: (item) => {
+                    let object = item.value[2];
+                    return `
+                        <b>${firstToUpperCase(object.trackable_class.title)}</b><br>
+                        Добавлен: ${formatDate(object.created_at)}<br>
+                        Вероятность: ${object.probability}<br>
+                        ID снимка: ${object.snapshot_id}
+                    `;
                 }
             };
         },
@@ -72,26 +78,20 @@ export default {
                 {
                     type: 'inside',
                     start: 0,
-                    end: 20
+                    end: 100
                 },
                 {
                     start: 0,
-                    end: 20
+                    end: 100
                 }
             ]
-        },
-
-        getCameraId(snapshot_id) {
-            const snapshot = this.snapshots.find(snapshot => snapshot.id == snapshot_id);
-            return snapshot ? snapshot.camera_id : undefined;
         },
 
         getData() {
             let data = [];
             if (this.source.category == "camera") {
                 this.objects.forEach((object) => {
-                    let camera_id = this.getCameraId(object.snapshot_id);
-                    if (camera_id == 1) {
+                    if (object.snapshot.camera_id == this.source.id) {
                         let date = new Date(object.created_at);
                         let image_name;
                         if (object.trackable_class) {
@@ -101,7 +101,7 @@ export default {
                         }
 
                         data.push({
-                            value: [date, object.probability],
+                            value: [date, object.probability, object],
                             symbol: `image:///src/assets/icons/${image_name}.png`,
                             symbolSize: 32,
                             symbolOffset: [0, 0],

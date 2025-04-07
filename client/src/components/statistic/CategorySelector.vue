@@ -30,8 +30,8 @@
 </style>
 
 <script>
-import { firstToUpperCase } from '/src/utils/helpers';
-import SelectorHeader from '/src/components/statistic/SelectorHeader.vue';
+import { firstToUpperCase } from '../../utils/helpers';
+import SelectorHeader from '../../components/statistic/SelectorHeader.vue';
 
 export default {
     components: {

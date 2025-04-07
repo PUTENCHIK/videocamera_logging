@@ -73,7 +73,7 @@
 </style>
 
 <script>
-import { colorToString, getClassColor } from '/src/utils/helpers';
+import { colorToString, getClassColor } from '../../utils/helpers';
 import SnapshotDescription from './SnapshotDescription.vue';
 
 export default {

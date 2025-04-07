@@ -111,7 +111,7 @@ span.title {
 </style>
 
 <script>
-import clickOutside from '/src/directives/click-outside';
+import clickOutside from '../../directives/click-outside';
 
 export default {
     directives: {

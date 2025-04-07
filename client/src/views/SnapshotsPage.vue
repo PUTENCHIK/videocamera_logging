@@ -76,9 +76,9 @@
 </style>
 
 <script>
-import { formatDate } from '/src/utils/helpers';
-import SnapshotsMixin from '/src/mixins/SnapshotsMixin';
-import SnapshotBox from '/src/components/snapshots/SnapshotBox.vue';
+import { formatDate } from '../utils/helpers';
+import SnapshotsMixin from '../mixins/SnapshotsMixin';
+import SnapshotBox from '../components/snapshots/SnapshotBox.vue';
 
 export default {
     inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],

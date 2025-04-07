@@ -97,7 +97,7 @@
 </style>
 
 <script>
-import { colorToString, getClassColor } from '/src/utils/helpers';
+import { colorToString, getClassColor } from '../../utils/helpers';
 
 export default {
     props: {

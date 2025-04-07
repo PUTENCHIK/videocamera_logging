@@ -31,7 +31,7 @@
 </style>
 
 <script>
-import { getFormData } from '/src/utils/helpers';
+import { getFormData } from '../../utils/helpers';
 
 export default {
     props: {

@@ -11,7 +11,9 @@
 
         <div v-if="source" class="graphic-wrapper">
             <div class="graphic">
-                <chart :option="chartOption" :autoresize="true" />
+                <chart ref="graphic"
+                    :option="chartOption"
+                    :autoresize="true" />
             </div>
 
             <div class="graphic-info">
@@ -41,9 +43,9 @@
     min-height: 200px;
     max-height: 700px;
     resize: vertical;
-    overflow: hidden;
-
+    
     outline: 1px solid blue;
+    overflow: hidden;
 }
 
 .graphic-info {
@@ -58,8 +60,8 @@
 import ECharts from 'vue-echarts';
 import * as echarts from 'echarts';
 
-import GraphicTypesMixin from '/src/mixins/GraphicTypesMixin';
-import CategorySelector from '/src/components/statistic/CategorySelector.vue';
+import GraphicTypesMixin from '../mixins/GraphicTypesMixin';
+import CategorySelector from '../components/statistic/CategorySelector.vue';
 
 export default {
     inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
@@ -81,6 +83,7 @@ export default {
         updateGraphicSource(newSource) {
             this.source = newSource;
             this.updateChartOption();
+            console.log(this.$refs.graphic);
         },
     },
 

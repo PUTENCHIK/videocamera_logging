@@ -11,12 +11,18 @@ class Bbox(BaseModel):
     x2: float
     y2: float
 
+    class Config:
+        from_attributes = True
+
 
 class ObjectAdd(BaseModel):
     snapshot_id: int
     label: int
     probability: float
     bbox: Bbox
+
+    class Config:
+        from_attributes = True
 
 
 class Object(ObjectAdd):
@@ -34,10 +40,16 @@ class ObjectFull(BaseModel):
     created_at: datetime
     deleted_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+
 
 class SnapshotAdd(BaseModel):
     camera_id: int
     detecting_time: float
+
+    class Config:
+        from_attributes = True
 
 
 class Snapshot(SnapshotAdd):
@@ -53,3 +65,10 @@ class SnapshotFull(BaseModel):
     objects: List[ObjectFull]
     created_at: datetime
     deleted_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class ObjectFullWithSnapshot(ObjectFull):
+    snapshot: Snapshot

@@ -5,7 +5,8 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.snapshots import (SnapshotAdd, SnapshotModel, ObjectModel,
-                           ObjectAdd, Snapshot, Object, ObjectFull)
+                           ObjectAdd, Snapshot, Object,
+                           SnapshotFull, ObjectFullWithSnapshot)
 
 
 async def _add_snapshot(fields: SnapshotAdd,
@@ -44,7 +45,7 @@ async def _add_object(fields: ObjectAdd,
     return Object.model_validate(new_object)
 
 
-async def _get_snapshots(db: AsyncSession) -> List[SnapshotModel]:
+async def _get_snapshots(db: AsyncSession) -> List[SnapshotFull]:
     query = (select(SnapshotModel)
         .options(joinedload(SnapshotModel.objects)
         .options(joinedload(ObjectModel.trackable_class)))
@@ -52,13 +53,16 @@ async def _get_snapshots(db: AsyncSession) -> List[SnapshotModel]:
         .order_by(desc(SnapshotModel.created_at)))
     result = await db.execute(query)
     snapshots = result.scalars().unique().all()
-    return snapshots
+    return [SnapshotFull.model_validate(snapshot)
+            for snapshot in snapshots]
 
 
-async def _get_objects(db: AsyncSession) -> List[ObjectFull]:
+async def _get_objects(db: AsyncSession) -> List[ObjectFullWithSnapshot]:
     query = (select(ObjectModel)
         .options(joinedload(ObjectModel.trackable_class))
+        .options(joinedload(ObjectModel.snapshot))
         .where(ObjectModel.deleted_at == None))
     result = await db.execute(query)
     objects = result.scalars().unique().all()
-    return objects
+    return [ObjectFullWithSnapshot.model_validate(object)
+            for object in objects]

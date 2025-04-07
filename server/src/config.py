@@ -33,9 +33,7 @@ class ConfigRouters:
     classes_name = "classes"
     snapshots_name = "snapshots"
     cameras_name = "cameras"
-    statistic_name = "statistic"
-    about_name = "about"
-    api_name = "api"
+    websockets_name = "ws"
 
 
 class Config:

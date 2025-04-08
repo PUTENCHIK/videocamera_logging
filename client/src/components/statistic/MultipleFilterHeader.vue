@@ -1,7 +1,8 @@
 <template>
     <div v-click-outside="handleClickOutside"
         class="selector-header"
-        :class="{ 'chosen': chosen }">
+        :class="{ 'chosen': chosen }"
+        @click="updateFilters">
 
         <div class="title-wrapper" @click="updateChoosing">
             <span class="title">{{ title }}</span>
@@ -10,22 +11,22 @@
         <div v-if="choosing" class="items-wrapper">
             <div class="items-container">
                 <div class="items">
-                    <div v-for="item in group1"
+                    <div v-for="item in cameras"
                         :key="item.id"
+                        @click="updateSelected(item, selected_cameras)"
                         class="item">
-                        <!-- @click="updateCurrentItem(item)" -->
-                        <Checkbox :checked="false" />
-                        <span>{{ item.name }}</span>
+                        <Checkbox :checked="checkItemIsSelected(item, selected_cameras)" />
+                        <span :title="item.name">{{ item.name }}</span>
                     </div>
                 </div>
     
                 <div class="items">
-                    <div v-for="item in group2"
+                    <div v-for="item in classes"
                         :key="item.id"
+                        @click="updateSelected(item, selected_classes)"
                         class="item">
-                        <!-- @click="updateCurrentItem(item)" -->
-                        <Checkbox :checked="false" />
-                        <span>{{ item.name }}</span>
+                        <Checkbox :checked="checkItemIsSelected(item, selected_classes)" />
+                        <span :title="item.name">{{ item.name }}</span>
                     </div>
                 </div>
             </div>
@@ -39,10 +40,6 @@
 
         display: flex;
         flex-direction: column;
-    }
-
-    .hidden span {
-        display: none;
     }
 
     .title-wrapper {
@@ -111,6 +108,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-start;
+        column-gap: 10px;
     }
 
     .item:first-child {
@@ -130,6 +128,9 @@
 
     .item > span {
         font-size: 18px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
 
@@ -152,11 +153,11 @@ export default {
         title: {
             required: true
         },
-        group1: {
+        cameras: {
             type: Object,
             required: true
         },
-        group2: {
+        classes: {
             type: Object,
             required: true
         },
@@ -168,21 +169,29 @@ export default {
     data() {
         return {
             choosing: false,
-            selected1: [],
-            selected2: [],
+            selected_cameras: [],
+            selected_classes: [],
         }
     },
 
     methods: {
-        updateChoosing() {
-            if (this.group1.length && this.group2.length) {
-                this.choosing = !this.choosing;
-            } else {
-                if (!this.chosen) {
-                    this.addWarning(`Категория '${this.title}'`,
-                        "В одной из групп нет объектов. Добавьте их для отображения статистики"
-                    );
+        checkItemIsSelected(item, selected) {
+            for (let i = 0; i < selected.length; i++) {
+                if (item.id === selected[i].id) {
+                    return true;
                 }
+            }
+            return false;
+        },
+
+        updateChoosing() {
+            if (this.cameras.length && this.classes.length) {
+                this.choosing = !this.choosing;
+            } else if (!this.chosen) {
+                let text = !this.cameras.length ? "камер" : "классов"; 
+                this.addWarning(`Категория '${this.title}'`,
+                    `В таблице ${text} нет объектов. Добавьте их для отображения статистики`
+                );
             }
         },
 
@@ -190,10 +199,23 @@ export default {
             this.choosing = false;
         },
 
-        updateCurrentItem(newItem) {
-            this.currentItem = newItem;
-            this.$emit('update:current', newItem.id);
-            this.choosing = false;
+        updateSelected(item, selected) {
+            for (let i = 0; i < selected.length; i++) {
+                if (item.id === selected[i].id) {
+                    selected.splice(i, 1);
+                    return;
+                }
+            }
+            selected.push(item);
+        },
+
+        updateFilters() {
+            if (this.selected_cameras.length || this.selected_classes.length) {
+                this.$emit('update:current', {
+                    'cameras': this.selected_cameras,
+                    'classes': this.selected_classes
+                });
+            }
         }
     }
 }

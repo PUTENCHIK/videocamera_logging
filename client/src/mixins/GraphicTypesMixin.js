@@ -36,12 +36,16 @@ export default {
                             result += `камеры #${camera.id}`;
                         }
                     });
-                } else {
+                } else if (this.source.category == "class") {
                     this.classes.forEach((class_) => {
                         if (class_.id == this.source.id) {
                             result += `класса '${firstToUpperCase(class_.title)}'`;
                         }
                     });
+                } else {
+                    let len_cameras = this.source.filters.cameras.length;
+                    let len_classes = this.source.filters.classes.length;
+                    result += `${len_cameras} камер и ${len_classes} классов`;
                 }
                 return result;
             }
@@ -101,29 +105,35 @@ export default {
             ]
         },
 
+        getTrackableClassName(object) {
+            if (object.trackable_class) {
+                return object.trackable_class.name;
+            } else {
+                if (!this.no_trackable_class_warning_shown) {
+                    this.addWarning("Неизвестный класс",
+                        `В базе хранятся объекты с меткой ${object.label}, для которой не задан класс`);
+                    this.no_trackable_class_warning_shown = true;
+                }
+                return "unknown";
+            }
+        },
+
+        getObjectData(object) {
+            let date = new Date(object.created_at);
+            let image_name = this.getTrackableClassName(object);
+            return {
+                value: [date, object.probability, object],
+                symbol: `image:///src/assets/icons/${image_name}.png`,
+                symbolSize: 32,
+                symbolOffset: [0, 0],
+            };
+        },
+
         getCamerasData() {
             let data = [];
             this.objects.forEach((object) => {
                 if (object.snapshot.camera_id == this.source.id) {
-                    let date = new Date(object.created_at);
-                    let image_name;
-                    if (object.trackable_class) {
-                        image_name = object.trackable_class.name;
-                    } else {
-                        image_name = "unknown";
-                        if (!this.no_trackable_class_warning_shown) {
-                            this.addWarning("Неизвестный класс",
-                                `В базе хранятся объекты с меткой ${object.label}, для которой не задан класс`);
-                            this.no_trackable_class_warning_shown = true;
-                        }
-                    }
-
-                    data.push({
-                        value: [date, object.probability, object],
-                        symbol: `image:///src/assets/icons/${image_name}.png`,
-                        symbolSize: 32,
-                        symbolOffset: [0, 0],
-                    });
+                    data.push(this.getObjectData(object));
                 }
             });
             return data;
@@ -134,17 +144,37 @@ export default {
             this.objects.forEach((object) => {
                 let tc = object.trackable_class;
                 if (tc && tc.id == this.source.id) {
-                    let date = new Date(object.created_at);
-                    let image_name = tc.name;
-
-                    data.push({
-                        value: [date, object.probability, object],
-                        symbol: `image:///src/assets/icons/${image_name}.png`,
-                        symbolSize: 32,
-                        symbolOffset: [0, 0],
-                    });
+                    data.push(this.getObjectData(object));
                 }
             });
+            return data;
+        },
+
+        getMixedData() {
+            let cameras_ids = [];
+            let classes_ids = [];
+            this.source.filters.cameras.forEach((camera_item) => {
+                cameras_ids.push(camera_item.id);
+            });
+            this.source.filters.classes.forEach((class_item) => {
+                classes_ids.push(class_item.id);
+            });
+            let data = [];
+
+            this.objects.forEach((object) => {
+                let cam_id = object.snapshot.camera_id;
+                let tc = object.trackable_class;
+                if (!this.source.filters.classes.length && cameras_ids.includes(cam_id)) {
+                    data.push(this.getObjectData(object));
+                } else if (!this.source.filters.cameras.length && tc && classes_ids.includes(tc.id)) {
+                    data.push(this.getObjectData(object));
+                } else {
+                    if (cameras_ids.includes(cam_id) && tc && classes_ids.includes(tc.id)) {
+                        data.push(this.getObjectData(object));
+                    }
+                }
+            });
+
             return data;
         },
 
@@ -163,6 +193,13 @@ export default {
                     let class_ = this.getClassById(this.source.id);
                     this.addWarning("Нет объектов",
                         `В базе нет ни одного объекта класса '${firstToUpperCase(class_.title)}'`
+                    );
+                }
+            } else {
+                data = this.getMixedData();
+                if (!data.length) {
+                    this.addWarning("Нет объектов",
+                        `По результатам выборки не было найдено ни одного объекта`
                     );
                 }
             }

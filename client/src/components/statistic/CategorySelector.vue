@@ -1,19 +1,20 @@
 <template>
     <div class="category">
         <SelectorHeader :title="'Камеры'"
-            :items="cameras_titles"
+            :items="camera_items"
             :chosen="current_camera_id != null"
             @update:current="updateCurrentCameraId" />
         <div class="vertical-line"></div>
         <SelectorHeader :title="'Классы'"
-            :items="classes_titles"
+            :items="class_items"
             :chosen="current_class_id != null"
             @update:current="updateCurrentClassId" />
         <div class="vertical-line"></div>
         <MultipleFilterHeader :title="'Смешанные'"
-            :group1="cameras_titles"
-            :group2="classes_titles"
-            :chosen="false" />
+            :cameras="camera_items"
+            :classes="class_items"
+            :chosen="current_filters != null"
+            @update:current="updateCurrentFilters" />
     </div>
 </template>
 
@@ -57,20 +58,21 @@ export default {
 
     data() {
         return {
-            cameras_titles: [],
-            classes_titles: [],
+            camera_items: [],
+            class_items: [],
             current_camera_id: null,
             current_class_id: null,
+            current_filters: null,
         }
     },
 
     methods: {
         updateTitles() {
-            this.cameras_titles = [];
-            this.classes_titles = [];
+            this.camera_items = [];
+            this.class_items = [];
             this.cameras.forEach((camera) => {
                 if (camera.id != this.current_camera_id) {
-                    this.cameras_titles.push({
+                    this.camera_items.push({
                         id: camera.id,
                         name: `Камера #${camera.id}`
                     });
@@ -78,7 +80,7 @@ export default {
             });
             this.classes.forEach((class_) => {
                 if (class_.id != this.current_class_id) {
-                    this.classes_titles.push({
+                    this.class_items.push({
                         id: class_.id,
                         name: firstToUpperCase(class_.title)
                     });
@@ -92,6 +94,7 @@ export default {
             }
             this.current_camera_id = newId;
             this.current_class_id = null;
+            this.current_filters = null,
             this.$emit('update:source', {
                 category: 'camera',
                 id: newId
@@ -105,9 +108,21 @@ export default {
             }
             this.current_class_id = newId;
             this.current_camera_id = null;
+            this.current_filters = null,
             this.$emit('update:source', {
                 category: 'class',
                 id: newId
+            });
+            this.updateTitles();
+        },
+
+        updateCurrentFilters(newFilters) {
+            this.current_camera_id = null;
+            this.current_class_id = null;
+            this.current_filters = newFilters;
+            this.$emit('update:source', {
+                category: 'mixed',
+                filters: newFilters,
             });
             this.updateTitles();
         }

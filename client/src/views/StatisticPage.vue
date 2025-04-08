@@ -7,7 +7,9 @@
         <p>Не удалось загрузить данные камер или классов.</p>
     </template>
     <div v-else class="content">
-        <CategorySelector :cameras="cameras" :classes="classes" @update:source="updateGraphicSource" />
+        <CategorySelector :cameras="cameras"
+            :classes="classes"
+            @update:source="updateGraphicSource" />
 
         <div v-if="source" class="graphic-wrapper">
             <div class="graphic">
@@ -84,7 +86,6 @@ export default {
             this.source = newSource;
             this.no_trackable_class_warning_shown = false;
             this.updateChartOption();
-            console.log(this.$refs.graphic);
         },
     },
 

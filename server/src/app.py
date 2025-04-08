@@ -13,8 +13,8 @@ from src.database import create_db_and_tables
 async def lifespan(app: FastAPI):
     print("App starting")
     await create_db_and_tables()        
-    # asyncio.create_task(task_manager.start())
-    # print("Cameras task added")
+    asyncio.create_task(task_manager.start())
+    print("Cameras task added")
     yield
     print("App terminating")
     await task_manager.kill_task()

@@ -9,6 +9,11 @@
             :items="classes_titles"
             :chosen="current_class_id != null"
             @update:current="updateCurrentClassId" />
+        <div class="vertical-line"></div>
+        <MultipleFilterHeader :title="'Смешанные'"
+            :group1="cameras_titles"
+            :group2="classes_titles"
+            :chosen="false" />
     </div>
 </template>
 
@@ -32,10 +37,11 @@
 <script>
 import { firstToUpperCase } from '../../utils/helpers';
 import SelectorHeader from '../../components/statistic/SelectorHeader.vue';
+import MultipleFilterHeader from './MultipleFilterHeader.vue';
 
 export default {
     components: {
-        SelectorHeader
+        SelectorHeader, MultipleFilterHeader
     },
 
     props: {

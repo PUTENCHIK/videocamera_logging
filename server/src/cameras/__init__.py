@@ -8,5 +8,6 @@ from .logic import (
     _get_camera,
     _edit_camera,
     _delete_camera,
-    _switch_camera
+    _switch_camera,
+    _restore_camera
 )

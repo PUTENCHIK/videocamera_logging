@@ -12,7 +12,7 @@
         <div v-if="source" class="graphic-wrapper">
             <div class="graphic">
                 <chart ref="graphic"
-                    :option="chartOption"
+                    :option="chart_option"
                     :autoresize="true" />
             </div>
 
@@ -82,6 +82,7 @@ export default {
     methods: {
         updateGraphicSource(newSource) {
             this.source = newSource;
+            this.no_trackable_class_warning_shown = false;
             this.updateChartOption();
             console.log(this.$refs.graphic);
         },

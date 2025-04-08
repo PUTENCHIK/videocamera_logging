@@ -7,7 +7,8 @@ from src import Config
 from src.database import get_db_session
 from src.cameras import (CameraAddOrEdit, Camera, CameraAfterEdit,
                          _add_camera, _get_cameras, _get_camera,
-                         _edit_camera, _delete_camera, _switch_camera)
+                         _edit_camera, _delete_camera, _switch_camera,
+                         _restore_camera)
 from src.detecting import task_manager
 
 
@@ -78,3 +79,10 @@ async def delete_camera(camera_id: int,
         asyncio.create_task(task_manager.delete_camera(deleted_camera))
     
     return result
+
+
+@cameras_router.patch("/{camera_id}/restore", response_model=Camera)
+async def restore_camera(camera_id: int,
+               db: AsyncSession = Depends(get_db_session)):
+    restored_camera = await _restore_camera(camera_id, db)
+    return restored_camera

@@ -34,6 +34,7 @@ class Object(ObjectAdd):
 class ObjectFull(BaseModel):
     id: int
     snapshot_id: int
+    label: int
     trackable_class: Optional[TrackableClass] = None
     probability: float
     bbox: Bbox

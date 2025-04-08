@@ -4,16 +4,29 @@
         :class="{ 'chosen': chosen }">
 
         <div class="title-wrapper" @click="updateChoosing">
-            <span class="title">{{ chosen ? currentItem.name : title }}</span>
+            <span class="title">{{ title }}</span>
         </div>
 
         <div v-if="choosing" class="items-wrapper">
-            <div class="items">
-                <div v-for="item in items"
-                    :key="item.id"
-                    @click="updateCurrentItem(item)"
-                    class="item">
-                    <span>{{ item.name }}</span>
+            <div class="items-container">
+                <div class="items">
+                    <div v-for="item in group1"
+                        :key="item.id"
+                        class="item">
+                        <!-- @click="updateCurrentItem(item)" -->
+                        <Checkbox :checked="false" />
+                        <span>{{ item.name }}</span>
+                    </div>
+                </div>
+    
+                <div class="items">
+                    <div v-for="item in group2"
+                        :key="item.id"
+                        class="item">
+                        <!-- @click="updateCurrentItem(item)" -->
+                        <Checkbox :checked="false" />
+                        <span>{{ item.name }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,6 +79,16 @@
         z-index: 5;
     }
 
+    .items-container {
+        width: 100%;
+
+        display: flex;
+        column-gap: 10px;
+        align-items: start;
+
+        position: absolute;
+    }
+
     .items {
         width: 100%;
         max-height: 500px;
@@ -73,8 +96,6 @@
         display: flex;
         flex-direction: column;
         overflow-y: auto;
-
-        position: absolute;
 
         border-radius: 10px;
         background-color: white;
@@ -84,10 +105,12 @@
     .item {
         width: 100%;
         min-height: 60px;
+        box-sizing: border-box;
+        padding-left: 20px;
 
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
     }
 
     .item:first-child {
@@ -112,10 +135,15 @@
 
 <script>
 import clickOutside from '../../directives/click-outside';
+import Checkbox from '../forms/Checkbox.vue';
 
 export default {
     directives: {
         clickOutside: clickOutside
+    },
+
+    components: {
+        Checkbox
     },
 
     inject: ['addError', 'addWarning', 'addInfo'],
@@ -124,7 +152,11 @@ export default {
         title: {
             required: true
         },
-        items: {
+        group1: {
+            type: Object,
+            required: true
+        },
+        group2: {
             type: Object,
             required: true
         },
@@ -136,18 +168,19 @@ export default {
     data() {
         return {
             choosing: false,
-            currentItem: null
+            selected1: [],
+            selected2: [],
         }
     },
 
     methods: {
         updateChoosing() {
-            if (this.items.length) {
+            if (this.group1.length && this.group2.length) {
                 this.choosing = !this.choosing;
             } else {
                 if (!this.chosen) {
                     this.addWarning(`Категория '${this.title}'`,
-                        "Нет ни одного объекта. Добавьте их для отображения статистики"
+                        "В одной из групп нет объектов. Добавьте их для отображения статистики"
                     );
                 }
             }

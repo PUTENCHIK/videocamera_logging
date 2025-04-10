@@ -1,4 +1,6 @@
 export default {
+    inject: ['API_PORT'],
+    
     data() {
         return {
             ws_messages: null
@@ -8,7 +10,7 @@ export default {
     methods: {
         initMessagesWebSocket() {
             const ws_reinit = 3;
-            this.ws_messages = new WebSocket('ws://localhost:5050/ws/messages');
+            this.ws_messages = new WebSocket(`ws://localhost:${this.API_PORT}/ws/messages`);
             this.ws_messages.addEventListener("open", () => {
                 this.addInfo("Вебсокет", "Получение сообщений с сервера установлено");
                 this.ws_inits_counter = 0;

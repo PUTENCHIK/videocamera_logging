@@ -87,7 +87,7 @@ import CameraForm from '../components/forms/CameraForm.vue';
 import DeleteForm from '../components/forms/DeleteForm.vue';
 
 export default {
-    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages', 'API_PORT'],
 
     mixins: [CamerasMixin],
 
@@ -110,7 +110,7 @@ export default {
                 this.closeForm();
                 this.sending = true;
                 const response = await axios.post(
-                    "http://localhost:5050/cameras/add",
+                    `http://localhost:${this.API_PORT}/cameras/add`,
                     data
                 );
                 this.cameras.push(response.data);
@@ -129,7 +129,7 @@ export default {
                 this.closeForm();
                 this.sending = true;
                 const response = await axios.patch(
-                    `http://localhost:5050/cameras/${data.id}/edit`,
+                    `http://localhost:${this.API_PORT}/cameras/${data.id}/edit`,
                     data
                 );
                 let result = response.data;
@@ -157,7 +157,7 @@ export default {
                 this.closeForm();
                 this.sending = true;
                 const response = await axios.delete(
-                    `http://localhost:5050/cameras/${id}/delete`
+                    `http://localhost:${this.API_PORT}/cameras/${id}/delete`
                 );
                 let result = response.data;                
                 if (result.success) {
@@ -184,7 +184,7 @@ export default {
             try {
                 this.sending = true;
                 const response = await axios.patch(
-                    `http://localhost:5050/cameras/${id}/switch`
+                    `http://localhost:${this.API_PORT}/cameras/${id}/switch`
                 );
                 let result = response.data;
                 if (result.success) {

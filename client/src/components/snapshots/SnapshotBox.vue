@@ -3,7 +3,7 @@
         <div class="snapshot-content">
             <div class="snapshot-wrapper">
                 <img
-                    :src="'http://localhost:5050/storage/snapshots/' + data.id + '.jpg'"
+                    :src="`http://localhost:${API_PORT}/storage/snapshots/${data.id}.jpg`"
                     :ref="'snapshot_' + data.id"
                     @load="onImageLoaded()"
                     alt="snapshot">
@@ -80,6 +80,8 @@ export default {
     components: {
         SnapshotDescription
     },
+
+    inject: ['API_PORT'],
 
     props: {
         data: {

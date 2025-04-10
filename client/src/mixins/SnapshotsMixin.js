@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-    inject: ['addError', 'addWarning', 'addInfo'],
+    inject: ['addError', 'addWarning', 'addInfo', 'API_PORT'],
 
     data() {
         return {
@@ -16,7 +16,7 @@ export default {
             try {
                 this.loading = true;
                 const response = await axios.get(
-                    "http://localhost:5050/snapshots"
+                    `http://localhost:${this.API_PORT}/snapshots`
                 );
                 this.snapshots = response.data;
             } catch (error) {
@@ -31,7 +31,7 @@ export default {
             try {
                 this.loading = true;
                 const response = await axios.get(
-                    "http://localhost:5050/snapshots/objects"
+                    `http://localhost:${this.API_PORT}/snapshots/objects`
                 );
                 this.objects = response.data;
             } catch (error) {

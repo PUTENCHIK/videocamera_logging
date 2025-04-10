@@ -6,7 +6,7 @@ class ConfigApp:
     name = "src.app:app"
     host = "localhost"
     port = 5050
-    port_vue = 5173
+    port_vue = 5051
     origins = [
         "http://localhost",
         f"http://localhost:{port_vue}",

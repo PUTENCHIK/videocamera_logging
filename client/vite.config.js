@@ -6,5 +6,8 @@ export default defineConfig({
     plugins: [vue()],
     css: {
         requireModuleExtension: false
+    },
+    server: {
+        port: 5051,
     }
 })

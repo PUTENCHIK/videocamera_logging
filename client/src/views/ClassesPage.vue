@@ -92,7 +92,7 @@ import ClassForm from '../components/forms/ClassForm.vue';
 import DeleteForm from '../components/forms/DeleteForm.vue';
 
 export default {
-    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages'],
+    inject: ['addError', 'addWarning', 'addInfo', 'deleteAllMessages', 'API_PORT'],
 
     mixins: [ClassesMixin],
 
@@ -115,7 +115,7 @@ export default {
                 this.closeForm();
                 this.sending = true;
                 const response = await axios.post(
-                    "http://localhost:5050/classes/add",
+                    `http://localhost:${this.API_PORT}/classes/add`,
                     data
                 );
                 this.classes.push(response.data);
@@ -134,7 +134,7 @@ export default {
                 this.closeForm();
                 this.sending = true;
                 const response = await axios.patch(
-                    `http://localhost:5050/classes/${data.id}/edit`,
+                    `http://localhost:${this.API_PORT}/classes/${data.id}/edit`,
                     data
                 );
                 let result = response.data;                
@@ -162,7 +162,7 @@ export default {
                 this.closeForm();
                 this.sending = true;
                 const response = await axios.delete(
-                    `http://localhost:5050/classes/${id}/delete`
+                    `http://localhost:${this.API_PORT}/classes/${id}/delete`
                 );
                 let result = response.data;
                 if (result.success) {

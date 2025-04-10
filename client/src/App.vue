@@ -43,7 +43,8 @@ export default {
         return {
             max_messages: 4,
             messages: [],
-            message_id: 1
+            message_id: 1,
+            API_PORT: import.meta.env.VITE_API_PORT,
         }
     },
 
@@ -52,7 +53,8 @@ export default {
             addError: this.addError,
             addWarning: this.addWarning,
             addInfo: this.addInfo,
-            deleteAllMessages: this.deleteAllMessages
+            deleteAllMessages: this.deleteAllMessages,
+            API_PORT: this.API_PORT
         }
     },
 
@@ -111,8 +113,6 @@ export default {
         deleteAllMessages() {
             this.messages = [];
         },
-
-        
-    }
+    },
 }
 </script>

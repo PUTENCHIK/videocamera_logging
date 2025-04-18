@@ -3,6 +3,9 @@ function format(number) {
 }
 
 export function formatDate(date) {
+    if (typeof(date) == 'string' && !date.includes('T')) {
+        return date;
+    }
     let d = new Date(date);
     if (isNaN(d))
         return date.toString();

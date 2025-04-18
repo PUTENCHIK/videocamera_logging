@@ -17,7 +17,6 @@ class DetectingModel:
     
     def predict(self,
                 source: Union[str, Path, ndarray, list],
-                ids: List[int],
                 conf: float = Config.model.confidence) -> DetectingResults:
         start = time.perf_counter()
         results = self.__model.predict(source=source,
@@ -25,7 +24,7 @@ class DetectingModel:
                                        verbose=False)
         detecting_time = time.perf_counter() - start
 
-        return DetectingResults(results, ids, detecting_time)
+        return DetectingResults(results, detecting_time)
     
     @property
     def model_specified(self) -> bool:

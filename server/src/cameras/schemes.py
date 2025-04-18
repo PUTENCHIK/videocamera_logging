@@ -21,3 +21,7 @@ class CameraAddOrEdit(BaseModel):
 class CameraAfterEdit(BaseModel):
     success: bool = False
     camera: Optional[Camera] = None
+    error: Optional[str] = None
+
+    class Config:
+        from_attributes = True

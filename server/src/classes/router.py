@@ -32,7 +32,9 @@ async def edit_class(class_id: int,
     db_class = await _get_class(class_id, db)
 
     result = TrackableClassAfterEdit()
-    if db_class is not None:
+    if db_class is None:
+        result.error = f"Нет класса #{class_id} в базе данных"
+    else:
         edited_class = await _edit_class(class_id, fields, db)
         result.success = True
         result.class_ = edited_class
@@ -46,7 +48,9 @@ async def delete_class(class_id: int,
     db_class = await _get_class(class_id, db)
 
     result = TrackableClassAfterEdit()
-    if db_class is not None:
+    if db_class is None:
+        result.error = f"Нет класса #{class_id} в базе данных"
+    else:
         await _delete_class(class_id, db)
         result.success = True
     

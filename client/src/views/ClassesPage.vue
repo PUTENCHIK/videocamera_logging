@@ -147,6 +147,10 @@ export default {
                             break;
                         }
                     }
+                } else {
+                    if (result.error) {
+                        this.addError("Редактирование класса", result.error);
+                    }
                 }
             } catch (error) {
                 this.addError("Редактирование класса", `Получена ошибка: ${error}`);
@@ -175,6 +179,10 @@ export default {
                     }                        
                     if (index != undefined) {
                         this.classes.splice(index, 1);
+                    }
+                } else {
+                    if (result.error) {
+                        this.addError("Редактирование класса", result.error);
                     }
                 }
             } catch (error) {

@@ -11,6 +11,7 @@ class ConfigApp:
         "http://localhost",
         f"http://localhost:{port_vue}",
     ]
+    max_detecting_workers = 4
 
 
 class ConfigPathes:

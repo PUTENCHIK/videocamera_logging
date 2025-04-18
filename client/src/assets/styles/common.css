@@ -90,6 +90,7 @@ img.icon-button.disabled,
 img.icon-button.disabled:hover {
     cursor: default;
     background-color: transparent;
+    opacity: 0.5;
 }
 
 .color-box {

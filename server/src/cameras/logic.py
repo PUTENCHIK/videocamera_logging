@@ -95,15 +95,17 @@ async def _switch_camera(id: int,
 
 
 async def _restore_camera(id: int,
-                          db: AsyncSession) -> Camera:
+                          db: AsyncSession) -> Optional[Camera]:
     query = (update(CameraModel)
         .where(CameraModel.id == id)
-        .values(deleted_at=None)
+        .values(deleted_at=None,
+                is_monitoring=False)
         .returning(CameraModel))
     result = await db.execute(query)
-    restored_camera = result.scalar_one()
+    camera = result.scalar_one_or_none()
 
     await db.commit()
-    await db.refresh(restored_camera)
+    if camera is not None:
+        await db.refresh(camera)
 
-    return Camera.model_validate(restored_camera)
+    return Camera.model_validate(camera) if camera is not None else None

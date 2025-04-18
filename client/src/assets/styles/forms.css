@@ -123,23 +123,6 @@ label.filled {
     display: inline-flex;
 }
 
-label.password > .input-box {
-    display: flex;
-    align-items: center;
-    width: 100%;
-
-    column-gap: 10px;
-}
-
-label.password img.icon-button {
-    width: 32px;
-    height: 32px;
-}
-
-label.password input {
-    width: 100%;
-}
-
 label.error:not(.color) input,
 label.error:not(.color):hover input {
     outline: 1px solid #FF070C;

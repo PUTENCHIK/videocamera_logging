@@ -34,3 +34,7 @@ class TrackableClassFull(TrackableClass):
 class TrackableClassAfterEdit(BaseModel):
     success: bool = False
     class_: Optional[TrackableClassFull] = None
+    error: Optional[str] = None
+
+    class Config:
+        from_attributes = True

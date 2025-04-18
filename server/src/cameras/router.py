@@ -43,11 +43,15 @@ async def edit_camera(camera_id: int,
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()
-    if db_camera is not None:
+    if db_camera is None:
+        result.error = f"Нет камеры #{camera_id} в базе данных"
+    elif db_camera.is_monitoring:
+        result.error = (f"Камера #{camera_id} не может быть "
+                        "изменена, пока отслеживается")
+    else:
         edited_camera = await _edit_camera(camera_id, fields, db)
         result.success = True
         result.camera = edited_camera
-        asyncio.create_task(task_manager.edit_camera(edited_camera))
     
     return result
 
@@ -58,13 +62,25 @@ async def switch_camera(camera_id: int,
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()
-    if db_camera is not None:
+    if db_camera is None:
+        result.error = f"Нет камеры #{camera_id} в базе данных"
+    else:
         switched_camera = await _switch_camera(camera_id, db_camera.is_monitoring, db)
         result.success = True
         result.camera = switched_camera
-        asyncio.create_task(task_manager.switch_camera(switched_camera))
+        if switched_camera.is_monitoring:
+            asyncio.create_task(task_manager.add_task(switched_camera))
+        else:
+            asyncio.create_task(task_manager.stop_task(switched_camera.id))
     
     return result
+
+
+@cameras_router.patch("/{camera_id}/restore", response_model=Optional[Camera])
+async def restore_camera(camera_id: int,
+               db: AsyncSession = Depends(get_db_session)):
+    restored_camera = await _restore_camera(camera_id, db)    
+    return restored_camera
 
 
 @cameras_router.delete("/{camera_id}/delete", response_model=CameraAfterEdit)
@@ -73,16 +89,11 @@ async def delete_camera(camera_id: int,
     db_camera = await _get_camera(camera_id, db)
 
     result = CameraAfterEdit()
-    if db_camera is not None:
+    if db_camera is None:
+        result.error = f"Нет камеры #{camera_id} в базе данных"
+    else:
         deleted_camera = await _delete_camera(camera_id, db)
         result.success = True
-        asyncio.create_task(task_manager.delete_camera(deleted_camera))
+        asyncio.create_task(task_manager.stop_task(deleted_camera.id))
     
     return result
-
-
-@cameras_router.patch("/{camera_id}/restore", response_model=Camera)
-async def restore_camera(camera_id: int,
-               db: AsyncSession = Depends(get_db_session)):
-    restored_camera = await _restore_camera(camera_id, db)
-    return restored_camera

@@ -31,12 +31,12 @@
             </div>
             <div>{{ camera.created_at }}</div>
             <div class="icons-box">
-                <img @click="showEditCameraForm(camera.id)"
+                <img @click="!sending ? showEditCameraForm(camera) : null"
                     class="icon-button"
-                    :class="{ 'disabled': sending }"
+                    :class="{ 'disabled': sending || camera.is_monitoring }"
                     src="../assets/icons/edit.png"
                     alt="edit">
-                <img @click="showDeleteCameraForm(camera.id)"
+                <img @click="!sending ? showDeleteCameraForm(camera) : null"
                     class="icon-button"
                     :class="{ 'disabled': sending }"
                     src="../assets/icons/delete.png"
@@ -142,6 +142,10 @@ export default {
                             break;
                         }
                     }
+                } else {
+                    if (result.error) {
+                        this.addError("Редактирование камеры", result.error);
+                    }
                 }
             } catch (error) {
                 this.addError("Редактирование камеры", `Получена ошибка: ${error}`);
@@ -171,6 +175,10 @@ export default {
                     if (index != undefined) {
                         this.cameras.splice(index, 1);
                     }
+                } else {
+                    if (result.error) {
+                        this.addError("Удаление камеры", result.error);
+                    }
                 }
             } catch (error) {
                 this.addError("Удаление камеры", `Получена ошибка: ${error}`);
@@ -196,9 +204,13 @@ export default {
                             break;
                         }
                     }
+                } else {
+                    if (result.error) {
+                        this.addError("Переключение камеры", result.error);
+                    }
                 }
             } catch (error) {
-                this.addError("Переключение камер", `Получена ошибка: ${error}`);
+                this.addError("Переключение камеры", `Получена ошибка: ${error}`);
                 throw(error);
             } finally {
                 this.sending = false;
@@ -215,26 +227,21 @@ export default {
             this.current_form = 'add';
         },
 
-        showEditCameraForm(id) {
-            if (!this.sending) {
+        showEditCameraForm(camera) {
+            if (!camera.is_monitoring) {
                 this.current_form = 'edit';
-                this.cameras.forEach((camera) => {
-                    if (camera.id === id) {
-                        this.form_data = cloneObject(camera);
-                    }
-                });
+                this.form_data = cloneObject(camera);
+            } else {
+                this.addWarning(
+                    "Редактирование камеры",
+                    "Нельзя изменить камеру, пока она отслеживается"
+                );
             }
         },
 
-        showDeleteCameraForm(id) {
-            if (!this.sending) {
-                this.current_form = 'delete';
-                this.cameras.forEach((camera) => {
-                    if (camera.id === id) {
-                        this.form_data = cloneObject(camera);
-                    }
-                });
-            }
+        showDeleteCameraForm(camera) {
+            this.current_form = 'delete';
+            this.form_data = cloneObject(camera);
         },
 
         closeForm() {

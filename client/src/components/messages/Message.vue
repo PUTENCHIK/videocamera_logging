@@ -57,9 +57,13 @@
     }
 
     .message .__content {
+        width: 100%;
+
         display: flex;
         flex-direction: column;
         row-gap: 8px;
+
+        word-break: break-word;
     }
 </style>
 

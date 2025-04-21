@@ -15,7 +15,7 @@ async def _add_snapshot(fields: SnapshotAdd,
         .values(
             camera_id=fields.camera_id,
             detecting_time=fields.detecting_time,
-            created_at=datetime.now())
+            created_at=fields.created_at)
         .returning(SnapshotModel))
     result = await db.execute(query)
     new_snapshot = result.scalar_one()
@@ -34,7 +34,7 @@ async def _add_object(fields: ObjectAdd,
             label=fields.label,
             probability=fields.probability,
             bbox=fields.bbox.model_dump(),
-            created_at=datetime.now())
+            created_at=fields.created_at)
         .returning(ObjectModel))
     result = await db.execute(query)
     new_object = result.scalar_one()

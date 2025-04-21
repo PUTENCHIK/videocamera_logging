@@ -20,6 +20,7 @@ class ObjectAdd(BaseModel):
     label: int
     probability: float
     bbox: Bbox
+    created_at: datetime
 
     class Config:
         from_attributes = True
@@ -48,6 +49,7 @@ class ObjectFull(BaseModel):
 class SnapshotAdd(BaseModel):
     camera_id: int
     detecting_time: float
+    created_at: datetime
 
     class Config:
         from_attributes = True

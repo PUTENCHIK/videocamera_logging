@@ -11,7 +11,9 @@ export default {
         return {
             source: null,
             chart_option: {},
-            no_trackable_class_warning_shown: false
+            no_trackable_class_warning_shown: false,
+            graphic_data: [],
+            graphic_info: {},
         }
     },
 
@@ -27,7 +29,7 @@ export default {
 
         getTitleText() {
             if (this.source == null) {
-                return "Выберите категорию и объект";
+                return "Выберите категорию";
             } else {
                 let result = "Статистика ";
                 if (this.source.category == "camera") {
@@ -43,9 +45,15 @@ export default {
                         }
                     });
                 } else {
-                    let len_cameras = this.source.filters.cameras.length;
-                    let len_classes = this.source.filters.classes.length;
-                    result += `${len_cameras} камер и ${len_classes} классов`;
+                    let cameras = [];
+                    for (let i = 0; i < this.source.filters.cameras.length; i++) {
+                        cameras.push(this.source.filters.cameras[i].id);
+                    }
+                    let classes = [];
+                    for (let i = 0; i < this.source.filters.classes.length; i++) {
+                        classes.push(this.source.filters.classes[i].name);
+                    }
+                    result = `Классы (${classes.join(", ")}) на камерах ${cameras.join(", ")}`;
                 }
                 return result;
             }
@@ -208,6 +216,8 @@ export default {
         },
 
         updateChartOption() {
+            this.graphic_data = this.getData();
+            this.updateGraphicInfo();
             this.chart_option = {
                 title: {
                     text: this.getTitleText(),
@@ -227,11 +237,30 @@ export default {
                 },
                 series: [
                     {
-                        data: this.getData(),
+                        data: this.graphic_data,
                         type: 'scatter',
                     }
                 ]
             };
+        },
+
+        updateGraphicInfo() {
+            this.graphic_info.amount = this.graphic_data.length;
+            if (this.graphic_info.amount) {
+                let min_date = this.graphic_data[0].value[2].created_at;
+                let max_date = this.graphic_data[0].value[2].created_at;
+                if (this.graphic_info.amount > 1) {
+                    for (let i = 1; i < this.graphic_data.length; i++) {
+                        let date = this.graphic_data[i].value[2].created_at;
+                        min_date = date < min_date ? date : min_date;
+                        max_date = date > max_date ? date : max_date;
+                    }
+                }
+                this.graphic_info.min_date = min_date;
+                this.graphic_info.max_date = max_date;
+                console.log(min_date, max_date);
+                
+            }
         }
     },
 

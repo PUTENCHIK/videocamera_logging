@@ -210,7 +210,7 @@ export default {
         },
 
         updateFilters() {
-            if (this.selected_cameras.length || this.selected_classes.length) {
+            if (this.selected_cameras.length && this.selected_classes.length) {
                 this.$emit('update:current', {
                     'cameras': this.selected_cameras,
                     'classes': this.selected_classes

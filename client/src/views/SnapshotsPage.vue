@@ -36,6 +36,7 @@
         <div v-if="snapshots.length" class="snapshots-container">
             <SnapshotBox v-for="snapshot in snapshots"
                 :key="snapshot.id"
+                :id="snapshot.id"
                 :data="snapshot" />
         </div>
         <p v-else>В базе нет ещё ни одного снимка с камер.</p>
@@ -96,11 +97,36 @@ export default {
         }
     },
 
+    watch: {
+        '$route.hash': 'scrollToSnapshot'
+    },
+
     methods: {
         formatDates() {
             this.snapshots.forEach((snapshot) => {
                 snapshot.created_at = formatDate(snapshot.created_at);
             });
+        },
+
+        scrollToSnapshot() {
+            const hash = this.$route.hash;
+            if (hash) {
+                const hash_id = hash.slice(1);
+                const element = document.getElementById(hash_id);
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition - 100;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
         },
     },
 
@@ -110,6 +136,7 @@ export default {
         if (this.snapshots != null) {
             this.formatDates();
         }
+        this.scrollToSnapshot();
     }
 }
 </script>

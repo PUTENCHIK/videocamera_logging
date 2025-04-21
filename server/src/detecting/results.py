@@ -1,4 +1,5 @@
-from typing import List
+from numpy import ndarray
+from datetime import datetime
 from ultralytics.engine.results import Results
 
 from src import Config
@@ -7,8 +8,12 @@ from src import Config
 class DetectingResults:
     def __init__(self,
                  results: Results,
-                 detecting_time: float):
+                 frame: ndarray,
+                 detecting_time: float,
+                 predicted_at: datetime):
         self.time = detecting_time
+        self.frame = frame
+        self.predicted_at = predicted_at
         result = results[0]
         if result.boxes:
             self.labels = [int(cls_.item()) for cls_ in result.boxes.cls]

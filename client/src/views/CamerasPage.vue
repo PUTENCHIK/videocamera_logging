@@ -123,7 +123,7 @@ export default {
             }
         },
 
-        async editCamera() {            
+        async editCamera() { 
             try {
                 let data = cloneObject(this.form_data);
                 this.closeForm();

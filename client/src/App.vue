@@ -1,4 +1,6 @@
 <script setup>
+import { MESSAGES_DELAY } from './constants';
+
 import WebsocketsMixin from './mixins/WebsocketsMixin';
 import Header from './components/header/Header.vue';
 import MessagesContainer from './components/messages/MessagesContainer.vue';
@@ -25,9 +27,7 @@ import Message from './components/messages/Message.vue';
 
 <style scoped>
     main {
-        height: calc(100% - 40px);
-        margin-top: 80px;
-        overflow-y: auto;
+        padding-top: 80px;
     }
 </style>
 
@@ -63,21 +63,21 @@ export default {
             this.addMessage({
                 title: title,
                 text: text
-            }, "error", 10000);
+            }, "error", MESSAGES_DELAY['error']);
         },
 
         addWarning(title, text) {
             this.addMessage({
                 title: title,
                 text: text
-            }, "warning", 7500);
+            }, "warning", MESSAGES_DELAY['warning']);
         },
 
         addInfo(title, text) {
             this.addMessage({
                 title: title,
                 text: text
-            }, "info", 5000);
+            }, "info", MESSAGES_DELAY['info']);
         },
 
         addMessage(message, type, delay) {

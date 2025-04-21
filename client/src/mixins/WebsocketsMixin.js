@@ -1,3 +1,5 @@
+import { MESSAGES_DELAY } from '../constants';
+
 export default {
     inject: ['API_PORT'],
     
@@ -19,7 +21,7 @@ export default {
             this.ws_messages.addEventListener("message", (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    this.addMessage(data);
+                    this.addMessage(data, data.type, MESSAGES_DELAY[data.type]);
                 } catch (e) {
                     this.addError("Получение сообщения", "Ошибка при получении сообщения с сервера");
                 }                

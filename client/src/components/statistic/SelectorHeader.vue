@@ -11,8 +11,9 @@
             <div class="items">
                 <div v-for="item in items"
                     :key="item.id"
-                    @click="updateCurrentItem(item)"
-                    class="item">
+                    @click="currentItem.id != item.id ? updateCurrentItem(item) : null"
+                    class="item"
+                    :class="{ 'disabled' : currentItem.id == item.id }">
                     <span>{{ item.name }}</span>
                 </div>
             </div>
@@ -108,6 +109,13 @@
     .item > span {
         font-size: 18px;
     }
+
+    .item.disabled,
+    .item.disabled:hover {
+        color: #808080;
+        cursor: default;
+        background-color: white;
+    }
 </style>
 
 <script>
@@ -136,7 +144,7 @@ export default {
     data() {
         return {
             choosing: false,
-            currentItem: null
+            currentItem: {}
         }
     },
 

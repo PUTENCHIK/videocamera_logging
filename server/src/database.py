@@ -18,7 +18,8 @@ async def create_db_and_tables():
         await conn.run_sync(BaseDBModel.metadata.create_all)
 
 
-database_path = f"sqlite+aiosqlite:///{Config.pathes.storage / Config.database.name}"
+database_path = ("sqlite+aiosqlite:///"
+                 f"{Config.pathes.storage / Config.database.name}")
 
 engine = create_async_engine(database_path,
                              echo=False)

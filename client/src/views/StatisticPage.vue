@@ -15,47 +15,64 @@
             <div class="graphic">
                 <chart ref="graphic"
                     :option="chart_option"
-                    :autoresize="true" />
+                    :autoresize="true"
+                    @click="chartClickHandle" />
             </div>
 
             <div class="graphic-info">
-                <h2>Информация</h2>
+                <h2>Подробная информация</h2>
+                <div class="__content">
+                    <div class="row">
+                        <div>Общее количество: {{ graphic_info.amount }}</div>
+                        <div>Промежуток: {{ graphic_data.min_date || '-' }} - {{ graphic_data.max_date || '-' }}</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-@import url('../assets/styles/loader.css');
+    @import url('../assets/styles/loader.css');
 
-.content {
-    display: flex;
-    flex-direction: column;
-    row-gap: 30px;
-}
+    .content {
+        display: flex;
+        flex-direction: column;
+        row-gap: 30px;
+    }
 
-.graphic-wrapper {
-    display: flex;
-    flex-direction: column;
-    row-gap: 30px;
-}
+    .graphic-wrapper {
+        display: flex;
+        flex-direction: column;
+        row-gap: 30px;
+    }
 
-.graphic {
-    height: 400px;
-    min-height: 200px;
-    max-height: 700px;
-    resize: vertical;
+    .graphic {
+        height: 400px;
+        min-height: 200px;
+        max-height: 700px;
+        resize: vertical;
+        
+        outline: 1px solid blue;
+        overflow: hidden;
+    }
+
+    .graphic-info {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+    }
     
-    outline: 1px solid blue;
-    overflow: hidden;
-}
+    .graphic-info > .__content {
+        display: flex;
+        flex-direction: column;
+        row-gap: 15px;
+    }
 
-.graphic-info {
-    height: 200px;
-    display: flex;
-
-    background-color: antiquewhite;
-}
+    .graphic-info .row {
+        display: flex;
+        justify-content: space-between;
+    }
 </style>
 
 <script>
@@ -86,6 +103,23 @@ export default {
             this.source = newSource;
             this.no_trackable_class_warning_shown = false;
             this.updateChartOption();
+        },
+
+        chartClickHandle(event) {
+            if (event && event.data) {
+                let object = event.data.value[2];
+                if (object && object.snapshot_id) {
+                    this.$router.push({
+                        path: '/snapshots',
+                        hash: `#${object.snapshot_id}`
+                    });
+                } else {
+                    this.addError(
+                        "Нет снимка",
+                        `Не удалось перейти к объекту #${object.id}`
+                    );
+                }
+            }
         },
     },
 

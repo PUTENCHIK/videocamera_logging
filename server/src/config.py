@@ -1,5 +1,4 @@
 from pathlib import Path
-from fastapi.templating import Jinja2Templates
 
 
 class ConfigApp:
@@ -24,10 +23,11 @@ class ConfigDatabase:
     name = "database.db"
 
 
-class ConfigModel:
-    default = "yolo11l_100.pt"
+class ConfigDetecting:
+    model_name = "yolo11l_100.pt"
     confidence = 0.75
-    detecting_delay = 2 #sec
+    delay = 2 #sec
+    cooldown = 15 #sec
 
 
 class ConfigRouters:
@@ -41,6 +41,5 @@ class Config:
     app = ConfigApp()
     pathes = ConfigPathes()
     database = ConfigDatabase()
-    model = ConfigModel()
-    templates = Jinja2Templates(directory="static/html")
+    detecting = ConfigDetecting()
     routers = ConfigRouters()

@@ -71,20 +71,16 @@ export default {
             this.camera_items = [];
             this.class_items = [];
             this.cameras.forEach((camera) => {
-                if (camera.id != this.current_camera_id) {
-                    this.camera_items.push({
-                        id: camera.id,
-                        name: `Камера #${camera.id}`
-                    });
-                }
+                this.camera_items.push({
+                    id: camera.id,
+                    name: `Камера #${camera.id}`
+                });
             });
             this.classes.forEach((class_) => {
-                if (class_.id != this.current_class_id) {
-                    this.class_items.push({
-                        id: class_.id,
-                        name: firstToUpperCase(class_.title)
-                    });
-                }
+                this.class_items.push({
+                    id: class_.id,
+                    name: firstToUpperCase(class_.title)
+                });
             });
         },
 

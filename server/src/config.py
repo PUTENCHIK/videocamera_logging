@@ -24,7 +24,7 @@ class ConfigDatabase:
 
 
 class ConfigDetecting:
-    model_name = "yolo11l_100.pt"
+    model_name = "yolov9t_100.pt"
     confidence = 0.75
     delay = 2 #sec
     cooldown = 15 #sec
